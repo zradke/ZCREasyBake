@@ -133,8 +133,8 @@ NSString *const ZCREasyDoughUpdatedNotification = @"com.zachradke.easyDough.noti
         // However we ultimately use our own generic recipe to merge in our existing properties and
         // then populate the new instance.
         NSDictionary *genericRecipe = [[self class] _genericRecipe];
-        NSDictionary *existingIngredients = [self decomposeWithRecipe:genericRecipe
-                                                                error:error];
+        NSDictionary *existingIngredients = [self _decomposeWithRecipe:genericRecipe
+                                                                 error:error];
         if (!existingIngredients) { return nil; }
         
         NSMutableDictionary *mergedIngredients = [existingIngredients mutableCopy];
@@ -170,8 +170,7 @@ NSString *const ZCREasyDoughUpdatedNotification = @"com.zachradke.easyDough.noti
 
 - (NSDictionary *)decomposeWithRecipe:(NSDictionary *)recipe
                                 error:(NSError *__autoreleasing *)error {
-    // We split this into a private method to prevent subclasses from breaking the behavior of
-    // this method, which is used within this class for updates
+    // We split this into a private method to prevent subclasses from breaking the behavior
     return [self _decomposeWithRecipe:recipe error:error];
 }
 
@@ -278,8 +277,7 @@ NSString *const ZCREasyDoughUpdatedNotification = @"com.zachradke.easyDough.noti
 }
 
 + (NSDictionary *)genericRecipe {
-    // We split this into a private method to prevent subclasses from breaking the behavior of
-    // _genericRecipe, which is used within this class for updates and descriptions.
+    // We split this into a private method to prevent subclasses from breaking the behavior
     return [self _genericRecipe];
 }
 
@@ -336,6 +334,23 @@ NSString *const ZCREasyDoughUpdatedNotification = @"com.zachradke.easyDough.noti
     return [mappedIngredients copy];
 }
 
+#pragma mark - NSCopying
+
+- (id)copyWithZone:(NSZone *)zone {
+    // Theoretically if this model is entirely composed of readonly properties we could just return
+    // self. However, since we cannot guarantee that, we new instance.
+    NSDictionary *recipe = [[self class] _genericRecipe];
+    NSDictionary *ingredients = [self _decomposeWithRecipe:recipe error:NULL];
+    if (ingredients) {
+        return [[[self class] allocWithZone:zone] initWithIdentifier:_uniqueIdentifier
+                                                         ingredients:ingredients
+                                                              recipe:recipe
+                                                               error:NULL];
+    } else {
+        return nil;
+    }
+}
+
 
 #pragma mark - NSObject overrides
 
@@ -369,6 +384,20 @@ NSString *const ZCREasyDoughUpdatedNotification = @"com.zachradke.easyDough.noti
     return [_uniqueIdentifier hash];
 }
 
+- (NSString *)description {
+    NSDictionary *ingredients = [self _decomposeWithRecipe:[[self class] _genericRecipe] error:NULL];
+    NSMutableDictionary *mutableIngredients = [ingredients copy];
+    [ingredients enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+        // To avoid potential infinite recursion bugs, we abbreviate other model descriptions
+        if ([obj isKindOfClass:[ZCREasyDough class]]) {
+            mutableIngredients[key] = [NSString stringWithFormat:@"<%@:%p>", NSStringFromClass([obj class]), obj];
+        }
+    }];
+    
+    NSString *baseDescription = [NSString stringWithFormat:@"<%@:%p>", NSStringFromClass([self class]), self];
+    return (mutableIngredients) ? [baseDescription stringByAppendingFormat:@" %@", mutableIngredients] : baseDescription;
+}
+
 
 #pragma mark - Introspection
 
@@ -376,26 +405,19 @@ NSString *const ZCREasyDoughUpdatedNotification = @"com.zachradke.easyDough.noti
     NSSet *storedProperties = objc_getAssociatedObject(self, _cmd);
     if (storedProperties) { return storedProperties; }
     
-    // We expose all properties up till the superclass of ZCREasyDough to prevent exposing internal
-    // properties.
-    Class rootClass = [ZCREasyDough superclass];
-    Class currentClass = self;
-    
     NSMutableSet *mutableProperties = [NSMutableSet set];
+    
+    // We expose properties up till ZCREasyDough to prevent exposing non-user defined properties.
+    Class rootClass = [ZCREasyDough class];
+    Class currentClass = self;
+    NSSet *currentProperties = nil;
+    
     while (currentClass != rootClass) {
-        unsigned int propertyCount = 0;
-        objc_property_t *properties = class_copyPropertyList(currentClass, &propertyCount);
-        
-        currentClass = [currentClass superclass];
-        
-        if (properties) {
-            for (unsigned int i = 0; i < propertyCount; i++) {
-                ZCREasyProperty *property = [[ZCREasyProperty alloc] initWithProperty:properties[i]];
-                [mutableProperties addObject:property];
-            }
-            
-            free(properties);
+        currentProperties = [ZCREasyProperty propertiesForClass:currentClass];
+        if (currentProperties) {
+            [mutableProperties unionSet:currentProperties];
         }
+        currentClass = [currentClass superclass];
     }
     objc_setAssociatedObject(self, _cmd, mutableProperties, OBJC_ASSOCIATION_COPY);
     

@@ -52,7 +52,7 @@ extern NSString *const ZCREasyDoughUpdatedNotification;
  *  If subclasses need finer grained control, they can override any of the public methods, though
  *  they are encouraged to invoke the super implementation when possible.
  */
-@interface ZCREasyDough : NSObject {
+@interface ZCREasyDough : NSObject <NSCopying> {
     @protected
     BOOL _allowsSettingValues;
     id<NSObject,NSCopying> _uniqueIdentifier;

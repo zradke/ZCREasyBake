@@ -14,7 +14,7 @@
 
 @property (strong, nonatomic, readonly) NSString *name;
 @property (strong, nonatomic, readonly) NSDate *updatedAt;
-@property (strong, nonatomic, readonly) NSNumber *badgeCount;
+@property (assign, nonatomic, readonly) NSUInteger badgeCount;
 
 + (NSDictionary *)JSONRecipe;
 
@@ -68,7 +68,7 @@
     XCTAssertNotNil(model, @"The model should have serialized successfully");
     XCTAssertEqualObjects(model.name, JSON[@"user_name"], @"The name should be set");
     XCTAssertEqualObjects(model.updatedAt, JSON[@"updated_at"], @"The updated date should be set");
-    XCTAssertEqualObjects(model.badgeCount, JSON[@"badge_count"], @"The badge count should be set");
+    XCTAssertTrue(model.badgeCount == [JSON[@"badge_count"] unsignedIntegerValue], @"The badge count should be set");
 }
 
 - (void)testPrepareWithChef {
@@ -88,7 +88,7 @@
     XCTAssertNotNil(model, @"The model should be built");
     XCTAssertEqualObjects(model.name, JSON[@"user_name"], @"The name should be set");
     XCTAssertEqualObjects(model.updatedAt, JSON[@"updated_at"], @"The updated date should be set");
-    XCTAssertEqualObjects(model.badgeCount, JSON[@"badge_count"], @"The badge count should be set");
+    XCTAssertTrue(model.badgeCount == [JSON[@"badge_count"] unsignedIntegerValue], @"The badge count should be set");
 }
 
 - (void)testUpdate {
@@ -105,7 +105,7 @@
     XCTAssertEqualObjects(model.name, JSON[@"user_name"], @"The original model's name should still be set");
     XCTAssertEqualObjects(updatedModel.name, updatedJSON[@"user_name"], @"The updated model's name should be updated");
     XCTAssertEqualObjects(updatedModel.updatedAt, JSON[@"updated_at"], @"The updated model's date should be unchanged");
-    XCTAssertEqualObjects(updatedModel.badgeCount, JSON[@"badge_count"], @"The updated models' badge count should be unchanged");
+    XCTAssertTrue(updatedModel.badgeCount == [JSON[@"badge_count"] unsignedIntegerValue], @"The updated model's badge count should be unchanged");
 }
 
 - (void)testUpdatePostsNotification {
@@ -152,7 +152,7 @@
     XCTAssertTrue(model == updatedModel, @"The models should be identical");
     XCTAssertEqualObjects(updatedModel.name, JSON[@"user_name"], @"The updated model's name should be unchanged");
     XCTAssertEqualObjects(updatedModel.updatedAt, JSON[@"updated_at"], @"The updated model's date should be unchanged");
-    XCTAssertEqualObjects(updatedModel.badgeCount, JSON[@"badge_count"], @"The updated models' badge count should be unchanged");
+    XCTAssertTrue(updatedModel.badgeCount == [JSON[@"badge_count"] unsignedIntegerValue], @"The updated model's badge count should be unchanged");
 }
 
 - (void)testUpdateUnchangedNoNotification {
@@ -188,6 +188,10 @@
     XCTAssertNil(error, @"There should be no error");
 }
 
+- (void)testManualUpdateRaisesException {
+    XCTAssertThrowsSpecificNamed([model setValue:@"Zachary Radke" forKey:@"name"], NSException, ZCREasyDoughExceptionAlreadyBaked, @"Manually accessing the iVar should throw an exception");
+}
+
 - (void)testDecomposeWithGenericRecipe {
     NSError *error;
     NSDictionary *ingredients = [model decomposeWithRecipe:[ZCREasyDoughTestsModel genericRecipe] error:&error];
@@ -197,7 +201,7 @@
     
     XCTAssertEqualObjects(ingredients[@"name"], model.name, @"The names should match");
     XCTAssertEqualObjects(ingredients[@"updatedAt"], model.updatedAt, @"The updated dates should match");
-    XCTAssertEqualObjects(ingredients[@"badgeCount"], model.badgeCount, @"The badge counts should match");
+    XCTAssertTrue(model.badgeCount == [ingredients[@"badgeCount"] unsignedIntegerValue], @"The badge counts should match");
 }
 
 - (void)testDecomposeWithJSONRecipe {
@@ -209,7 +213,7 @@
     
     XCTAssertEqualObjects(ingredients[@"user_name"], model.name, @"The names should match");
     XCTAssertEqualObjects(ingredients[@"updated_at"], model.updatedAt, @"The updated dates should match");
-    XCTAssertEqualObjects(ingredients[@"badge_count"], model.badgeCount, @"The badge counts should match");
+    XCTAssertTrue(model.badgeCount == [ingredients[@"badge_count"] unsignedIntegerValue], @"The badge counts should match");
 }
 
 - (void)testIsEqualToIngredients {
