@@ -153,11 +153,6 @@
     XCTAssertTrue(property.customSetter == NULL, @"The custom setter should be NULL");
 }
 
-- (void)testHasAttributeCopy {
-    ZCREasyProperty *property = propertiesByName[@"readOnlyProperty"];
-    XCTAssertTrue([property hasAttribute:ZCREasyPropertyAttrCopy], @"The property should have the copy attribute");
-}
-
 - (void)testHasAttributeDynamic {
     ZCREasyProperty *property = propertiesByName[@"dynamicProperty"];
     XCTAssertTrue([property hasAttribute:ZCREasyPropertyAttrDynamic], @"The property should have the dynamic attribute");
