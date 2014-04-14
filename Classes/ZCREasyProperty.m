@@ -21,7 +21,9 @@ NSString *const ZCREasyPropertyAttrWeak = @"W";
 NSString *const ZCREasyPropertyAttrGarbageCollectable = @"P";
 NSString *const ZCREasyPropertyAttrOldTypeEncoding = @"t";
 
-@implementation ZCREasyProperty
+@implementation ZCREasyProperty {
+    NSString *_attributeString;
+}
 
 - (instancetype)initWithProperty:(objc_property_t)property {
     if (!(self = [super init])) { return nil; }
@@ -29,16 +31,11 @@ NSString *const ZCREasyPropertyAttrOldTypeEncoding = @"t";
     
     _name = [NSString stringWithUTF8String:property_getName(property)];
     
-    NSArray *attributePairs = [[NSString stringWithUTF8String:property_getAttributes(property)] componentsSeparatedByString:@","];
-    NSMutableDictionary *mutableAttributes = [NSMutableDictionary dictionary];
-    for (NSString *pair in attributePairs) {
-        if (pair.length == 0) { continue; }
-        mutableAttributes[[pair substringToIndex:1]] = [pair substringFromIndex:1];
-    }
-    _attributes = [mutableAttributes copy];
+    _attributeString = [NSString stringWithUTF8String:property_getAttributes(property)];
+    _attributes = [NSSet setWithArray:[_attributeString componentsSeparatedByString:@","]];
     
-    _type = _attributes[ZCREasyPropertyAttrType];
-    _iVarName = _attributes[ZCREasyPropertyAttrIVarName];
+    _type = [self _contextStringForAttribute:ZCREasyPropertyAttrType];
+    _iVarName = [self _contextStringForAttribute:ZCREasyPropertyAttrIVarName];
     
     _isReadOnly = [self hasAttribute:ZCREasyPropertyAttrReadOnly];
     _isWeak = [self hasAttribute:ZCREasyPropertyAttrWeak];
@@ -48,12 +45,12 @@ NSString *const ZCREasyPropertyAttrOldTypeEncoding = @"t";
         _typeClass = [self _parseTypeClassFromString:_type];
     }
     
-    NSString *customGetterString = _attributes[ZCREasyPropertyAttrCustomGetter];
+    NSString *customGetterString = [self _contextStringForAttribute:ZCREasyPropertyAttrCustomGetter];
     if (customGetterString.length > 0) {
         _customGetter = NSSelectorFromString(customGetterString);
     }
     
-    NSString *customSetterString = _attributes[ZCREasyPropertyAttrCustomSetter];
+    NSString *customSetterString = [self _contextStringForAttribute:ZCREasyPropertyAttrCustomSetter];
     if (customSetterString.length > 0) {
         _customSetter = NSSelectorFromString(customSetterString);
     }
@@ -66,7 +63,14 @@ NSString *const ZCREasyPropertyAttrOldTypeEncoding = @"t";
 }
 
 - (BOOL)hasAttribute:(NSString *)attribute {
-    return (_attributes[attribute] != nil);
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF BEGINSWITH %@", attribute];
+    return ([[_attributes filteredSetUsingPredicate:predicate] count] > 0);
+}
+
+- (NSString *)_contextStringForAttribute:(NSString *)attribute {
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF BEGINSWITH %@", attribute];
+    NSString *fullAttribute = [[_attributes filteredSetUsingPredicate:predicate] anyObject];
+    return [fullAttribute substringFromIndex:attribute.length];
 }
 
 - (Class)_parseTypeClassFromString:(NSString *)typeString {
@@ -90,13 +94,17 @@ NSString *const ZCREasyPropertyAttrOldTypeEncoding = @"t";
     
     ZCREasyProperty *other = object;
     BOOL equalNames = (!self.name && !other.name) || [self.name isEqualToString:other.name];
-    BOOL equalAttributes = (!self.attributes && !other.attributes) || [self.attributes isEqualToDictionary:other.attributes];
+    BOOL equalAttributes = (!_attributeString && !other->_attributeString) || [_attributeString isEqualToString:other->_attributeString];
     
     return equalNames && equalAttributes;
 }
 
 - (NSUInteger)hash {
     return [self.name hash] ^ [self.attributes hash];
+}
+
+- (NSString *)description {
+    return [NSString stringWithFormat:@"<%@:%p> name:%@ attributes:%@", NSStringFromClass([self class]), self, _name, _attributeString];
 }
 
 + (NSSet *)propertiesForClass:(Class)aClass {

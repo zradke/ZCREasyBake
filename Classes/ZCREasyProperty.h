@@ -56,12 +56,10 @@ extern NSString *const ZCREasyPropertyAttrOldTypeEncoding;
 @property (strong, nonatomic, readonly) NSString *type;
 
 /**
- *  The attributes of the property parsed into a dictionary. The keys correspond to the property
- *  attribute constants, and the values are either contextual information about the attribute, or
- *  an empty string. If a valid property is passed during creation, this is guaranteed to be
- *  present.
+ *  The attributes of the property parsed into a set. If a valid property is passed during creation,
+ *  this is guaranteed to be present.
  */
-@property (strong, nonatomic, readonly) NSDictionary *attributes;
+@property (strong, nonatomic, readonly) NSSet *attributes;
 
 /**
  *  The name of the raw iVar backing the property, if present.
