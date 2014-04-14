@@ -1,0 +1,4 @@
+language: objective-c
+xcode_project: ZCREasyBake.xcodeproj
+xcode_scheme: ZCREasyBake
+xcode_sdk: iphonesimulator7.0
