@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 Zach Radke. All rights reserved.
 //
 
-@import Foundation;
+#import <Foundation/Foundation.h>
 
 // Error domain for all errors in this class
 extern NSString *const ZCREasyDoughErrorDomain;

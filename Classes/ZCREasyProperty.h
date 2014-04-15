@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 Zach Radke. All rights reserved.
 //
 
-@import Foundation;
+#import <Foundation/Foundation.h>
 #import <objc/runtime.h>
 
 extern NSString *const ZCREasyPropertyAttrType;
