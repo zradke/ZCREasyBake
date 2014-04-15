@@ -35,13 +35,6 @@
 		16ADF0B718F5E2F900BF0852 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 16ADF0B518F5E2F900BF0852 /* InfoPlist.strings */; };
 		16ADF0C418F5E40D00BF0852 /* ZCREasyDough.m in Sources */ = {isa = PBXBuildFile; fileRef = 16ADF0C318F5E40D00BF0852 /* ZCREasyDough.m */; };
 		16ADF0CB18F5EB6500BF0852 /* ZCREasyProperty.m in Sources */ = {isa = PBXBuildFile; fileRef = 16ADF0CA18F5EB6500BF0852 /* ZCREasyProperty.m */; };
-		74B6FE6018FDEE8A005D4A34 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74B6FE5F18FDEE8A005D4A34 /* SenTestingKit.framework */; };
-		74B6FE6118FDEE8A005D4A34 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16ADF09C18F5E2F900BF0852 /* Foundation.framework */; };
-		74B6FE6218FDEE8A005D4A34 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16ADF0AD18F5E2F900BF0852 /* UIKit.framework */; };
-		74B6FE7518FDF18D005D4A34 /* ZCREasyPropertyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 16836DD018F8B32200FD86D5 /* ZCREasyPropertyTests.m */; };
-		74B6FE7618FDF18F005D4A34 /* ZCREasyDoughTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 16836DD218F8B33300FD86D5 /* ZCREasyDoughTests.m */; };
-		74B6FE7718FDF336005D4A34 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 16ADF0B518F5E2F900BF0852 /* InfoPlist.strings */; };
-		74B6FE7818FDF369005D4A34 /* libZCREasyBake.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 16ADF09918F5E2F900BF0852 /* libZCREasyBake.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,13 +46,6 @@
 			remoteInfo = ZCREasyBake;
 		};
 		16ADF0AF18F5E2F900BF0852 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 16ADF09118F5E2F700BF0852 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 16ADF09818F5E2F700BF0852;
-			remoteInfo = ZCREasyBake;
-		};
-		74B6FE6C18FDEE8A005D4A34 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 16ADF09118F5E2F700BF0852 /* Project object */;
 			proxyType = 1;
@@ -83,11 +69,7 @@
 		16ADF0C318F5E40D00BF0852 /* ZCREasyDough.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZCREasyDough.m; sourceTree = "<group>"; };
 		16ADF0C918F5EB6500BF0852 /* ZCREasyProperty.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZCREasyProperty.h; sourceTree = "<group>"; };
 		16ADF0CA18F5EB6500BF0852 /* ZCREasyProperty.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZCREasyProperty.m; sourceTree = "<group>"; };
-		74B6FE5E18FDEE8A005D4A34 /* ZCREasyBakeOCUnitTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ZCREasyBakeOCUnitTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		74B6FE5F18FDEE8A005D4A34 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
-		74B6FE7118FDEEDA005D4A34 /* ZCREasyBakeTests.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZCREasyBakeTests.pch; sourceTree = "<group>"; };
-		74B6FE7218FDEEEB005D4A34 /* ZCREasyBakeOCUnitTests.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZCREasyBakeOCUnitTests.pch; sourceTree = "<group>"; };
-		74B6FE7318FDF13F005D4A34 /* ZCREasyBakeOCUnitTests-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "ZCREasyBakeOCUnitTests-Info.plist"; sourceTree = "<group>"; };
 		74B6FE7918FDF487005D4A34 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 /* End PBXFileReference section */
 
@@ -111,17 +93,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		74B6FE5B18FDEE8A005D4A34 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				74B6FE7818FDF369005D4A34 /* libZCREasyBake.a in Frameworks */,
-				74B6FE6018FDEE8A005D4A34 /* SenTestingKit.framework in Frameworks */,
-				74B6FE6218FDEE8A005D4A34 /* UIKit.framework in Frameworks */,
-				74B6FE6118FDEE8A005D4A34 /* Foundation.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -140,7 +111,6 @@
 			children = (
 				16ADF09918F5E2F900BF0852 /* libZCREasyBake.a */,
 				16ADF0A918F5E2F900BF0852 /* ZCREasyBakeTests.xctest */,
-				74B6FE5E18FDEE8A005D4A34 /* ZCREasyBakeOCUnitTests.octest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -183,10 +153,7 @@
 			isa = PBXGroup;
 			children = (
 				16ADF0B418F5E2F900BF0852 /* ZCREasyBakeTests-Info.plist */,
-				74B6FE7318FDF13F005D4A34 /* ZCREasyBakeOCUnitTests-Info.plist */,
 				16ADF0B518F5E2F900BF0852 /* InfoPlist.strings */,
-				74B6FE7118FDEEDA005D4A34 /* ZCREasyBakeTests.pch */,
-				74B6FE7218FDEEEB005D4A34 /* ZCREasyBakeOCUnitTests.pch */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -243,24 +210,6 @@
 			productReference = 16ADF0A918F5E2F900BF0852 /* ZCREasyBakeTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		74B6FE5D18FDEE8A005D4A34 /* ZCREasyBakeOCUnitTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 74B6FE6E18FDEE8A005D4A34 /* Build configuration list for PBXNativeTarget "ZCREasyBakeOCUnitTests" */;
-			buildPhases = (
-				74B6FE5A18FDEE8A005D4A34 /* Sources */,
-				74B6FE5B18FDEE8A005D4A34 /* Frameworks */,
-				74B6FE5C18FDEE8A005D4A34 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				74B6FE6D18FDEE8A005D4A34 /* PBXTargetDependency */,
-			);
-			name = ZCREasyBakeOCUnitTests;
-			productName = ZCREasyBakeOCUnitTests;
-			productReference = 74B6FE5E18FDEE8A005D4A34 /* ZCREasyBakeOCUnitTests.octest */;
-			productType = "com.apple.product-type.bundle";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -269,11 +218,6 @@
 			attributes = {
 				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = "Zach Radke";
-				TargetAttributes = {
-					74B6FE5D18FDEE8A005D4A34 = {
-						TestTargetID = 16ADF09818F5E2F700BF0852;
-					};
-				};
 			};
 			buildConfigurationList = 16ADF09418F5E2F700BF0852 /* Build configuration list for PBXProject "ZCREasyBake" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -289,7 +233,6 @@
 			targets = (
 				16ADF09818F5E2F700BF0852 /* ZCREasyBake */,
 				16ADF0A818F5E2F900BF0852 /* ZCREasyBakeTests */,
-				74B6FE5D18FDEE8A005D4A34 /* ZCREasyBakeOCUnitTests */,
 				16146A4C18FC5A25008C0EE9 /* Framework */,
 			);
 		};
@@ -301,14 +244,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				16ADF0B718F5E2F900BF0852 /* InfoPlist.strings in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		74B6FE5C18FDEE8A005D4A34 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				74B6FE7718FDF336005D4A34 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -366,15 +301,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		74B6FE5A18FDEE8A005D4A34 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				74B6FE7518FDF18D005D4A34 /* ZCREasyPropertyTests.m in Sources */,
-				74B6FE7618FDF18F005D4A34 /* ZCREasyDoughTests.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -387,11 +313,6 @@
 			isa = PBXTargetDependency;
 			target = 16ADF09818F5E2F700BF0852 /* ZCREasyBake */;
 			targetProxy = 16ADF0AF18F5E2F900BF0852 /* PBXContainerItemProxy */;
-		};
-		74B6FE6D18FDEE8A005D4A34 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 16ADF09818F5E2F700BF0852 /* ZCREasyBake */;
-			targetProxy = 74B6FE6C18FDEE8A005D4A34 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -567,46 +488,6 @@
 			};
 			name = Release;
 		};
-		74B6FE6F18FDEE8A005D4A34 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = Tests/ZCREasyBakeOCUnitTests.pch;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = "Tests/ZCREasyBakeOCUnitTests-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TARGETED_DEVICE_FAMILY = "1,2";
-				WRAPPER_EXTENSION = octest;
-			};
-			name = Debug;
-		};
-		74B6FE7018FDEE8A005D4A34 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = Tests/ZCREasyBakeOCUnitTests.pch;
-				INFOPLIST_FILE = "Tests/ZCREasyBakeOCUnitTests-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TARGETED_DEVICE_FAMILY = "1,2";
-				WRAPPER_EXTENSION = octest;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -645,14 +526,6 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
-		};
-		74B6FE6E18FDEE8A005D4A34 /* Build configuration list for PBXNativeTarget "ZCREasyBakeOCUnitTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				74B6FE6F18FDEE8A005D4A34 /* Debug */,
-				74B6FE7018FDEE8A005D4A34 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 	};

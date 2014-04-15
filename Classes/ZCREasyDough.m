@@ -489,8 +489,8 @@ static inline NSError *ZCREasyDoughExceptionError(NSException *exception) {
 
 - (id)bake {
     if (!self.identifier) {
-        if (NSClassFromString(@"NSUUID")) {
-            self.identifier = [NSClassFromString(@"NSUUID") UUID];
+        if ([NSUUID class]) {
+            self.identifier = [NSUUID UUID];
         } else {
             CFUUIDRef uuid = CFUUIDCreate(kCFAllocatorDefault);
             self.identifier = (__bridge_transfer NSString *)CFUUIDCreateString(kCFAllocatorDefault, uuid);
