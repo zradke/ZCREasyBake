@@ -8,12 +8,25 @@
 
 @import Foundation;
 
+// Error domain for all errors in this class
 extern NSString *const ZCREasyDoughErrorDomain;
+
+// Error code when one or more of the required parameters is deemed invalid.
 extern NSInteger const ZCREasyDoughErrorInvalidParameters;
+
+// Error code when an exception is raised but caught in a method.
 extern NSInteger const ZCREasyDoughErrorExceptionRaised;
 
+// Key for accessing the name of an exception in a ZCREasyDoughErrorExceptionRaised error.
+extern NSString *const ZCREasyDoughErrorExceptionNameKey;
+
+// Key for accessing the user info of an exception in a ZCREasyDoughErrorExceptionRaised error.
+extern NSString *const ZCREasyDoughErrorExceptionUserInfoKey;
+
+// Exception thrown when attempting to set values on a readonly property after initialization.
 extern NSString *const ZCREasyDoughExceptionAlreadyBaked;
 
+// Notification when a model updates. This is posted for all subclasses of ZCREasyDough.
 extern NSString *const ZCREasyDoughUpdatedNotification;
 
 @protocol ZCREasyChef;

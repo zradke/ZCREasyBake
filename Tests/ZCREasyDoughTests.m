@@ -6,8 +6,6 @@
 //  Copyright (c) 2014 Zach Radke. All rights reserved.
 //
 
-@import XCTest;
-
 #import "ZCREasyDough.h"
 
 @interface ZCREasyDoughTestsModel : ZCREasyDough
@@ -35,7 +33,7 @@
 
 @end
 
-@interface ZCREasyDoughTests : XCTestCase {
+@interface ZCREasyDoughTests : ZCRTestCase {
     ZCREasyDoughTestsModel *model;
     NSDictionary *JSON;
 }
@@ -65,10 +63,10 @@
 }
 
 - (void)testInitializer {
-    XCTAssertNotNil(model, @"The model should have serialized successfully");
-    XCTAssertEqualObjects(model.name, JSON[@"user_name"], @"The name should be set");
-    XCTAssertEqualObjects(model.updatedAt, JSON[@"updated_at"], @"The updated date should be set");
-    XCTAssertTrue(model.badgeCount == [JSON[@"badge_count"] unsignedIntegerValue], @"The badge count should be set");
+    ZCRAssertNotNil(model, @"The model should have serialized successfully");
+    ZCRAssertEqualObjects(model.name, JSON[@"user_name"], @"The name should be set");
+    ZCRAssertEqualObjects(model.updatedAt, JSON[@"updated_at"], @"The updated date should be set");
+    ZCRAssertTrue(model.badgeCount == [JSON[@"badge_count"] unsignedIntegerValue], @"The badge count should be set");
 }
 
 - (void)testPrepareWithChef {
@@ -83,12 +81,12 @@
         isValid = [chef validateKitchen:&error];
     }];
     
-    XCTAssertTrue(isValid, @"The chef should validate");
-    XCTAssertNil(error, @"The error should be nil");
-    XCTAssertNotNil(model, @"The model should be built");
-    XCTAssertEqualObjects(model.name, JSON[@"user_name"], @"The name should be set");
-    XCTAssertEqualObjects(model.updatedAt, JSON[@"updated_at"], @"The updated date should be set");
-    XCTAssertTrue(model.badgeCount == [JSON[@"badge_count"] unsignedIntegerValue], @"The badge count should be set");
+    ZCRAssertTrue(isValid, @"The chef should validate");
+    ZCRAssertNil(error, @"The error should be nil");
+    ZCRAssertNotNil(model, @"The model should be built");
+    ZCRAssertEqualObjects(model.name, JSON[@"user_name"], @"The name should be set");
+    ZCRAssertEqualObjects(model.updatedAt, JSON[@"updated_at"], @"The updated date should be set");
+    ZCRAssertTrue(model.badgeCount == [JSON[@"badge_count"] unsignedIntegerValue], @"The badge count should be set");
 }
 
 - (void)testUpdate {
@@ -97,15 +95,15 @@
     NSError *error;
     ZCREasyDoughTestsModel *updatedModel = [model updateWithIngredients:updatedJSON recipe:[ZCREasyDoughTestsModel JSONRecipe] error:&error];
     
-    XCTAssertNotNil(updatedModel, @"The updated model should not be nil");
-    XCTAssertNil(error, @"There should be no error");
-    XCTAssertEqualObjects(model, updatedModel, @"Technically the two models should be equal");
-    XCTAssertFalse(model == updatedModel, @"The two pointers should be different");
+    ZCRAssertNotNil(updatedModel, @"The updated model should not be nil");
+    ZCRAssertNil(error, @"There should be no error");
+    ZCRAssertEqualObjects(model, updatedModel, @"Technically the two models should be equal");
+    ZCRAssertFalse(model == updatedModel, @"The two pointers should be different");
     
-    XCTAssertEqualObjects(model.name, JSON[@"user_name"], @"The original model's name should still be set");
-    XCTAssertEqualObjects(updatedModel.name, updatedJSON[@"user_name"], @"The updated model's name should be updated");
-    XCTAssertEqualObjects(updatedModel.updatedAt, JSON[@"updated_at"], @"The updated model's date should be unchanged");
-    XCTAssertTrue(updatedModel.badgeCount == [JSON[@"badge_count"] unsignedIntegerValue], @"The updated model's badge count should be unchanged");
+    ZCRAssertEqualObjects(model.name, JSON[@"user_name"], @"The original model's name should still be set");
+    ZCRAssertEqualObjects(updatedModel.name, updatedJSON[@"user_name"], @"The updated model's name should be updated");
+    ZCRAssertEqualObjects(updatedModel.updatedAt, JSON[@"updated_at"], @"The updated model's date should be unchanged");
+    ZCRAssertTrue(updatedModel.badgeCount == [JSON[@"badge_count"] unsignedIntegerValue], @"The updated model's badge count should be unchanged");
 }
 
 - (void)testUpdatePostsNotification {
@@ -133,12 +131,12 @@
         [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
     }
     
-    XCTAssertTrue([timeoutDate timeIntervalSinceNow] > 0.0, @"The operation should not time out");
-    XCTAssertTrue(didNotifyClass, @"The class should be notified");
-    XCTAssertTrue(didNotifyGeneric, @"The generic notification should be posted");
+    ZCRAssertTrue([timeoutDate timeIntervalSinceNow] > 0.0, @"The operation should not time out");
+    ZCRAssertTrue(didNotifyClass, @"The class should be notified");
+    ZCRAssertTrue(didNotifyGeneric, @"The generic notification should be posted");
     
-    XCTAssertNotNil(updatedModel, @"The updated model should not be nil");
-    XCTAssertNil(error, @"There should be no error");
+    ZCRAssertNotNil(updatedModel, @"The updated model should not be nil");
+    ZCRAssertNil(error, @"There should be no error");
 }
 
 - (void)testUpdateUnchanged {
@@ -147,12 +145,12 @@
     NSError *error;
     ZCREasyDoughTestsModel *updatedModel = [model updateWithIngredients:updatedJSON recipe:[ZCREasyDoughTestsModel JSONRecipe] error:&error];
     
-    XCTAssertNotNil(updatedModel, @"The updated model should not be nil");
-    XCTAssertNil(error, @"There should be no error");
-    XCTAssertTrue(model == updatedModel, @"The models should be identical");
-    XCTAssertEqualObjects(updatedModel.name, JSON[@"user_name"], @"The updated model's name should be unchanged");
-    XCTAssertEqualObjects(updatedModel.updatedAt, JSON[@"updated_at"], @"The updated model's date should be unchanged");
-    XCTAssertTrue(updatedModel.badgeCount == [JSON[@"badge_count"] unsignedIntegerValue], @"The updated model's badge count should be unchanged");
+    ZCRAssertNotNil(updatedModel, @"The updated model should not be nil");
+    ZCRAssertNil(error, @"There should be no error");
+    ZCRAssertTrue(model == updatedModel, @"The models should be identical");
+    ZCRAssertEqualObjects(updatedModel.name, JSON[@"user_name"], @"The updated model's name should be unchanged");
+    ZCRAssertEqualObjects(updatedModel.updatedAt, JSON[@"updated_at"], @"The updated model's date should be unchanged");
+    ZCRAssertTrue(updatedModel.badgeCount == [JSON[@"badge_count"] unsignedIntegerValue], @"The updated model's badge count should be unchanged");
 }
 
 - (void)testUpdateUnchangedNoNotification {
@@ -180,40 +178,40 @@
         [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
     }
     
-    XCTAssertFalse([timeoutDate timeIntervalSinceNow] > 0.0, @"The operation should time out");
-    XCTAssertFalse(didNotifyClass, @"The class should not be notified");
-    XCTAssertFalse(didNotifyGeneric, @"The generic notification should not be posted");
+    ZCRAssertFalse([timeoutDate timeIntervalSinceNow] > 0.0, @"The operation should time out");
+    ZCRAssertFalse(didNotifyClass, @"The class should not be notified");
+    ZCRAssertFalse(didNotifyGeneric, @"The generic notification should not be posted");
     
-    XCTAssertNotNil(updatedModel, @"The updated model should not be nil");
-    XCTAssertNil(error, @"There should be no error");
+    ZCRAssertNotNil(updatedModel, @"The updated model should not be nil");
+    ZCRAssertNil(error, @"There should be no error");
 }
 
 - (void)testManualUpdateRaisesException {
-    XCTAssertThrowsSpecificNamed([model setValue:@"Zachary Radke" forKey:@"name"], NSException, ZCREasyDoughExceptionAlreadyBaked, @"Manually accessing the iVar should throw an exception");
+    ZCRAssertThrowsSpecificNamed([model setValue:@"Zachary Radke" forKey:@"name"], NSException, ZCREasyDoughExceptionAlreadyBaked, @"Manually accessing the iVar should throw an exception");
 }
 
 - (void)testDecomposeWithGenericRecipe {
     NSError *error;
     NSDictionary *ingredients = [model decomposeWithRecipe:[ZCREasyDoughTestsModel genericRecipe] error:&error];
     
-    XCTAssertNotNil(ingredients, @"There should be decomposed ingredients");
-    XCTAssertNil(error, @"There should be no error");
+    ZCRAssertNotNil(ingredients, @"There should be decomposed ingredients");
+    ZCRAssertNil(error, @"There should be no error");
     
-    XCTAssertEqualObjects(ingredients[@"name"], model.name, @"The names should match");
-    XCTAssertEqualObjects(ingredients[@"updatedAt"], model.updatedAt, @"The updated dates should match");
-    XCTAssertTrue(model.badgeCount == [ingredients[@"badgeCount"] unsignedIntegerValue], @"The badge counts should match");
+    ZCRAssertEqualObjects(ingredients[@"name"], model.name, @"The names should match");
+    ZCRAssertEqualObjects(ingredients[@"updatedAt"], model.updatedAt, @"The updated dates should match");
+    ZCRAssertTrue(model.badgeCount == [ingredients[@"badgeCount"] unsignedIntegerValue], @"The badge counts should match");
 }
 
 - (void)testDecomposeWithJSONRecipe {
     NSError *error;
     NSDictionary *ingredients = [model decomposeWithRecipe:[ZCREasyDoughTestsModel JSONRecipe] error:&error];
     
-    XCTAssertNotNil(ingredients, @"There should be decomposed ingredients");
-    XCTAssertNil(error, @"There should be no error");
+    ZCRAssertNotNil(ingredients, @"There should be decomposed ingredients");
+    ZCRAssertNil(error, @"There should be no error");
     
-    XCTAssertEqualObjects(ingredients[@"user_name"], model.name, @"The names should match");
-    XCTAssertEqualObjects(ingredients[@"updated_at"], model.updatedAt, @"The updated dates should match");
-    XCTAssertTrue(model.badgeCount == [ingredients[@"badge_count"] unsignedIntegerValue], @"The badge counts should match");
+    ZCRAssertEqualObjects(ingredients[@"user_name"], model.name, @"The names should match");
+    ZCRAssertEqualObjects(ingredients[@"updated_at"], model.updatedAt, @"The updated dates should match");
+    ZCRAssertTrue(model.badgeCount == [ingredients[@"badge_count"] unsignedIntegerValue], @"The badge counts should match");
 }
 
 - (void)testIsEqualToIngredients {
@@ -222,8 +220,8 @@
     NSError *error;
     BOOL isEqual = [model isEqualToIngredients:ingredients withRecipe:[ZCREasyDoughTestsModel JSONRecipe] error:&error];
     
-    XCTAssertNil(error, @"There should be no error");
-    XCTAssertTrue(isEqual, @"The ingredients should be equal");
+    ZCRAssertNil(error, @"There should be no error");
+    ZCRAssertTrue(isEqual, @"The ingredients should be equal");
 }
 
 - (void)testIsInequalToIngredients {
@@ -232,20 +230,20 @@
     NSError *error;
     BOOL isEqual = [model isEqualToIngredients:ingredients withRecipe:[ZCREasyDoughTestsModel JSONRecipe] error:&error];
     
-    XCTAssertNil(error, @"There should be no error");
-    XCTAssertFalse(isEqual, @"The ingredients should be inequal");
+    ZCRAssertNil(error, @"There should be no error");
+    ZCRAssertFalse(isEqual, @"The ingredients should be inequal");
 }
 
 - (void)testGenericRecipe {
     NSArray *propertyNames = @[@"name", @"updatedAt", @"badgeCount"];
     NSDictionary *expectedRecipe = [NSDictionary dictionaryWithObjects:propertyNames forKeys:propertyNames];
     
-    XCTAssertEqualObjects(expectedRecipe, [ZCREasyDoughTestsModel genericRecipe], @"The generic recipes should match");
+    ZCRAssertEqualObjects(expectedRecipe, [ZCREasyDoughTestsModel genericRecipe], @"The generic recipes should match");
 }
 
 - (void)testAllPropertyNames {
     NSSet *propertyNames = [NSSet setWithArray:@[@"name", @"updatedAt", @"badgeCount"]];
-    XCTAssertEqualObjects(propertyNames, [ZCREasyDoughTestsModel allPropertyNames], @"The property names should match");
+    ZCRAssertEqualObjects(propertyNames, [ZCREasyDoughTestsModel allPropertyNames], @"The property names should match");
 }
 
 @end

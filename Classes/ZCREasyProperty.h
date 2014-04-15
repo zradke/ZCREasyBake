@@ -30,14 +30,16 @@ extern NSString *const ZCREasyPropertyAttrOldTypeEncoding;
  *  class which passes the property to free it. Some of the more commonly queried attributes are
  *  exposed as read-only properties on the ZCREasyProperty class, and are cached for fast access.
  *  For querying other properties, the hasAttribute: method can be used passing one of the attribute
- *  constants.
+ *  constants. For a list of the attribute constants, see the header of this class.
  */
 @interface ZCREasyProperty : NSObject
 
 /**
- *  This is the designated initializer for this class.
+ *  Creates a new instance representing the passed property. This is the designated initializer
+ *  for this class.
  *
- *  @param property The property to gather information on.
+ *  @param property The property to gather information on. This must not be nil, or an exception
+ *                  will be thrown.
  *
  *  @return A populated instance of the receiver.
  */

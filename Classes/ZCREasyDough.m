@@ -10,13 +10,42 @@
 
 #import "ZCREasyProperty.h"
 
-NSString *const ZCREasyDoughErrorDomain = @"com.zachradke.easyDough.errorDomain";
+NSString *const ZCREasyDoughErrorDomain = @"com.zachradke.easyBake.easyDough.errorDomain";
+
 NSInteger const ZCREasyDoughErrorInvalidParameters = 1969;
 NSInteger const ZCREasyDoughErrorExceptionRaised = 1970;
 
-NSString *const ZCREasyDoughExceptionAlreadyBaked = @"com.zachradke.easyDough.exception.alreadyBaked";
+NSString *const ZCREasyDoughErrorExceptionNameKey = @"ZCREasyDoughErrorExceptionNameKey";
+NSString *const ZCREasyDoughErrorExceptionUserInfoKey = @"ZCREasyDoughErrorExceptionUserInfoKey";
 
-NSString *const ZCREasyDoughUpdatedNotification = @"com.zachradke.easyDough.notifications.updated";
+NSString *const ZCREasyDoughExceptionAlreadyBaked = @"com.zachradke.easyBake.easyDough.exception.alreadyBaked";
+
+NSString *const ZCREasyDoughUpdatedNotification = @"com.zachradke.easyBake.easyDough.notifications.updated";
+
+
+static inline NSError *ZCREasyDoughParameterError(NSString *failureReason) {
+    NSCAssert(failureReason != nil, @"An error failure reason is required.");
+    
+    NSDictionary *userInfo = @{NSLocalizedDescriptionKey: @"Invalid parameters.",
+                               NSLocalizedFailureReasonErrorKey: failureReason};
+    
+    return [NSError errorWithDomain:ZCREasyDoughErrorDomain
+                               code:ZCREasyDoughErrorInvalidParameters
+                           userInfo:userInfo];
+}
+
+static inline NSError *ZCREasyDoughExceptionError(NSException *exception) {
+    NSCAssert(exception != nil, @"An exception is required.");
+    
+    NSDictionary *userInfo = @{NSLocalizedDescriptionKey: @"Exception raised.",
+                               NSLocalizedFailureReasonErrorKey: exception.reason ?: [NSNull null],
+                               ZCREasyDoughErrorExceptionNameKey: exception.name ?: [NSNull null],
+                               ZCREasyDoughErrorExceptionUserInfoKey: exception.userInfo ?: [NSNull null]};
+    
+    return [NSError errorWithDomain:ZCREasyDoughErrorDomain
+                               code:ZCREasyDoughErrorExceptionRaised
+                           userInfo:userInfo];
+}
 
 
 @interface _ZCREasyChef : NSObject <ZCREasyChef> {
@@ -41,11 +70,7 @@ NSString *const ZCREasyDoughUpdatedNotification = @"com.zachradke.easyDough.noti
                              error:(NSError *__autoreleasing *)error {
     if (!identifier) {
         if (error) {
-            NSDictionary *userInfo = @{NSLocalizedDescriptionKey: @"Invalid identifier.",
-                                       NSLocalizedFailureReasonErrorKey: @"Missing unique identifier!"};
-            *error = [NSError errorWithDomain:ZCREasyDoughErrorDomain
-                                         code:ZCREasyDoughErrorInvalidParameters
-                                     userInfo:userInfo];
+            *error = ZCREasyDoughParameterError(@"Missing a unique identifier!");
         }
         return nil;
     }
@@ -71,11 +96,7 @@ NSString *const ZCREasyDoughUpdatedNotification = @"com.zachradke.easyDough.noti
     }
     @catch (NSException *exception) {
         if (error) {
-            NSDictionary *userInfo = @{NSLocalizedDescriptionKey: exception.name,
-                                       NSLocalizedFailureReasonErrorKey: exception.reason};
-            *error = [NSError errorWithDomain:ZCREasyDoughErrorDomain
-                                         code:ZCREasyDoughErrorExceptionRaised
-                                     userInfo:userInfo];
+            *error = ZCREasyDoughExceptionError(exception);
         }
         return nil;
     }
@@ -164,7 +185,8 @@ NSString *const ZCREasyDoughUpdatedNotification = @"com.zachradke.easyDough.noti
     if (self == [ZCREasyDough class]) {
         return nil;
     } else {
-        return [NSString stringWithFormat:@"%@_ZCREasyUpdateNotification", NSStringFromClass(self)];
+        return [NSString stringWithFormat:@"com.zachradke.easyBake.%@.notifications.updated",
+                                          NSStringFromClass(self)];
     }
 }
 
@@ -178,11 +200,7 @@ NSString *const ZCREasyDoughUpdatedNotification = @"com.zachradke.easyDough.noti
                                  error:(NSError * __autoreleasing *)error {
     if (!recipe) {
         if (error) {
-            NSDictionary *userInfo = @{NSLocalizedDescriptionKey: @"Invalid recipe.",
-                                       NSLocalizedFailureReasonErrorKey: @"Missing recipe!"};
-            *error = [NSError errorWithDomain:ZCREasyDoughErrorDomain
-                                         code:ZCREasyDoughErrorInvalidParameters
-                                     userInfo:userInfo];
+            *error = ZCREasyDoughParameterError(@"Missing a recipe!");
         }
         return nil;
     }
@@ -190,11 +208,11 @@ NSString *const ZCREasyDoughUpdatedNotification = @"com.zachradke.easyDough.noti
     NSSet *allRecipeKeys = [NSSet setWithArray:[recipe allKeys]];
     if (![allRecipeKeys isSubsetOfSet:[[self class] allPropertyNames]]) {
         if (error) {
-            NSDictionary *userInfo = @{NSLocalizedDescriptionKey: @"Invalid recipe.",
-                                       NSLocalizedFailureReasonErrorKey: @"The recipe contains unknown propety names."};
-            *error = [NSError errorWithDomain:ZCREasyDoughErrorDomain
-                                         code:ZCREasyDoughErrorInvalidParameters
-                                     userInfo:userInfo];
+            NSMutableSet *unknownNames = [allRecipeKeys mutableCopy];
+            [unknownNames minusSet:[[self class] allPropertyNames]];
+            NSString *reason = [NSString stringWithFormat:@"The recipe contains unknown property "
+                                                          @"names: %@", unknownNames];
+            *error = ZCREasyDoughParameterError(reason);
         }
         return nil;
     }
@@ -215,11 +233,7 @@ NSString *const ZCREasyDoughUpdatedNotification = @"com.zachradke.easyDough.noti
     }
     @catch (NSException *exception) {
         if (error) {
-            NSDictionary *userInfo = @{NSLocalizedDescriptionKey: exception.name,
-                                       NSLocalizedFailureReasonErrorKey: exception.reason};
-            *error = [NSError errorWithDomain:ZCREasyDoughErrorDomain
-                                         code:ZCREasyDoughErrorExceptionRaised
-                                     userInfo:userInfo];
+            *error = ZCREasyDoughExceptionError(exception);
         }
         ingredients = nil;
     }
@@ -234,11 +248,7 @@ NSString *const ZCREasyDoughUpdatedNotification = @"com.zachradke.easyDough.noti
     // for equality. Similarly, ingredients should also be present.
     if (!recipe || !ingredients) {
         if (error) {
-            NSDictionary *userInfo = @{NSLocalizedDescriptionKey: @"Invalid parameters.",
-                                       NSLocalizedFailureReasonErrorKey: @"Missing recipe and/or ingredients."};
-            *error = [NSError errorWithDomain:ZCREasyDoughErrorDomain
-                                         code:ZCREasyDoughErrorInvalidParameters
-                                     userInfo:userInfo];
+            *error = ZCREasyDoughParameterError(@"Missing recipe and/or ingredients!");
         }
         return NO;
     }
@@ -264,11 +274,7 @@ NSString *const ZCREasyDoughUpdatedNotification = @"com.zachradke.easyDough.noti
     }
     @catch (NSException *exception) {
         if (error) {
-            NSDictionary *userInfo = @{NSLocalizedDescriptionKey: exception.name,
-                                       NSLocalizedFailureReasonErrorKey: exception.reason};
-            *error = [NSError errorWithDomain:ZCREasyDoughErrorDomain
-                                         code:ZCREasyDoughErrorExceptionRaised
-                                     userInfo:userInfo];
+            *error = ZCREasyDoughExceptionError(exception);
         }
         isEqual = NO;
     }
@@ -302,11 +308,7 @@ NSString *const ZCREasyDoughUpdatedNotification = @"com.zachradke.easyDough.noti
     
     if (ingredients && !recipe) {
         if (error) {
-            NSDictionary *userInfo = @{NSLocalizedDescriptionKey: @"Invalid parameters.",
-                                       NSLocalizedFailureReasonErrorKey: @"Missing recipe for the ingredients."};
-            *error = [NSError errorWithDomain:ZCREasyDoughErrorDomain
-                                         code:ZCREasyDoughErrorInvalidParameters
-                                     userInfo:userInfo];
+            *error = ZCREasyDoughParameterError(@"Missing a recipe for the ingredients.");
         }
         return nil;
     }
@@ -314,11 +316,11 @@ NSString *const ZCREasyDoughUpdatedNotification = @"com.zachradke.easyDough.noti
     NSSet *allRecipeProperties = [NSSet setWithArray:recipe.allKeys];
     if (![allRecipeProperties isSubsetOfSet:[self.class allPropertyNames]]) {
         if (error) {
-            NSDictionary *userInfo = @{NSLocalizedDescriptionKey: @"Invalid recipe.",
-                                       NSLocalizedFailureReasonErrorKey: @"The recipe contains unknown property names."};
-            *error = [NSError errorWithDomain:ZCREasyDoughErrorDomain
-                                         code:ZCREasyDoughErrorInvalidParameters
-                                     userInfo:userInfo];
+            NSMutableSet *unknownNames = [allRecipeProperties mutableCopy];
+            [unknownNames minusSet:[[self class] allPropertyNames]];
+            NSString *reason = [NSString stringWithFormat:@"The recipe contains unknown property "
+                                                          @"names: %@", unknownNames];
+            *error = ZCREasyDoughParameterError(reason);
         }
         return nil;
     }
@@ -359,7 +361,8 @@ NSString *const ZCREasyDoughUpdatedNotification = @"com.zachradke.easyDough.noti
     // flag check, and raise an exception.
     if (!_allowsSettingValues) {
         if ([[self.class _readonlyPropertyNames] containsObject:key]) {
-            NSString *reason = [NSString stringWithFormat:@"Trying to set value for key (%@) when the model is immutable!", key];
+            NSString *reason = [NSString stringWithFormat:@"Trying to set value for key (%@) "
+                                                          @"when the model is immutable!", key];
             NSException *exception = [NSException exceptionWithName:ZCREasyDoughExceptionAlreadyBaked
                                                              reason:reason
                                                            userInfo:nil];
@@ -390,12 +393,19 @@ NSString *const ZCREasyDoughUpdatedNotification = @"com.zachradke.easyDough.noti
     [ingredients enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
         // To avoid potential infinite recursion bugs, we abbreviate other model descriptions
         if ([obj isKindOfClass:[ZCREasyDough class]]) {
-            mutableIngredients[key] = [NSString stringWithFormat:@"<%@:%p>", NSStringFromClass([obj class]), obj];
+            mutableIngredients[key] = [NSString stringWithFormat:@"<%@:%p>",
+                                       NSStringFromClass([obj class]), obj];
         }
     }];
     
-    NSString *baseDescription = [NSString stringWithFormat:@"<%@:%p>", NSStringFromClass([self class]), self];
-    return (mutableIngredients) ? [baseDescription stringByAppendingFormat:@" %@", mutableIngredients] : baseDescription;
+    NSString *baseDescription = [NSString stringWithFormat:@"<%@:%p>",
+                                 NSStringFromClass([self class]), self];
+    
+    if (mutableIngredients) {
+        return [baseDescription stringByAppendingFormat:@" %@", mutableIngredients];
+    } else {
+        return baseDescription;
+    }
 }
 
 
@@ -429,8 +439,11 @@ NSString *const ZCREasyDoughUpdatedNotification = @"com.zachradke.easyDough.noti
     if (storedProperties) { return storedProperties; }
     
     // We are looking for read-only properties that have a backing iVar
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"%K == YES AND %K != nil", NSStringFromSelector(@selector(isReadOnly)), NSStringFromSelector(@selector(iVarName))];
-    storedProperties = [[[self _properties] filteredSetUsingPredicate:predicate] valueForKey:NSStringFromSelector(@selector(name))];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"%K == YES AND %K != nil",
+                              NSStringFromSelector(@selector(isReadOnly)),
+                              NSStringFromSelector(@selector(iVarName))];
+    storedProperties = [[[self _properties] filteredSetUsingPredicate:predicate]
+                        valueForKey:NSStringFromSelector(@selector(name))];
     objc_setAssociatedObject(self, _cmd, storedProperties, OBJC_ASSOCIATION_RETAIN);
     
     return storedProperties;
@@ -460,7 +473,8 @@ NSString *const ZCREasyDoughUpdatedNotification = @"com.zachradke.easyDough.noti
 
 - (instancetype)initWithClass:(Class)doughClass {
     NSParameterAssert(doughClass);
-    NSAssert([doughClass isSubclassOfClass:[ZCREasyDough class]], @"The class must be a subclass of ZCREasyDough.");
+    NSAssert([doughClass isSubclassOfClass:[ZCREasyDough class]],
+             @"The class must be a subclass of ZCREasyDough.");
     
     if (!(self = [super init])) { return nil; }
     
@@ -493,11 +507,7 @@ NSString *const ZCREasyDoughUpdatedNotification = @"com.zachradke.easyDough.noti
 - (BOOL)validateKitchen:(NSError *__autoreleasing *)error {
     if (self.ingredients && !self.recipe) {
         if (error) {
-            NSDictionary *userInfo = @{NSLocalizedDescriptionKey: @"Invalid parameters.",
-                                       NSLocalizedFailureReasonErrorKey: @"Missing recipe for the ingredients!"};
-            *error = [NSError errorWithDomain:ZCREasyDoughErrorDomain
-                                         code:ZCREasyDoughErrorInvalidParameters
-                                     userInfo:userInfo];
+            *error = ZCREasyDoughParameterError(@"Missing a recipe for the ingredients!");
         }
         return NO;
     }
@@ -506,11 +516,11 @@ NSString *const ZCREasyDoughUpdatedNotification = @"com.zachradke.easyDough.noti
     NSSet *doughPropertyNames = [_doughClass allPropertyNames];
     if (![recipePropertyNames isSubsetOfSet:doughPropertyNames]) {
         if (error) {
-            NSDictionary *userInfo = @{NSLocalizedDescriptionKey: @"Invalid recipe.",
-                                       NSLocalizedFailureReasonErrorKey: @"The recipe contains uknown property names."};
-            *error = [NSError errorWithDomain:ZCREasyDoughErrorDomain
-                                         code:ZCREasyDoughErrorInvalidParameters
-                                     userInfo:userInfo];
+            NSMutableSet *unknownNames = [recipePropertyNames mutableCopy];
+            [unknownNames minusSet:doughPropertyNames];
+            NSString *reason = [NSString stringWithFormat:@"The recipe contains unknown property "
+                                                          @"names: %@", unknownNames];
+            *error = ZCREasyDoughParameterError(reason);
         }
         return NO;
     }

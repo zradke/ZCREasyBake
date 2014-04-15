@@ -26,8 +26,9 @@ NSString *const ZCREasyPropertyAttrOldTypeEncoding = @"t";
 }
 
 - (instancetype)initWithProperty:(objc_property_t)property {
+    NSParameterAssert(property);
+    
     if (!(self = [super init])) { return nil; }
-    if (!property) { return self; }
     
     _name = [NSString stringWithUTF8String:property_getName(property)];
     
@@ -59,7 +60,10 @@ NSString *const ZCREasyPropertyAttrOldTypeEncoding = @"t";
 }
 
 - (instancetype)init {
-    return [self initWithProperty:NULL];
+    NSAssert(NO, @"This class cannot be initialized with this method. "
+                 @"Please use the designated initializer (%@) instead.",
+                 NSStringFromSelector(@selector(initWithProperty:)));
+    return nil;
 }
 
 - (BOOL)hasAttribute:(NSString *)attribute {
@@ -94,17 +98,19 @@ NSString *const ZCREasyPropertyAttrOldTypeEncoding = @"t";
     
     ZCREasyProperty *other = object;
     BOOL equalNames = (!self.name && !other.name) || [self.name isEqualToString:other.name];
-    BOOL equalAttributes = (!_attributeString && !other->_attributeString) || [_attributeString isEqualToString:other->_attributeString];
+    BOOL equalAttributes = (!_attributeString && !other->_attributeString) ||
+                           [_attributeString isEqualToString:other->_attributeString];
     
     return equalNames && equalAttributes;
 }
 
 - (NSUInteger)hash {
-    return [self.name hash] ^ [self.attributes hash];
+    return [self.name hash] ^ [_attributeString hash];
 }
 
 - (NSString *)description {
-    return [NSString stringWithFormat:@"<%@:%p> name:%@ attributes:%@", NSStringFromClass([self class]), self, _name, _attributeString];
+    return [NSString stringWithFormat:@"<%@:%p> name:%@ attributes:%@",
+            NSStringFromClass([self class]), self, _name, _attributeString];
 }
 
 + (NSSet *)propertiesForClass:(Class)aClass {

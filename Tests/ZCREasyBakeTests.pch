@@ -1,0 +1,24 @@
+//
+//  ZCREasyBakeTests.pch
+//  ZCREasyBake
+//
+//  Created by Zachary Radke on 4/15/14.
+//  Copyright (c) 2014 Zach Radke. All rights reserved.
+//
+
+#ifndef ZCREasyBake_ZCREasyBakeTests_pch
+#define ZCREasyBake_ZCREasyBakeTests_pch
+
+#import <XCTest/XCTest.h>
+
+#define ZCRAssertTrue XCTAssertTrue
+#define ZCRAssertFalse XCTAssertFalse
+#define ZCRAssertNil XCTAssertNil
+#define ZCRAssertNotNil XCTAssertNotNil
+#define ZCRAssertEqual XCTAssertEqual
+#define ZCRAssertEqualObjects XCTAssertEqualObjects
+#define ZCRAssertThrowsSpecificNamed XCTAssertThrowsSpecificNamed
+
+#define ZCRTestCase XCTestCase
+
+#endif
