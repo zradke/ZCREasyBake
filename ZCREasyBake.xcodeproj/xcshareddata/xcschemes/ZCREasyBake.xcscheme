@@ -20,6 +20,20 @@
                ReferencedContainer = "container:ZCREasyBake.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "16ADF0A818F5E2F900BF0852"
+               BuildableName = "ZCREasyBakeTests.xctest"
+               BlueprintName = "ZCREasyBakeTests"
+               ReferencedContainer = "container:ZCREasyBake.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -35,16 +49,6 @@
                BlueprintIdentifier = "16ADF0A818F5E2F900BF0852"
                BuildableName = "ZCREasyBakeTests.xctest"
                BlueprintName = "ZCREasyBakeTests"
-               ReferencedContainer = "container:ZCREasyBake.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "74B6FE5D18FDEE8A005D4A34"
-               BuildableName = "ZCREasyBakeOCUnitTests.octest"
-               BlueprintName = "ZCREasyBakeOCUnitTests"
                ReferencedContainer = "container:ZCREasyBake.xcodeproj">
             </BuildableReference>
          </TestableReference>
