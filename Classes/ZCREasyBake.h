@@ -9,6 +9,8 @@
 #ifndef _ZCR_EASY_BAKE_
     #define _ZCR_EASY_BAKE_
 
+    #import "ZCREasyError.h"
     #import "ZCREasyProperty.h"
+    #import "ZCREasyRecipe.h"
     #import "ZCREasyDough.h"
 #endif

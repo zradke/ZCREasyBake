@@ -35,6 +35,13 @@
 		16ADF0B718F5E2F900BF0852 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 16ADF0B518F5E2F900BF0852 /* InfoPlist.strings */; };
 		16ADF0C418F5E40D00BF0852 /* ZCREasyDough.m in Sources */ = {isa = PBXBuildFile; fileRef = 16ADF0C318F5E40D00BF0852 /* ZCREasyDough.m */; };
 		16ADF0CB18F5EB6500BF0852 /* ZCREasyProperty.m in Sources */ = {isa = PBXBuildFile; fileRef = 16ADF0CA18F5EB6500BF0852 /* ZCREasyProperty.m */; };
+		74F6BD2F1909781B0093F1F7 /* ZCREasyRecipe.h in Headers */ = {isa = PBXBuildFile; fileRef = 74F6BD2D1909781B0093F1F7 /* ZCREasyRecipe.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		74F6BD301909781B0093F1F7 /* ZCREasyRecipe.m in Sources */ = {isa = PBXBuildFile; fileRef = 74F6BD2E1909781B0093F1F7 /* ZCREasyRecipe.m */; };
+		74F6BD33190985C20093F1F7 /* ZCREasyError.h in Headers */ = {isa = PBXBuildFile; fileRef = 74F6BD31190985C20093F1F7 /* ZCREasyError.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		74F6BD34190985C20093F1F7 /* ZCREasyError.m in Sources */ = {isa = PBXBuildFile; fileRef = 74F6BD32190985C20093F1F7 /* ZCREasyError.m */; };
+		74F6BD361909DADE0093F1F7 /* ZCREasyRecipeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 74F6BD351909DADE0093F1F7 /* ZCREasyRecipeTests.m */; };
+		74F6BD381909DAE80093F1F7 /* ZCREasyRecipeBoxTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 74F6BD371909DAE80093F1F7 /* ZCREasyRecipeBoxTests.m */; };
+		74F6BD3A1909DAF40093F1F7 /* ZCREasyDoughErrorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 74F6BD391909DAF40093F1F7 /* ZCREasyDoughErrorTests.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -71,6 +78,13 @@
 		16ADF0CA18F5EB6500BF0852 /* ZCREasyProperty.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZCREasyProperty.m; sourceTree = "<group>"; };
 		74B6FE5F18FDEE8A005D4A34 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		74B6FE7918FDF487005D4A34 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
+		74F6BD2D1909781B0093F1F7 /* ZCREasyRecipe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZCREasyRecipe.h; sourceTree = "<group>"; };
+		74F6BD2E1909781B0093F1F7 /* ZCREasyRecipe.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZCREasyRecipe.m; sourceTree = "<group>"; };
+		74F6BD31190985C20093F1F7 /* ZCREasyError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZCREasyError.h; sourceTree = "<group>"; };
+		74F6BD32190985C20093F1F7 /* ZCREasyError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZCREasyError.m; sourceTree = "<group>"; };
+		74F6BD351909DADE0093F1F7 /* ZCREasyRecipeTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZCREasyRecipeTests.m; sourceTree = "<group>"; };
+		74F6BD371909DAE80093F1F7 /* ZCREasyRecipeBoxTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZCREasyRecipeBoxTests.m; sourceTree = "<group>"; };
+		74F6BD391909DAF40093F1F7 /* ZCREasyDoughErrorTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZCREasyDoughErrorTests.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -131,8 +145,12 @@
 			isa = PBXGroup;
 			children = (
 				16ADF0A118F5E2F900BF0852 /* ZCREasyBake.h */,
+				74F6BD31190985C20093F1F7 /* ZCREasyError.h */,
+				74F6BD32190985C20093F1F7 /* ZCREasyError.m */,
 				16ADF0C918F5EB6500BF0852 /* ZCREasyProperty.h */,
 				16ADF0CA18F5EB6500BF0852 /* ZCREasyProperty.m */,
+				74F6BD2D1909781B0093F1F7 /* ZCREasyRecipe.h */,
+				74F6BD2E1909781B0093F1F7 /* ZCREasyRecipe.m */,
 				16ADF0C218F5E40D00BF0852 /* ZCREasyDough.h */,
 				16ADF0C318F5E40D00BF0852 /* ZCREasyDough.m */,
 			);
@@ -143,7 +161,10 @@
 			isa = PBXGroup;
 			children = (
 				16836DD018F8B32200FD86D5 /* ZCREasyPropertyTests.m */,
+				74F6BD351909DADE0093F1F7 /* ZCREasyRecipeTests.m */,
+				74F6BD371909DAE80093F1F7 /* ZCREasyRecipeBoxTests.m */,
 				16836DD218F8B33300FD86D5 /* ZCREasyDoughTests.m */,
+				74F6BD391909DAF40093F1F7 /* ZCREasyDoughErrorTests.m */,
 				16ADF0B318F5E2F900BF0852 /* Supporting Files */,
 			);
 			path = Tests;
@@ -167,6 +188,8 @@
 			files = (
 				16146A4818FC5997008C0EE9 /* ZCREasyBake.h in Headers */,
 				16146A4918FC5997008C0EE9 /* ZCREasyProperty.h in Headers */,
+				74F6BD33190985C20093F1F7 /* ZCREasyError.h in Headers */,
+				74F6BD2F1909781B0093F1F7 /* ZCREasyRecipe.h in Headers */,
 				16146A4A18FC5997008C0EE9 /* ZCREasyDough.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -287,7 +310,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				74F6BD34190985C20093F1F7 /* ZCREasyError.m in Sources */,
 				16ADF0C418F5E40D00BF0852 /* ZCREasyDough.m in Sources */,
+				74F6BD301909781B0093F1F7 /* ZCREasyRecipe.m in Sources */,
 				16ADF0CB18F5EB6500BF0852 /* ZCREasyProperty.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -296,8 +321,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				74F6BD361909DADE0093F1F7 /* ZCREasyRecipeTests.m in Sources */,
 				16836DD318F8B33300FD86D5 /* ZCREasyDoughTests.m in Sources */,
 				16836DD118F8B32200FD86D5 /* ZCREasyPropertyTests.m in Sources */,
+				74F6BD381909DAE80093F1F7 /* ZCREasyRecipeBoxTests.m in Sources */,
+				74F6BD3A1909DAF40093F1F7 /* ZCREasyDoughErrorTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
