@@ -8,69 +8,37 @@
 
 #import "ZCREasyDough.h"
 
+#import "ZCREasyError.h"
 #import "ZCREasyProperty.h"
-
-NSString *const ZCREasyDoughErrorDomain = @"com.zachradke.easyBake.easyDough.errorDomain";
-
-NSInteger const ZCREasyDoughErrorInvalidParameters = 1969;
-NSInteger const ZCREasyDoughErrorExceptionRaised = 1970;
-
-NSString *const ZCREasyDoughErrorExceptionNameKey = @"ZCREasyDoughErrorExceptionNameKey";
-NSString *const ZCREasyDoughErrorExceptionUserInfoKey = @"ZCREasyDoughErrorExceptionUserInfoKey";
 
 NSString *const ZCREasyDoughExceptionAlreadyBaked = @"com.zachradke.easyBake.easyDough.exception.alreadyBaked";
 
 NSString *const ZCREasyDoughUpdatedNotification = @"com.zachradke.easyBake.easyDough.notifications.updated";
 
-
-static inline NSError *ZCREasyDoughParameterError(NSString *failureReason) {
-    NSCAssert(failureReason != nil, @"An error failure reason is required.");
-    
-    NSDictionary *userInfo = @{NSLocalizedDescriptionKey: @"Invalid parameters.",
-                               NSLocalizedFailureReasonErrorKey: failureReason};
-    
-    return [NSError errorWithDomain:ZCREasyDoughErrorDomain
-                               code:ZCREasyDoughErrorInvalidParameters
-                           userInfo:userInfo];
-}
-
-static inline NSError *ZCREasyDoughExceptionError(NSException *exception) {
-    NSCAssert(exception != nil, @"An exception is required.");
-    
-    NSDictionary *userInfo = @{NSLocalizedDescriptionKey: @"Exception raised.",
-                               NSLocalizedFailureReasonErrorKey: exception.reason ?: [NSNull null],
-                               ZCREasyDoughErrorExceptionNameKey: exception.name ?: [NSNull null],
-                               ZCREasyDoughErrorExceptionUserInfoKey: exception.userInfo ?: [NSNull null]};
-    
-    return [NSError errorWithDomain:ZCREasyDoughErrorDomain
-                               code:ZCREasyDoughErrorExceptionRaised
-                           userInfo:userInfo];
-}
-
-
-@interface _ZCREasyChef : NSObject <ZCREasyChef> {
+@interface _ZCREasyBaker : NSObject <ZCREasyBaker> {
     Class _doughClass;
 }
 
 @property (copy, nonatomic) NSString *identifier;
 @property (copy, nonatomic) NSDictionary *ingredients;
-@property (copy, nonatomic) NSDictionary *recipe;
+@property (strong, nonatomic) ZCREasyRecipe *recipe;
 
 - (instancetype)initWithClass:(Class)doughClass;
 - (id)bake;
 
 @end
 
+#pragma mark - ZCREasyDough
 
 @implementation ZCREasyDough
 
 - (instancetype)initWithIdentifier:(id<NSObject,NSCopying>)identifier
                        ingredients:(NSDictionary *)ingredients
-                            recipe:(NSDictionary *)recipe
+                            recipe:(ZCREasyRecipe *)recipe
                              error:(NSError *__autoreleasing *)error {
     if (!identifier) {
         if (error) {
-            *error = ZCREasyDoughParameterError(@"Missing a unique identifier!");
+            *error = ZCREasyBakeParameterError(@"Missing a unique identifier!");
         }
         return nil;
     }
@@ -96,7 +64,7 @@ static inline NSError *ZCREasyDoughExceptionError(NSException *exception) {
     }
     @catch (NSException *exception) {
         if (error) {
-            *error = ZCREasyDoughExceptionError(exception);
+            *error = ZCREasyBakeExceptionError(exception);
         }
         return nil;
     }
@@ -119,17 +87,17 @@ static inline NSError *ZCREasyDoughExceptionError(NSException *exception) {
     return [self initWithIdentifier:identifier ingredients:nil recipe:nil error:NULL];
 }
 
-+ (instancetype)prepareWith:(void (^)(id<ZCREasyChef>))preparationBlock {
++ (instancetype)makeWith:(void (^)(id<ZCREasyBaker>))preparationBlock {
     if (!preparationBlock) { return nil; }
     
-    _ZCREasyChef *chef = [[_ZCREasyChef alloc] initWithClass:self];
+    _ZCREasyBaker *chef = [[_ZCREasyBaker alloc] initWithClass:self];
     preparationBlock(chef);
     
     return [chef bake];
 }
 
 - (instancetype)updateWithIngredients:(NSDictionary *)ingredients
-                               recipe:(NSDictionary *)recipe
+                               recipe:(ZCREasyRecipe *)recipe
                                 error:(NSError *__autoreleasing *)error {
     // We need to manually pass an error pointer to establish if there was an error while finding
     // equality rather than relying on the passed error pointer which may not exist.
@@ -153,7 +121,7 @@ static inline NSError *ZCREasyDoughExceptionError(NSException *exception) {
         
         // However we ultimately use our own generic recipe to merge in our existing properties and
         // then populate the new instance.
-        NSDictionary *genericRecipe = [[self class] _genericRecipe];
+        ZCREasyRecipe *genericRecipe = [[self class] _genericRecipe];
         NSDictionary *existingIngredients = [self _decomposeWithRecipe:genericRecipe
                                                                  error:error];
         if (!existingIngredients) { return nil; }
@@ -181,6 +149,15 @@ static inline NSError *ZCREasyDoughExceptionError(NSException *exception) {
     }
 }
 
+- (instancetype)updateWith:(void (^)(id<ZCREasyBaker>))updateBlock {
+    if (!updateBlock) { return nil; }
+    
+    _ZCREasyBaker *chef = [[_ZCREasyBaker alloc] initWithClass:[self class]];
+    updateBlock(chef);
+    
+    return [self updateWithIngredients:chef.ingredients recipe:chef.recipe error:NULL];
+}
+
 + (NSString *)updateNotificationName {
     if (self == [ZCREasyDough class]) {
         return nil;
@@ -190,39 +167,41 @@ static inline NSError *ZCREasyDoughExceptionError(NSException *exception) {
     }
 }
 
-- (NSDictionary *)decomposeWithRecipe:(NSDictionary *)recipe
+- (NSDictionary *)decomposeWithRecipe:(ZCREasyRecipe *)recipe
                                 error:(NSError *__autoreleasing *)error {
     // We split this into a private method to prevent subclasses from breaking the behavior
     return [self _decomposeWithRecipe:recipe error:error];
 }
 
-- (NSDictionary *)_decomposeWithRecipe:(NSDictionary *)recipe
+- (NSDictionary *)_decomposeWithRecipe:(ZCREasyRecipe *)recipe
                                  error:(NSError * __autoreleasing *)error {
     if (!recipe) {
         if (error) {
-            *error = ZCREasyDoughParameterError(@"Missing a recipe!");
+            *error = ZCREasyBakeParameterError(@"Missing a recipe!");
         }
         return nil;
     }
     
-    NSSet *allRecipeKeys = [NSSet setWithArray:[recipe allKeys]];
-    if (![allRecipeKeys isSubsetOfSet:[[self class] allPropertyNames]]) {
+    if (![recipe.propertyNames isSubsetOfSet:[[self class] allPropertyNames]]) {
         if (error) {
-            NSMutableSet *unknownNames = [allRecipeKeys mutableCopy];
+            NSMutableSet *unknownNames = [recipe.propertyNames mutableCopy];
             [unknownNames minusSet:[[self class] allPropertyNames]];
-            NSString *reason = [NSString stringWithFormat:@"The recipe contains unknown property "
-                                                          @"names: %@", unknownNames];
-            *error = ZCREasyDoughParameterError(reason);
+            *error = ZCREasyBakeParameterError(@"The recipe contains unknown property names: %@",
+                                               unknownNames);
         }
         return nil;
     }
     
     NSMutableDictionary *ingredients = [NSMutableDictionary dictionary];
-    
     @try {
         __block id value;
-        [recipe enumerateKeysAndObjectsUsingBlock:^(NSString *propertyName, NSString *ingredientName, BOOL *stop) {
+        [recipe enumerateInstructionsWith:^(NSString *propertyName, NSString *ingredientName, NSValueTransformer *transformer, BOOL *shouldStop) {
             value = [self valueForKey:propertyName];
+            
+            // We only accept reversible value transformations for decomposition
+            if (transformer && [[transformer class] allowsReverseTransformation]) {
+                value = [transformer reverseTransformedValue:value];
+            }
             
             // Since we guarantee that all keys in the recipe will be fulfilled in the returned
             // dictionary, we convert nil values to NSNull
@@ -233,7 +212,7 @@ static inline NSError *ZCREasyDoughExceptionError(NSException *exception) {
     }
     @catch (NSException *exception) {
         if (error) {
-            *error = ZCREasyDoughExceptionError(exception);
+            *error = ZCREasyBakeExceptionError(exception);
         }
         ingredients = nil;
     }
@@ -242,13 +221,13 @@ static inline NSError *ZCREasyDoughExceptionError(NSException *exception) {
 }
 
 - (BOOL)isEqualToIngredients:(NSDictionary *)ingredients
-                  withRecipe:(NSDictionary *)recipe
+                  withRecipe:(ZCREasyRecipe *)recipe
                        error:(NSError *__autoreleasing *)error {
     // A recipe is required in this method, otherwise it cannot be determined which keys to check
     // for equality. Similarly, ingredients should also be present.
     if (!recipe || !ingredients) {
         if (error) {
-            *error = ZCREasyDoughParameterError(@"Missing recipe and/or ingredients!");
+            *error = ZCREasyBakeParameterError(@"Missing recipe and/or ingredients!");
         }
         return NO;
     }
@@ -274,7 +253,7 @@ static inline NSError *ZCREasyDoughExceptionError(NSException *exception) {
     }
     @catch (NSException *exception) {
         if (error) {
-            *error = ZCREasyDoughExceptionError(exception);
+            *error = ZCREasyBakeExceptionError(exception);
         }
         isEqual = NO;
     }
@@ -282,25 +261,41 @@ static inline NSError *ZCREasyDoughExceptionError(NSException *exception) {
     return isEqual;
 }
 
-+ (NSDictionary *)genericRecipe {
++ (ZCREasyRecipe *)genericRecipe {
     // We split this into a private method to prevent subclasses from breaking the behavior
     return [self _genericRecipe];
 }
 
-+ (NSDictionary *)_genericRecipe {
-    NSDictionary *storedRecipe = objc_getAssociatedObject(self, _cmd);
-    if (storedRecipe) { return storedRecipe; }
++ (ZCREasyRecipe *)_genericRecipe {
+    NSString *recipeName = [NSString stringWithFormat:@"%@-GenericRecipe", NSStringFromClass(self)];
+    ZCREasyRecipe *recipe = [[self _sharedDoughBox] recipeWithName:recipeName];
+    if (recipe) { return recipe; }
     
-    NSArray *propertyNames = [[self allPropertyNames] allObjects];
-    storedRecipe = [NSDictionary dictionaryWithObjects:propertyNames forKeys:propertyNames];
-    
-    objc_setAssociatedObject(self, _cmd, storedRecipe, OBJC_ASSOCIATION_RETAIN);
-    
-    return storedRecipe;
+    return [[self _sharedDoughBox] addRecipeWith:^(id<ZCREasyRecipeMaker> recipeMaker) {
+        [recipeMaker setName:recipeName];
+        
+        NSArray *propertyNames = [[self allPropertyNames] allObjects];
+        NSDictionary *ingredientMapping = [NSDictionary dictionaryWithObjects:propertyNames
+                                                                      forKeys:propertyNames];
+        [recipeMaker setIngredientMapping:ingredientMapping];
+    }];
 }
 
++ (ZCREasyRecipeBox *)_sharedDoughBox {
+    // ZCREasyDough has it's own private box for keeping it's precious recipes
+    static ZCREasyRecipeBox *sharedBox;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sharedBox = [[ZCREasyRecipeBox alloc] init];
+    });
+    return sharedBox;
+}
+
+
+#pragma mark Private utilities
+
 + (NSDictionary *)_mappedIngredients:(NSDictionary *)ingredients
-                          withRecipe:(NSDictionary *)recipe
+                          withRecipe:(ZCREasyRecipe *)recipe
                                error:(NSError **)error {
     // If there are no ingredients or recipe, we consider the mapping a success and return an
     // empty dictionary.
@@ -308,40 +303,30 @@ static inline NSError *ZCREasyDoughExceptionError(NSException *exception) {
     
     if (ingredients && !recipe) {
         if (error) {
-            *error = ZCREasyDoughParameterError(@"Missing a recipe for the ingredients.");
+            *error = ZCREasyBakeParameterError(@"Missing a recipe for the ingredients.");
         }
         return nil;
     }
     
-    NSSet *allRecipeProperties = [NSSet setWithArray:recipe.allKeys];
-    if (![allRecipeProperties isSubsetOfSet:[self.class allPropertyNames]]) {
+    if (![recipe.propertyNames isSubsetOfSet:[self.class allPropertyNames]]) {
         if (error) {
-            NSMutableSet *unknownNames = [allRecipeProperties mutableCopy];
+            NSMutableSet *unknownNames = [recipe.propertyNames mutableCopy];
             [unknownNames minusSet:[[self class] allPropertyNames]];
-            NSString *reason = [NSString stringWithFormat:@"The recipe contains unknown property "
-                                                          @"names: %@", unknownNames];
-            *error = ZCREasyDoughParameterError(reason);
+            *error = ZCREasyBakeParameterError(@"The recipe contains unknown property names: %@",
+                                               unknownNames);
         }
         return nil;
     }
     
-    NSMutableDictionary *mappedIngredients = [NSMutableDictionary dictionary];
-    [recipe enumerateKeysAndObjectsUsingBlock:^(NSString *propertyName, NSString *ingredientName, BOOL *stop) {
-        id ingredientValue = ingredients[ingredientName];
-        if (ingredientValue) {
-            mappedIngredients[propertyName] = ingredientValue;
-        }
-    }];
-    
-    return [mappedIngredients copy];
+    return [recipe processIngredients:ingredients];
 }
 
-#pragma mark - NSCopying
+#pragma mark NSCopying
 
 - (id)copyWithZone:(NSZone *)zone {
     // Theoretically if this model is entirely composed of readonly properties we could just return
     // self. However, since we cannot guarantee that, we new instance.
-    NSDictionary *recipe = [[self class] _genericRecipe];
+    ZCREasyRecipe *recipe = [[self class] _genericRecipe];
     NSDictionary *ingredients = [self _decomposeWithRecipe:recipe error:NULL];
     if (ingredients) {
         return [[[self class] allocWithZone:zone] initWithIdentifier:_uniqueIdentifier
@@ -354,7 +339,7 @@ static inline NSError *ZCREasyDoughExceptionError(NSException *exception) {
 }
 
 
-#pragma mark - NSObject overrides
+#pragma mark NSObject
 
 - (void)setValue:(id)value forKey:(NSString *)key {
     // To prevent setting iVars of read-only properties outside of the initializer, we use a simple
@@ -409,7 +394,7 @@ static inline NSError *ZCREasyDoughExceptionError(NSException *exception) {
 }
 
 
-#pragma mark - Introspection
+#pragma mark Introspection
 
 + (NSSet *)_properties {
     NSSet *storedProperties = objc_getAssociatedObject(self, _cmd);
@@ -469,7 +454,9 @@ static inline NSError *ZCREasyDoughExceptionError(NSException *exception) {
 @end
 
 
-@implementation _ZCREasyChef
+#pragma mark - _ZCREasyChef
+
+@implementation _ZCREasyBaker
 
 - (instancetype)initWithClass:(Class)doughClass {
     NSParameterAssert(doughClass);
@@ -493,7 +480,8 @@ static inline NSError *ZCREasyDoughExceptionError(NSException *exception) {
             self.identifier = [NSUUID UUID];
         } else {
             CFUUIDRef uuid = CFUUIDCreate(kCFAllocatorDefault);
-            self.identifier = (__bridge_transfer NSString *)CFUUIDCreateString(kCFAllocatorDefault, uuid);
+            self.identifier = (__bridge_transfer NSString *)CFUUIDCreateString(kCFAllocatorDefault,
+                                                                               uuid);
             CFRelease(uuid);
         }
     }
@@ -507,20 +495,19 @@ static inline NSError *ZCREasyDoughExceptionError(NSException *exception) {
 - (BOOL)validateKitchen:(NSError *__autoreleasing *)error {
     if (self.ingredients && !self.recipe) {
         if (error) {
-            *error = ZCREasyDoughParameterError(@"Missing a recipe for the ingredients!");
+            *error = ZCREasyBakeParameterError(@"Missing a recipe for the ingredients!");
         }
         return NO;
     }
     
-    NSSet *recipePropertyNames = [NSSet setWithArray:[self.recipe allKeys]];
+    NSSet *recipePropertyNames = self.recipe.propertyNames;
     NSSet *doughPropertyNames = [_doughClass allPropertyNames];
     if (![recipePropertyNames isSubsetOfSet:doughPropertyNames]) {
         if (error) {
             NSMutableSet *unknownNames = [recipePropertyNames mutableCopy];
             [unknownNames minusSet:doughPropertyNames];
-            NSString *reason = [NSString stringWithFormat:@"The recipe contains unknown property "
-                                                          @"names: %@", unknownNames];
-            *error = ZCREasyDoughParameterError(reason);
+            *error = ZCREasyBakeParameterError(@"The recipe contains unknown property names: %@",
+                                               unknownNames);
         }
         return NO;
     }

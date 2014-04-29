@@ -43,7 +43,7 @@ extern NSString *const ZCREasyPropertyAttrOldTypeEncoding;
  *
  *  @return A populated instance of the receiver.
  */
-- (instancetype)initWithProperty:(objc_property_t)property;
+- (instancetype)initWithProperty:(objc_property_t)property __attribute__((nonnull));
 
 /**
  *  The name of the property. If a valid property was passed during creation, this is guaranteed
