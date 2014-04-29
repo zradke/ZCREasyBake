@@ -1,6 +1,8 @@
 # ZCREasyBake
 
-[![Build Status](https://travis-ci.org/zradke/ZCREasyBake.svg?branch=master)](https://travis-ci.org/zradke/ZCREasyBake)
+[![Build Status](https://travis-ci.org/zradke/ZCREasyBake.svg?branch=master)](https://travis-ci.org/zradke/ZCREasyBake) on [master](https://github.com/zradke/ZCREasyBake/tree/master)
+
+[![Build Status](https://travis-ci.org/zradke/ZCREasyBake.svg?branch=develop)](https://travis-ci.org/zradke/ZCREasyBake) on [develop](https://github.com/zradke/ZCREasyBake/tree/develop)
 
 A lightweight immutable model framework disguised by friendly food metaphors.
 
