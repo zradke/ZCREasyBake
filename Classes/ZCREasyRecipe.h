@@ -17,6 +17,11 @@
  *  designated initializer or factory methods defined in this class. Using the standard init method
  *  will throw an exception.
  *
+ *  Ingredients are represented as dictionaries or arrays or combinations of the two. When creating
+ *  the ingredient mapping, the ingredient string can use dot notation to indicate dictionary key
+ *  traversal or the form "[<index>]" to indicate an array index to traverse. These may also be
+ *  combined, for example: "user.updates[0]".
+ *
  *  Recipes are immutable, so invoking copy on one will simply return self. Modifications can be
  *  made, but will produce new recipes. These recipes often only need to be created once and reused
  *  for a given ZCREasyDough subclass. To aid in this process, please see ZCREasyRecipeBox.
@@ -39,7 +44,7 @@
  *                                convenience, but also a requirement for adding recipes to a
  *                                ZCREasyRecipeBox.
  *  @param ingredientMapping      An NSDictionary mapping canonical property names to their
- *                                corresponding ingredient names. This must not be nil.
+ *                                corresponding ingredient path. This must not be nil.
  *  @param ingredientTransformers An NSDictionary of transformers to use when processing raw
  *                                ingredients. The keys are property names and the values may be
  *                                either NSValueTransformer instances, or NSStrings that have
@@ -90,10 +95,18 @@
 @property (strong, nonatomic, readonly) NSString *name;
 
 /**
- *  An NSDictionary mapping canonical property names to their corresponding ingredient names. This
+ *  An NSDictionary mapping canonical property names to their corresponding ingredient paths. This
  *  is required for all recipes.
  */
 @property (strong, nonatomic, readonly) NSDictionary *ingredientMapping;
+
+/**
+ *  An NSDictionary mapping canonical property names to arrays of decomposed ingredient paths. These
+ *  path components may be either NSStrings indicating a dictionary key to traverse, or NSNumbers
+ *  indicating an array index to traverse. This is automatically generated from the provided
+ *  ingredientMapping.
+ */
+@property (strong, nonatomic, readonly) NSDictionary *ingredientMappingComponents;
 
 /**
  *  An NSDictionary of NSValueTransformers mapped to property names which should be applied when
@@ -110,30 +123,31 @@
 /**
  *  Convenience method for enumerating through the recipe's instructions through a block.
  *
- *  @param block A block which takes a property name, the corresponding ingredient name, and a value
+ *  @param block A block which takes a property name, the corresponding ingredient path, and a value
  *               transformer if it exists. This block is executed for each property name in the
  *               ingredientMapping. This must not be nil.
  */
-- (void)enumerateInstructionsWith:(void (^)(NSString *propertyName, NSString *ingredientName, NSValueTransformer *transformer, BOOL *shouldStop))block;
+- (void)enumerateInstructionsWith:(void (^)(NSString *propertyName, NSString *ingredientPath, NSValueTransformer *transformer, BOOL *shouldStop))block;
 
 /**
  *  @name Using a recipe
  */
 
 /**
- *  Takes a dictionary of raw ingredients and processes them using the ingredientMapping and
- *  ingredientTransformers. Only keys of the ingredients which have canonical property names in the
- *  ingredientMapping will be present in the resulting dictionary. NSNull values are converted into
- *  nil when being pased to an ingredient transformer, and if the ingredient transformer returns nil
- *  it will be converted to NSNull in the response.
+ *  Takes a dictionary or array of raw ingredients and processes them using the 
+ *  ingredientMappingComponents and ingredientTransformers. Only ingredients which have canonical
+ *  property names in the propertyNames will be present in the resulting dictionary, and only if
+ *  their ingredient path leads to an object. NSNull values are converted into nil when being pased
+ *  to an ingredient transformer, and if the ingredient transformer returns nil it will be converted
+ *  to NSNull in the response.
  *
  *  @param ingredients The raw ingredients to process.
  *
  *  @return An NSDictionary where the keys are cannonical property names mapped from the ingredient
- *          names and the values are ingredient values run through the registered NSValueTransformer
+ *          paths and the values are ingredient values run through the registered NSValueTransformer
  *          if present.
  */
-- (NSDictionary *)processIngredients:(NSDictionary *)ingredients;
+- (NSDictionary *)processIngredients:(id)ingredients error:(NSError **)error;
 
 @end
 
@@ -228,7 +242,7 @@
 @property (copy, nonatomic) NSString *name;
 
 /**
- *  An NSDictionary of canonical property names as keys with ingredient names as values. This must
+ *  An NSDictionary of canonical property names as keys with ingredient paths as values. This must
  *  not be nil.
  */
 @property (copy, nonatomic) NSDictionary *ingredientMapping;
@@ -246,14 +260,14 @@
  *
  *  @param propertyName   The canonical property name. This must not be nil and must not already be
  *                        registered in the ingredientMapping.
- *  @param ingredientName The raw ingredient name. This must not be nil.
+ *  @param ingredientPath The raw ingredient name. This must not be nil.
  *  @param transformer    An NSValueTransformer or NSString instance. If this is an NSString, it
  *                        must be registered with NSValueTransformer. This is optional.
  *  @param error          An error pointer which will be populated if an error occurs.
  *
  *  @return YES if the instruction could be added. NO if it could not.
  */
-- (BOOL)addInstructionForProperty:(NSString *)propertyName ingredientName:(NSString *)ingredientName
+- (BOOL)addInstructionForProperty:(NSString *)propertyName ingredientPath:(NSString *)ingredientPath
                       transformer:(id)transformer error:(NSError **)error;
 
 /**

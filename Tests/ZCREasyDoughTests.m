@@ -53,21 +53,49 @@
 @property (strong, nonatomic, readonly) NSDate *updatedAt;
 @property (assign, nonatomic, readonly) NSUInteger badgeCount;
 
-+ (ZCREasyRecipe *)JSONRecipe;
++ (ZCREasyRecipe *)simpleRecipe;
++ (ZCREasyRecipe *)complicatedRecipe;
++ (ZCREasyRecipe *)arrayBasedRecipe;
 
 @end
 
 @implementation ZCREasyDoughTestsModel
 
-+ (ZCREasyRecipe *)JSONRecipe {
-    ZCREasyRecipe *JSONRecipe = [[ZCREasyRecipeBox defaultBox] recipeWithName:@"JSONRecipe"];
-    if (JSONRecipe) { return JSONRecipe; }
++ (ZCREasyRecipe *)simpleRecipe {
+    ZCREasyRecipe *recipe = [[ZCREasyRecipeBox defaultBox] recipeWithName:@"simpleRecipe"];
+    if (recipe) { return recipe; }
 
     return [[ZCREasyRecipeBox defaultBox] addRecipeWith:^(id<ZCREasyRecipeMaker> recipeMaker) {
-        [recipeMaker setName:@"JSONRecipe"];
+        [recipeMaker setName:@"simpleRecipe"];
         [recipeMaker setIngredientMapping:@{@"name": @"user_name",
                                             @"updatedAt": @"updated_at",
                                             @"badgeCount": @"badge_count"}];
+        [recipeMaker setIngredientTransformers:@{@"updatedAt": [[ZCRDateTransformer alloc] init]}];
+    }];
+}
+
++ (ZCREasyRecipe *)complicatedRecipe {
+    ZCREasyRecipe *recipe = [[ZCREasyRecipeBox defaultBox] recipeWithName:@"complicatedRecipe"];
+    if (recipe) { return recipe; }
+    
+    return [[ZCREasyRecipeBox defaultBox] addRecipeWith:^(id<ZCREasyRecipeMaker> recipeMaker) {
+        [recipeMaker setName:@"complicatedRecipe"];
+        [recipeMaker setIngredientMapping:@{@"name": @"user.name",
+                                            @"updatedAt": @"updates[0]",
+                                            @"badgeCount": @"user.count"}];
+        [recipeMaker setIngredientTransformers:@{@"updatedAt": [[ZCRDateTransformer alloc] init]}];
+    }];
+}
+
++ (ZCREasyRecipe *)arrayBasedRecipe {
+    ZCREasyRecipe *recipe = [[ZCREasyRecipeBox defaultBox] recipeWithName:@"arrayBasedRecipe"];
+    if (recipe) { return recipe; }
+    
+    return [[ZCREasyRecipeBox defaultBox] addRecipeWith:^(id<ZCREasyRecipeMaker> recipeMaker) {
+        [recipeMaker setName:@"arrayBasedRecipe"];
+        [recipeMaker setIngredientMapping:@{@"name": @"[1].name",
+                                            @"updatedAt": @"[0][0]",
+                                            @"badgeCount": @"[1].badge_count"}];
         [recipeMaker setIngredientTransformers:@{@"updatedAt": [[ZCRDateTransformer alloc] init]}];
     }];
 }
@@ -96,7 +124,7 @@
     
     model = [[ZCREasyDoughTestsModel alloc] initWithIdentifier:JSON[@"server_id"]
                                                    ingredients:JSON
-                                                        recipe:[ZCREasyDoughTestsModel JSONRecipe]
+                                                        recipe:[ZCREasyDoughTestsModel simpleRecipe]
                                                          error:NULL];
 }
 
@@ -122,7 +150,7 @@
     model = [ZCREasyDoughTestsModel makeWith:^(id<ZCREasyBaker> chef) {
         chef.identifier = JSON[@"server_id"];
         chef.ingredients = JSON;
-        chef.recipe = [ZCREasyDoughTestsModel JSONRecipe];
+        chef.recipe = [ZCREasyDoughTestsModel simpleRecipe];
         
         isValid = [chef validateKitchen:&error];
     }];
@@ -142,7 +170,7 @@
     
     NSError *error;
     ZCREasyDoughTestsModel *updatedModel = [model updateWithIngredients:updatedJSON
-                                                                 recipe:[ZCREasyDoughTestsModel JSONRecipe]
+                                                                 recipe:[ZCREasyDoughTestsModel simpleRecipe]
                                                                   error:&error];
     
     XCTAssertNotNil(updatedModel, @"The updated model should not be nil");
@@ -178,7 +206,7 @@
     
     NSError *error;
     ZCREasyDoughTestsModel *updatedModel = [model updateWithIngredients:updatedJSON
-                                                                 recipe:[ZCREasyDoughTestsModel JSONRecipe]
+                                                                 recipe:[ZCREasyDoughTestsModel simpleRecipe]
                                                                   error:&error];
     
     NSDate *timeoutDate = [NSDate dateWithTimeIntervalSinceNow:10.0];
@@ -200,7 +228,7 @@
     
     NSError *error;
     ZCREasyDoughTestsModel *updatedModel = [model updateWithIngredients:updatedJSON
-                                                                 recipe:[ZCREasyDoughTestsModel JSONRecipe]
+                                                                 recipe:[ZCREasyDoughTestsModel simpleRecipe]
                                                                   error:&error];
     
     XCTAssertNotNil(updatedModel, @"The updated model should not be nil");
@@ -232,7 +260,7 @@
     
     NSError *error;
     ZCREasyDoughTestsModel *updatedModel = [model updateWithIngredients:updatedJSON
-                                                                 recipe:[ZCREasyDoughTestsModel JSONRecipe]
+                                                                 recipe:[ZCREasyDoughTestsModel simpleRecipe]
                                                                   error:&error];
     
     NSDate *timeoutDate = [NSDate dateWithTimeIntervalSinceNow:5.0];
@@ -270,9 +298,9 @@
                   @"The badge counts should match");
 }
 
-- (void)testDecomposeWithJSONRecipe {
+- (void)testDecomposeWithSimpleRecipe {
     NSError *error;
-    NSDictionary *ingredients = [model decomposeWithRecipe:[ZCREasyDoughTestsModel JSONRecipe]
+    NSDictionary *ingredients = [model decomposeWithRecipe:[ZCREasyDoughTestsModel simpleRecipe]
                                                      error:&error];
     
     XCTAssertNotNil(ingredients, @"There should be decomposed ingredients");
@@ -285,12 +313,45 @@
                   @"The badge counts should match");
 }
 
+- (void)testDecomposeWithComplexRecipe {
+    NSError *error;
+    NSDictionary *ingredients = [model decomposeWithRecipe:[ZCREasyDoughTestsModel complicatedRecipe]
+                                                     error:&error];
+    
+    XCTAssertNotNil(ingredients, @"There should be decomposed ingredients");
+    XCTAssertNil(error, @"There should be no error");
+    
+    XCTAssertEqualObjects([ingredients valueForKeyPath:@"user.name"], model.name,
+                          @"The names should match.");
+    XCTAssertEqualObjects(ingredients[@"updates"][0],
+                          [dateTransformer reverseTransformedValue:model.updatedAt],
+                          @"The updated dates should match.");
+    XCTAssertEqual([[ingredients valueForKeyPath:@"user.count"] unsignedIntegerValue],
+                   model.badgeCount, @"the badge counts should match.");
+}
+
+- (void)testDecomposeWithArrayRecipe {
+    NSError *error;
+    NSArray *ingredients = [model decomposeWithRecipe:[ZCREasyDoughTestsModel arrayBasedRecipe]
+                                                     error:&error];
+    
+    XCTAssertNotNil(ingredients, @"There should be ingredients");
+    XCTAssertNil(error, @"There should be no error");
+    
+    XCTAssertEqualObjects(ingredients[1][@"name"], model.name, @"The names should match.");
+    XCTAssertEqualObjects(ingredients[0][0],
+                          [dateTransformer reverseTransformedValue:model.updatedAt],
+                          @"The updated dates should match.");
+    XCTAssertEqual([ingredients[1][@"badge_count"] unsignedIntegerValue], model.badgeCount,
+                    @"The badge counts should match.");
+}
+
 - (void)testIsEqualToIngredients {
     NSDictionary *ingredients = @{@"user_name": JSON[@"user_name"]};
     
     NSError *error;
     BOOL isEqual = [model isEqualToIngredients:ingredients
-                                    withRecipe:[ZCREasyDoughTestsModel JSONRecipe]
+                                    withRecipe:[ZCREasyDoughTestsModel simpleRecipe]
                                          error:&error];
     
     XCTAssertNil(error, @"There should be no error");
@@ -302,7 +363,7 @@
     
     NSError *error;
     BOOL isEqual = [model isEqualToIngredients:ingredients
-                                    withRecipe:[ZCREasyDoughTestsModel JSONRecipe]
+                                    withRecipe:[ZCREasyDoughTestsModel simpleRecipe]
                                          error:&error];
     
     XCTAssertNil(error, @"There should be no error");
