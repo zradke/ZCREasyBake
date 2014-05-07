@@ -42,6 +42,10 @@
     }
     _ingredientMapping = [ingredientMapping copy];
     
+    NSDictionary *ingredientComponents = [self _breakDownMapping:_ingredientMapping error:error];
+    if (!ingredientComponents) { return nil; }
+    _ingredientMappingComponents = ingredientComponents;
+    
     ingredientTransformers = [self _normalizeTransformers:ingredientTransformers
                                                             error:error];
     if (!ingredientTransformers) { return nil; }
@@ -71,29 +75,58 @@
     return [maker makeRecipe];
 }
 
-- (NSDictionary *)processIngredients:(NSDictionary *)ingredients {
+- (NSDictionary *)processIngredients:(id)ingredients
+                               error:(NSError *__autoreleasing *)error {
     // We treat no ingredients as success
-    if (!ingredients || ingredients.count == 0) { return [NSDictionary dictionary]; }
+    if (!ingredients) { return [NSDictionary dictionary]; }
     
-    __block id ingredientValue;
+    id ingredientValue;
     NSMutableDictionary *processedIngredients = [NSMutableDictionary dictionary];
-    [self enumerateInstructionsWith:^(NSString *propertyName, NSString *ingredientName, NSValueTransformer *transformer, BOOL *shouldStop) {
-        ingredientValue = ingredients[ingredientName];
-        if (ingredientValue) {
-            if (transformer) {
-                if (ingredientValue == [NSNull null]) {
-                    ingredientValue = nil;
-                }
-                ingredientValue = [transformer transformedValue:ingredientValue];
-                if (!ingredientValue) {
-                    ingredientValue = [NSNull null];
-                }
+    
+    @try {
+        for (NSString *propertyName in self.propertyNames) {
+            ingredientValue = [self _valueForProperty:propertyName ingredients:ingredients];
+            if (ingredientValue) {
+                processedIngredients[propertyName] = ingredientValue;
             }
-            processedIngredients[propertyName] = ingredientValue;
         }
-    }];
+    }
+    @catch (NSException *exception) {
+        if (error) {
+            *error = ZCREasyBakeExceptionError(exception);
+        }
+        return nil;
+    }
     
     return [processedIngredients copy];
+}
+
+- (id)_valueForProperty:(NSString *)propertyName ingredients:(id)ingredients {
+    id currentValue = ingredients;
+    
+    NSArray *components = self.ingredientMappingComponents[propertyName];
+    for (id piece in components) {
+        if ([piece isKindOfClass:[NSString class]]) {
+            currentValue = [currentValue objectForKey:piece];
+        } else {
+            currentValue = [currentValue objectAtIndex:[piece unsignedIntegerValue]];
+        }
+    }
+    
+    if (currentValue) {
+        NSValueTransformer *transformer = self.ingredientTransformers[propertyName];
+        if (transformer) {
+            if (currentValue == [NSNull null]) {
+                currentValue = nil;
+            }
+            currentValue = [transformer transformedValue:currentValue];
+            if (!currentValue) {
+                currentValue = [NSNull null];
+            }
+        }
+    }
+    
+    return currentValue;
 }
 
 - (void)enumerateInstructionsWith:(void (^)(NSString *, NSString *, NSValueTransformer *, BOOL *))block {
@@ -132,19 +165,19 @@
     }
     
     NSMutableArray *instructions = [NSMutableArray array];
-    [self enumerateInstructionsWith:^(NSString *propertyName, NSString *ingredientName, NSValueTransformer *transformer, BOOL *shouldStop) {
+    [self enumerateInstructionsWith:^(NSString *propertyName, NSString *ingredientPath, NSValueTransformer *transformer, BOOL *shouldStop) {
         NSString *instruction = nil;
         if (!transformer) {
-            instruction = [NSString stringWithFormat:@"%@ ==> %@", ingredientName, propertyName];
+            instruction = [NSString stringWithFormat:@"%@ ==> %@", ingredientPath, propertyName];
         } else {
             NSString *annotation = [NSString stringWithFormat:@"(%@:%p)",
                                     NSStringFromClass([transformer class]), transformer];
             if ([[transformer class] allowsReverseTransformation]) {
                 instruction = [NSString stringWithFormat:@"%@ <=%@=> %@",
-                                      ingredientName, annotation, propertyName];
+                                      ingredientPath, annotation, propertyName];
             } else {
                 instruction = [NSString stringWithFormat:@"%@ =%@=> %@",
-                               ingredientName, annotation, propertyName];
+                               ingredientPath, annotation, propertyName];
             }
         }
         [instructions addObject:instruction];
@@ -178,6 +211,76 @@
 }
 
 #pragma mark Private utilities
+
+- (NSDictionary *)_breakDownMapping:(NSDictionary *)ingredientMapping
+                              error:(NSError * __autoreleasing *)error {
+    NSParameterAssert(ingredientMapping);
+    
+    __block NSMutableDictionary *ingredientComponents = [NSMutableDictionary dictionary];
+    [ingredientMapping enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+        NSArray *components = [self _breakDownIngredientPath:obj error:error];
+        if (components) {
+            ingredientComponents[key] = components;
+        } else { // There was an error
+            *stop = YES;
+            ingredientComponents = nil;
+        }
+    }];
+    
+    // We need to make sure that all mappings share the same root object, either a dictionary if
+    // all the first pieces are strings, or an array if they are all numbers.
+    NSArray *allComponents = [ingredientComponents allValues];
+    Class rootClass;
+    for (NSArray *components in allComponents) {
+        if (!rootClass) {
+            id testPiece = [components firstObject];
+            rootClass = [testPiece isKindOfClass:[NSString class]] ? [NSString class] : [NSNumber class];
+        } else if (![[components firstObject] isKindOfClass:rootClass]) {
+            if (error) {
+                *error = ZCREasyBakeParameterError(@"Invalid ingredient mapping. The mapping must "
+                                                   @"share the same root object, represented as a "
+                                                   @"dictionary or array.");
+            }
+            return nil;
+        }
+    }
+    
+    return [ingredientComponents copy];
+}
+
+- (NSArray *)_breakDownIngredientPath:(NSString *)ingredientPath
+                                error:(NSError * __autoreleasing *)error {
+    NSParameterAssert(ingredientPath);
+    
+    NSMutableArray *components = [NSMutableArray array];
+    NSArray *splitPath = [ingredientPath componentsSeparatedByString:@"."];
+    for (NSString *piece in splitPath) {
+        NSString *keyPath;
+        NSScanner *scanner = [NSScanner scannerWithString:piece];
+        if ([scanner scanUpToString:@"[" intoString:&keyPath] && keyPath) {
+            [components addObject:keyPath];
+        }
+        
+        NSInteger arrayIndex;
+        while (!scanner.isAtEnd) {
+            if ([scanner scanString:@"[" intoString:NULL] &&
+                [scanner scanInteger:&arrayIndex] &&
+                [scanner scanString:@"]" intoString:NULL]) {
+                [components addObject:[NSNumber numberWithInteger:arrayIndex]];
+            } else {
+                if (error) {
+                    *error = ZCREasyBakeParameterError(@"Invalid ingredient path: %@. Arrays must "
+                                                       @"be reference in the format: [<index>]",
+                                                       ingredientPath);
+                }
+                components = nil;
+                break;
+            }
+        }
+    }
+    
+    return [components copy];
+}
 
 - (NSDictionary *)_normalizeTransformers:(NSDictionary *)ingredientTransformers
                                    error:(NSError * __autoreleasing *)error {
@@ -372,7 +475,7 @@
 
 @implementation _ZCREasyRecipeMaker
 
-- (BOOL)addInstructionForProperty:(NSString *)propertyName ingredientName:(NSString *)ingredientName
+- (BOOL)addInstructionForProperty:(NSString *)propertyName ingredientPath:(NSString *)ingredientPath
                       transformer:(id)transformer error:(NSError *__autoreleasing *)error {
     if (!propertyName) {
         if (error) {
@@ -389,9 +492,9 @@
         return NO;
     }
     
-    if (!ingredientName) {
+    if (!ingredientPath) {
         if (error) {
-            *error = ZCREasyBakeParameterError(@"Missing an ingredient name to map to the property.");
+            *error = ZCREasyBakeParameterError(@"Missing an ingredient path to map the property.");
         }
         return NO;
     }
@@ -417,7 +520,7 @@
     }
     
     NSMutableDictionary *mutableMapping = [NSMutableDictionary dictionaryWithDictionary:self.ingredientMapping];
-    mutableMapping[propertyName] = ingredientName;
+    mutableMapping[propertyName] = ingredientPath;
     self.ingredientMapping = mutableMapping;
     
     if (transformer) {

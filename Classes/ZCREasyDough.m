@@ -20,7 +20,7 @@ NSString *const ZCREasyDoughUpdatedNotification = @"com.zachradke.easyBake.easyD
 }
 
 @property (copy, nonatomic) NSString *identifier;
-@property (copy, nonatomic) NSDictionary *ingredients;
+@property (copy, nonatomic) id ingredients;
 @property (strong, nonatomic) ZCREasyRecipe *recipe;
 
 - (instancetype)initWithClass:(Class)doughClass;
@@ -33,7 +33,7 @@ NSString *const ZCREasyDoughUpdatedNotification = @"com.zachradke.easyBake.easyD
 @implementation ZCREasyDough
 
 - (instancetype)initWithIdentifier:(id<NSObject,NSCopying>)identifier
-                       ingredients:(NSDictionary *)ingredients
+                       ingredients:(id)ingredients
                             recipe:(ZCREasyRecipe *)recipe
                              error:(NSError *__autoreleasing *)error {
     if (!identifier) {
@@ -96,7 +96,7 @@ NSString *const ZCREasyDoughUpdatedNotification = @"com.zachradke.easyBake.easyD
     return [chef bake];
 }
 
-- (instancetype)updateWithIngredients:(NSDictionary *)ingredients
+- (instancetype)updateWithIngredients:(id)ingredients
                                recipe:(ZCREasyRecipe *)recipe
                                 error:(NSError *__autoreleasing *)error {
     // We need to manually pass an error pointer to establish if there was an error while finding
@@ -163,18 +163,18 @@ NSString *const ZCREasyDoughUpdatedNotification = @"com.zachradke.easyBake.easyD
         return nil;
     } else {
         return [NSString stringWithFormat:@"com.zachradke.easyBake.%@.notifications.updated",
-                                          NSStringFromClass(self)];
+                NSStringFromClass(self)];
     }
 }
 
-- (NSDictionary *)decomposeWithRecipe:(ZCREasyRecipe *)recipe
-                                error:(NSError *__autoreleasing *)error {
+- (id)decomposeWithRecipe:(ZCREasyRecipe *)recipe
+                    error:(NSError *__autoreleasing *)error {
     // We split this into a private method to prevent subclasses from breaking the behavior
     return [self _decomposeWithRecipe:recipe error:error];
 }
 
-- (NSDictionary *)_decomposeWithRecipe:(ZCREasyRecipe *)recipe
-                                 error:(NSError * __autoreleasing *)error {
+- (id)_decomposeWithRecipe:(ZCREasyRecipe *)recipe
+                     error:(NSError * __autoreleasing *)error {
     if (!recipe) {
         if (error) {
             *error = ZCREasyBakeParameterError(@"Missing a recipe!");
@@ -192,35 +192,100 @@ NSString *const ZCREasyDoughUpdatedNotification = @"com.zachradke.easyBake.easyD
         return nil;
     }
     
-    NSMutableDictionary *ingredients = [NSMutableDictionary dictionary];
+    // We need to determine what object should be the root, either a dictionary or array.
+    id ingredients;
+    NSArray *testComponents = [[recipe.ingredientMappingComponents allValues] firstObject];
+    if ([[testComponents firstObject] isKindOfClass:[NSString class]]) {
+        ingredients = [NSMutableDictionary dictionary];
+    } else {
+        ingredients = [NSMutableArray array];
+    }
+    
     @try {
-        __block id value;
-        [recipe enumerateInstructionsWith:^(NSString *propertyName, NSString *ingredientName, NSValueTransformer *transformer, BOOL *shouldStop) {
+        id value;
+        for (NSString *propertyName in recipe.propertyNames) {
             value = [self valueForKey:propertyName];
             
-            // We only accept reversible value transformations for decomposition
+            NSValueTransformer *transformer = recipe.ingredientTransformers[propertyName];
+            
+            // Only reversible transformations are used during decomposition
             if (transformer && [[transformer class] allowsReverseTransformation]) {
                 value = [transformer reverseTransformedValue:value];
             }
-            
-            // Since we guarantee that all keys in the recipe will be fulfilled in the returned
-            // dictionary, we convert nil values to NSNull
             if (!value) { value = [NSNull null]; }
             
-            ingredients[ingredientName] = value;
-        }];
+            NSArray *components = recipe.ingredientMappingComponents[propertyName];
+            [self _setValue:value forComponents:components mutableIngredients:ingredients];
+        }
     }
     @catch (NSException *exception) {
         if (error) {
             *error = ZCREasyBakeExceptionError(exception);
         }
-        ingredients = nil;
+        return nil;
     }
     
     return [ingredients copy];
 }
 
-- (BOOL)isEqualToIngredients:(NSDictionary *)ingredients
+- (void)_setValue:(id)value forComponents:(NSArray *)ingredientComponents
+mutableIngredients:(id)mutableIngredients {
+    NSParameterAssert(value);
+    NSParameterAssert(mutableIngredients);
+    
+    // Convenience block for filling in an arbitrary location in the ingredient tree
+    void (^fillLocation)(id, id, id) = ^(id location, id fillPiece, id fillValue) {
+        if ([fillPiece isKindOfClass:[NSString class]]) {
+            [location setObject:fillValue forKey:fillPiece];
+        } else {
+            NSUInteger valueIndex = [fillPiece unsignedIntegerValue];
+            for (NSUInteger i = [location count]; i < valueIndex; i++) {
+                [location setObject:[NSNull null] atIndex:i];
+            }
+            [location setObject:fillValue atIndex:valueIndex];
+        }
+    };
+    
+    id currentLocation = mutableIngredients; // Pointer to the current container in the tree.
+    id newLocation; // The next possible container in the tree
+    id placeholderPiece = nil; // Container for a piece that must be resolved by the next piece
+    for (id piece in ingredientComponents) {
+        BOOL isDictionaryPiece = [piece isKindOfClass:[NSString class]];
+        if (placeholderPiece) {
+            // If there is an unresolved piece, we need to create the next location based on the
+            // current piece
+            newLocation = (isDictionaryPiece) ? [NSMutableDictionary dictionary] :
+                                                [NSMutableArray array];
+            fillLocation(currentLocation, placeholderPiece, newLocation);
+            currentLocation = newLocation;
+            placeholderPiece = piece;
+        } else {
+            // If there is no unresolved piece, we check if the next location exists, and if not
+            // we defer resolution till the next piece.
+            newLocation = nil;
+            if (isDictionaryPiece) {
+                newLocation = [currentLocation objectForKey:piece];
+            } else {
+                NSUInteger pieceIndex = [piece unsignedIntegerValue];
+                if ([currentLocation count] > pieceIndex) {
+                    newLocation = [currentLocation objectAtIndex:pieceIndex];
+                }
+            }
+            
+            if (newLocation && newLocation != [NSNull null]) {
+                currentLocation = newLocation;
+            } else {
+                placeholderPiece = piece;
+            }
+        }
+    }
+    
+    // At the very end we need to set the actual value in the last location
+    id lastPiece = [ingredientComponents lastObject];
+    fillLocation(currentLocation, lastPiece, value);
+}
+
+- (BOOL)isEqualToIngredients:(id)ingredients
                   withRecipe:(ZCREasyRecipe *)recipe
                        error:(NSError *__autoreleasing *)error {
     // A recipe is required in this method, otherwise it cannot be determined which keys to check
@@ -294,7 +359,7 @@ NSString *const ZCREasyDoughUpdatedNotification = @"com.zachradke.easyBake.easyD
 
 #pragma mark Private utilities
 
-+ (NSDictionary *)_mappedIngredients:(NSDictionary *)ingredients
++ (NSDictionary *)_mappedIngredients:(id)ingredients
                           withRecipe:(ZCREasyRecipe *)recipe
                                error:(NSError **)error {
     // If there are no ingredients or recipe, we consider the mapping a success and return an
@@ -318,7 +383,7 @@ NSString *const ZCREasyDoughUpdatedNotification = @"com.zachradke.easyBake.easyD
         return nil;
     }
     
-    return [recipe processIngredients:ingredients];
+    return [recipe processIngredients:ingredients error:error];
 }
 
 #pragma mark NSCopying
@@ -327,7 +392,7 @@ NSString *const ZCREasyDoughUpdatedNotification = @"com.zachradke.easyBake.easyD
     // Theoretically if this model is entirely composed of readonly properties we could just return
     // self. However, since we cannot guarantee that, we new instance.
     ZCREasyRecipe *recipe = [[self class] _genericRecipe];
-    NSDictionary *ingredients = [self _decomposeWithRecipe:recipe error:NULL];
+    id ingredients = [self _decomposeWithRecipe:recipe error:NULL];
     if (ingredients) {
         return [[[self class] allocWithZone:zone] initWithIdentifier:_uniqueIdentifier
                                                          ingredients:ingredients
@@ -347,7 +412,7 @@ NSString *const ZCREasyDoughUpdatedNotification = @"com.zachradke.easyBake.easyD
     if (!_allowsSettingValues) {
         if ([[self.class _readonlyPropertyNames] containsObject:key]) {
             NSString *reason = [NSString stringWithFormat:@"Trying to set value for key (%@) "
-                                                          @"when the model is immutable!", key];
+                                @"when the model is immutable!", key];
             NSException *exception = [NSException exceptionWithName:ZCREasyDoughExceptionAlreadyBaked
                                                              reason:reason
                                                            userInfo:nil];

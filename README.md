@@ -1,8 +1,8 @@
 # ZCREasyBake
 
-[![Build Status](https://travis-ci.org/zradke/ZCREasyBake.svg?branch=master)](https://travis-ci.org/zradke/ZCREasyBake) on [master](https://github.com/zradke/ZCREasyBake/tree/master)
+[![Build Status for Master](https://travis-ci.org/zradke/ZCREasyBake.svg?branch=master)](https://travis-ci.org/zradke/ZCREasyBake) on [master](https://github.com/zradke/ZCREasyBake/tree/master)
 
-[![Build Status](https://travis-ci.org/zradke/ZCREasyBake.svg?branch=develop)](https://travis-ci.org/zradke/ZCREasyBake) on [develop](https://github.com/zradke/ZCREasyBake/tree/develop)
+[![Build Status for Develop](https://travis-ci.org/zradke/ZCREasyBake.svg?branch=develop)](https://travis-ci.org/zradke/ZCREasyBake) on [develop](https://github.com/zradke/ZCREasyBake/tree/develop)
 
 A lightweight immutable model framework disguised by friendly food metaphors.
 
@@ -10,7 +10,7 @@ A lightweight immutable model framework disguised by friendly food metaphors.
 
 ## Equipment
 
-To use ZCREasyBake, your project should have a minimum deployment target of iOS 5.1+ and be running with ARC. This hasn't been tested with OSX, but should work in theory…
+To use ZCREasyBake, your project should have a minimum deployment target of iOS 5.1+ or OSX 10.7+ and be running with ARC. However, this project is only unit tested on iOS 7.0+ and OSX 10.9+.
 
 ## Preparing your kitchen
 
@@ -18,7 +18,6 @@ ZCREasyBake can be installed a variety of ways depending on your preference:
 
 * Drag-n-drop files from the `Classes` folder into your project.
 * Add `pod "ZCREasyBake"` to your Podfile for Cocoapods.
-* Build a framework by downloading the project and building the `Framework` target.
 
 However you get the framework into your project, you can import the main header where needed:
 
@@ -33,7 +32,8 @@ Throughout the ZCREasyBake project, you'll encounter some jargon:
 * **Model**: A container for application data that is reusable and serializable. Think of this as a baked good.
 * **Property**: An Objective-C property which controls access to a model's underlying data. ZCREasyBake prefers `readonly` properties when they expose a model's underlying application data.
 * **Identifier**: An arbitrary object which conforms to the `NSObject` and `NSCopying` protocols that can uniquely identify a model across instances.
-* **Ingredients**: The raw data that makes up a model, represented as an `NSDictionary`. This data is typically produced by an external service, such as a web API, and can be processed into models after some work.
+* **Ingredients**: The raw data that makes up a model, represented as an `NSDictionary` or `NSArray`. This data is typically produced by an external service, such as a web API, and can be processed into models after some work.
+* **Ingredient path**: The steps to traverse an ingredient tree of dictionaries and/or arrays to access an ingredient value.
 * **Recipe**: Instructions for preparing ingredients for baking into a model, represented as a `ZCREasyRecipe`. Recipes let us decouple ingredient sources from their final model representations. Recipes are usually model and ingredient-source dependent, but otherwise reusable.
 
 ===
@@ -67,18 +67,31 @@ Your models will need to be populated with ingredients from an ingredient source
 }
 ```
 
-Whatever the ingredient source, the ingredients must be processed into an `NSDictionary` before they can be processed. 
+Whatever the ingredient source, the ingredients must be either an `NSDictionary` or `NSArray` before they can be processed.
 
 ### Defining a recipe
 
 To process raw ingredients into a model, a `ZCREasyRecipe` is used. These recipes are usually model and ingredient-source dependent. For example, we would create a single recipe for the `User` model and JSON ingredient source defined above.
 
-All recipes begin with an `NSDictionary` mapping, which is required. The keys are property keys of the model to populate, and the values are the corresponding ingredient names from the ingredient-source.
+All recipes begin with an `NSDictionary` mapping, which is required. The keys are property keys of the model to populate, and the values are the corresponding ingredient paths from the ingredient-source.
 
 ```
 NSDictionary *mapping = @{@"name": @"name",
                           @"unreadMessages": @"unread_messages",
                           @"updatedAt": @"updated_at"};
+```
+
+The ingredient path is represented as a string, but may use dot notation to indicate a dictionary-key traversal, or the form `[<index>]` to indicate an array-index traversal. For example:
+
+```
+// The mapping…
+NSDictionary *mapping = @{@"key": @"values[0].key"};
+
+// Which corresponds to this structure…
+NSDictionary *ingredientSource = @{@"values": @[@{@"key": @"fooBar"}]};
+
+// Would produce these processed ingredients…
+NSDictionary *processedIngredients = @{@"key": @"fooBar"};
 ```
 
 Recipes may also optionally provide a dictionary of transformers to use for processing the raw ingredients into different objects. As with the ingredient mapping, the keys are property keys on the model which should be transformed. The values are `NSValueTransformer` instances or `NSStrings`. If strings are used, they must be registered to value transformers.
@@ -121,7 +134,7 @@ Your model will inherit the designated initializers from `ZCREasyDough`:
 
 ```
 - (instancetype)initWithIdentifier:(id<NSObject,NSCopying>)identifier
-                       ingredients:(NSDictionary *)ingredients
+                       ingredients:(id)ingredients
                             recipe:(ZCREasyRecipe *)recipe
                              error:(NSError **)error;
 + (instancetype)makeWith:(void (^)(id<ZCREasyBaker> baker))constructionBlock;
@@ -182,11 +195,13 @@ NSDictionary *ingredients = @{@"name": @"Zachary Radke"};
 
 ### Decomposing an instance
 
-From ingredients it was made and to ingredients it shall return! A model can be decomposed using a given recipe into an ingredients dictionary:
+From ingredients it was made and to ingredients it shall return! A model can be decomposed using a given recipe:
 
 ```
 NSDictionary *ingredients = [updatedUser decomposeWithRecipe:[User JSONRecipe] error:NULL];
 ```
+
+The resulting type will either be an `NSDictionary` or an `NSArray` depending on what the recipe's mapping suggests the root object is.
 
 If the recipe supplies value transformers, they will be applied to the model's value **if the transformer supports reverse transformations**.
 
@@ -202,6 +217,14 @@ Running into difficulties with your models? Maybe these tips can help:
 
 #### Recipes
 * Ingredient mapping keys **must** be settable on the receiving model via `setValue:forKey:`.
+* Ingredient paths **must** all share the same root object in an ingredient map. For example:
+
+```
+// Invalid mapping since key1 indicates a dictionary and key2 indicates an array
+NSDictionary *invalidMapping = @{@"key1": @"key_1",
+                                 @"key2": @"[0]"};
+```
+
 * Ingredient keys **do not** all need to be represented in a recipe.
 * Model property names **do not** all need to be represented in a recipe.
 * If ingredient transformers are provided, the keys **must** be present in the ingredient mapping.

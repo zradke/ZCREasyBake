@@ -182,7 +182,7 @@
 
 - (void)testUpdateWithGettingException {
     recipe = [recipe modifyWith:^(id<ZCREasyRecipeMaker> recipeMaker) {
-        [recipeMaker addInstructionForProperty:@"brokenGetter" ingredientName:@"brokenGetter"
+        [recipeMaker addInstructionForProperty:@"brokenGetter" ingredientPath:@"brokenGetter"
                                    transformer:nil error:NULL];
     }];
     
@@ -221,7 +221,7 @@
 
 - (void)testDecomposeWithGettingException {
     recipe = [recipe modifyWith:^(id<ZCREasyRecipeMaker> recipeMaker) {
-        [recipeMaker addInstructionForProperty:@"brokenGetter" ingredientName:@"brokenGetter"
+        [recipeMaker addInstructionForProperty:@"brokenGetter" ingredientPath:@"brokenGetter"
                                    transformer:nil error:NULL];
     }];
     
@@ -266,7 +266,7 @@
 
 - (void)testIsEqualWithGettingException {
     recipe = [recipe modifyWith:^(id<ZCREasyRecipeMaker> recipeMaker) {
-        [recipeMaker addInstructionForProperty:@"brokenGetter" ingredientName:@"brokenGetter"
+        [recipeMaker addInstructionForProperty:@"brokenGetter" ingredientPath:@"brokenGetter"
                                    transformer:nil error:NULL];
     }];
     

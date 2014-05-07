@@ -26,8 +26,8 @@ FOUNDATION_EXPORT NSString *const ZCREasyDoughUpdatedNotification;
  *  Semi-abstract and doughy class designed for immutable model subclassing.
  *
  *  ZCREasyDough introspects it's properties, and uses a provided recipe (with instructions for
- *  mapping property names to their corresponding values in the data) and ingredients (the data, in
- *  NSDictionary form) to prepare an instance, or update an existing instance. Uniqueness is
+ *  mapping property names to their corresponding values in the data) and ingredients (as either an
+ *  array or dictionary) to prepare an instance, or update an existing instance. Uniqueness is
  *  determined solely by the identifier passed during initialization, and regardless of what
  *  ingredients or recipe were used to prepare it. This can make maintaining a canonical set of
  *  ZCREasyDough subclassed instances easier. To determine if an instance is represented by a given
@@ -71,17 +71,15 @@ FOUNDATION_EXPORT NSString *const ZCREasyDoughUpdatedNotification;
 /**
  *  This is the designated initializer for this class. This method will generate a new instance with
  *  the passed unique identifier, and hydrate that instance with the passed ingredients using the
- *  passed recipe. The ingredients should be mapped from ingredient names as NSStrings to ingredient
- *  values. The recipe processes those ingredients for use by this class. Only keys in both the
- *  recipe's [ZCREasyRecipe ingredientMapping] and ingredients will be populated. To unset a
+ *  passed recipe. The recipe processes those ingredients for use by this class. Only keys in both
+ *  the recipe's [ZCREasyRecipe ingredientMapping] and ingredients will be populated. To unset a
  *  property, NSNull can be passed as the ingredient value, which will automatically be remapped to
  *  nil.
  *
  *  @param identifier  The unique identifier of this instance. This will be used to determine
  *                     equality for this instance, and should not be nil.
- *  @param ingredients The ingredients to use to populate this instance. The ingredients are a
- *                     dictionary of ingredient names as NSStrings to the ingredient value. This may
- *                     be nil.
+ *  @param ingredients The ingredients to use to populate this instance. The ingredients must be
+ *                     either an array or dictionary.
  *  @param recipe      The recipe to follow while populating the instance. If the ingredients are
  *                     not nil, this must also not be nil.
  *  @param error       An optional pointer to an error which may be populated during the course of
@@ -90,9 +88,8 @@ FOUNDATION_EXPORT NSString *const ZCREasyDoughUpdatedNotification;
  *  @return A new populated instance or nil if an error occurs.
  */
 - (instancetype)initWithIdentifier:(id<NSObject,NSCopying>)identifier
-                       ingredients:(NSDictionary *)ingredients
-                            recipe:(ZCREasyRecipe *)recipe
-                             error:(NSError **)error;
+                       ingredients:(id)ingredients
+                            recipe:(ZCREasyRecipe *)recipe error:(NSError **)error;
 
 /**
  *  Convenience builder for generating fresh instances. This method takes a block and passes it an
@@ -126,9 +123,8 @@ FOUNDATION_EXPORT NSString *const ZCREasyDoughUpdatedNotification;
  *  ZCREasyDoughUpdateNotification. If the ingredients *are* equal, this method will simply return
  *  self and no notfications will be posted.
  *
- *  @param ingredients The ingredients to update this instance with. The ingredients are a
- *                     dictionary of ingredient names as NSStrings for ingredient values. This must
- *                     not be nil.
+ *  @param ingredients The ingredients to update this instance with. The ingredients must be either
+ *                     a dictionary or array and must not be nil.
  *  @param recipe      The recipe to follow for updating this instance. This must not be nil.
  *  @param error       An optional pointer to an error which may be populated during the course of
  *                     updating the instance.
@@ -136,7 +132,7 @@ FOUNDATION_EXPORT NSString *const ZCREasyDoughUpdatedNotification;
  *  @return A new instance with updated properties and a matching identifier, the same instance if
  *          no changes were found, or nil if an error occured.
  */
-- (instancetype)updateWithIngredients:(NSDictionary *)ingredients
+- (instancetype)updateWithIngredients:(id)ingredients
                                recipe:(ZCREasyRecipe *)recipe
                                 error:(NSError **)error;
 
@@ -174,10 +170,11 @@ FOUNDATION_EXPORT NSString *const ZCREasyDoughUpdatedNotification;
  */
 
 /**
- *  Attempts to convert an instance into an NSDictionary of ingredients using a passed recipe. The
- *  recipe determines what ingredient keys are used, as well as what properties are decomposed. All
- *  keys in the recipe will be populated in the resulting dictionary, with nil values converted to
- *  NSSNull values. The instances values can be transformed by the recipe's 
+ *  Attempts to convert an instance into ingredients using a passed recipe. The recipe determines
+ *  what ingredient keys are used, as well as what properties are decomposed. If the root of the
+ *  ingredient mapping is an array, the resulting ingredients will be an array, and likewise for
+ *  dictionaries. All keys in the recipe will be populated in the resulting dictionary, with nil
+ *  values converted to NSSNull values. The instances values can be transformed by the recipe's
  *  [ZCREasyRecipe ingredientTransformers] property **if the transformer supports reverse
  *  transformations**.
  *
@@ -188,10 +185,10 @@ FOUNDATION_EXPORT NSString *const ZCREasyDoughUpdatedNotification;
  *  @param error  An optional error pointer which may be populated during the course of decomposing
  *                the instance.
  *
- *  @return A dictionary of ingredient names mapped to corresponding values, or nil if an error
- *  occurs.
+ *  @return Ingredients representing the current model using the given recipe, or nil if an error
+ *          occurs.
  */
-- (NSDictionary *)decomposeWithRecipe:(ZCREasyRecipe *)recipe error:(NSError **)error;
+- (id)decomposeWithRecipe:(ZCREasyRecipe *)recipe error:(NSError **)error;
 
 /**
  *  Checks if the ingredients and recipe passed are represented by the current instance. Only keys
@@ -203,9 +200,9 @@ FOUNDATION_EXPORT NSString *const ZCREasyDoughUpdatedNotification;
  *  checked with the ingredients. For canonical equality, the isEqual: method should be used, which
  *  checks the uniqueIdentifier.
  *
- *  @param ingredients The ingredients to check. The ingredients are a dictionary of ingredient
- *                     names as NSStrings for ingredient values. NSNull values will be remapped to
- *                     nil when comparing with the actual instance values. This must not be nil.
+ *  @param ingredients The ingredients to check. The ingredients are a dictionary or array. NSNull
+ *                     values will be remapped to nil when comparing with the actual instance
+ *                     values. This must not be nil.
  *  @param recipe      The recipe to use for checking the ingredients. This must not be nil.
  *  @param error       An optional error pointer which may be populated while checking the equality
  *                     of the instance.
@@ -213,13 +210,12 @@ FOUNDATION_EXPORT NSString *const ZCREasyDoughUpdatedNotification;
  *  @return YES if the ingredients are represented by the instance, NO if they are not or an error
  *  occured.
  */
-- (BOOL)isEqualToIngredients:(NSDictionary *)ingredients
-                  withRecipe:(ZCREasyRecipe *)recipe
+- (BOOL)isEqualToIngredients:(id)ingredients withRecipe:(ZCREasyRecipe *)recipe
                        error:(NSError **)error;
 
 /**
  *  A generic recipe which can be a starting point for developing other recipes, or as an easy
- *  recipe for getting a dictionary representation of the class.
+ *  recipe for getting a dictionary representation of the class via decomposeWithRecipe:error:.
  *
  *  @see allPropertyNames
  *
@@ -269,10 +265,10 @@ FOUNDATION_EXPORT NSString *const ZCREasyDoughUpdatedNotification;
 @property (copy, nonatomic) NSString *identifier;
 
 /**
- *  The ingredients to hydrate the new instance with. This may be nil, but if not, the recipe must
- *  also be set.
+ *  The ingredients to hydrate the new instance with. This must be either a dictionary or array.
+ *  This may be nil, but if not, the recipe must also be set.
  */
-@property (copy, nonatomic) NSDictionary *ingredients;
+@property (copy, nonatomic) id ingredients;
 
 /**
  *  The recipe to follow for populating the new instance with ingredients. If the ingredients are

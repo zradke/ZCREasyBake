@@ -47,7 +47,7 @@
     name = @"TestRecipe";
     mapping = @{@"key1": @"key_1",
                 @"key2": @"key_2",
-                @"key3": @"key_3"};
+                @"key3": @"key_3[0]"};
     transformers = @{@"key1": @"ZCRReversibleTransformer",
                      @"key2": [ZCROneWayTransformer new]};
     
@@ -100,6 +100,14 @@
                           @"The made recipe should be the same as the designated initializer recipe.");
 }
 
+- (void)testIngredientMappingComponents
+{
+    NSArray *components = recipe.ingredientMappingComponents[@"key3"];
+    NSArray *expectedComponents = @[@"key_3", @0];
+    XCTAssertEqualObjects(components, expectedComponents,
+                          @"The components should be properly broken down.");
+}
+
 - (void)testPropertyNames {
     NSSet *expectedNames = [NSSet setWithArray:[mapping allKeys]];
     XCTAssertEqualObjects(recipe.propertyNames, expectedNames,
@@ -109,14 +117,14 @@
 - (void)testModifyWith {
     ZCREasyRecipe *modifiedRecipe = [recipe modifyWith:^(id<ZCREasyRecipeMaker> recipeMaker) {
         [recipeMaker removeInstructionForProperty:@"key2" error:NULL];
-        [recipeMaker addInstructionForProperty:@"key4" ingredientName:@"key_4"
+        [recipeMaker addInstructionForProperty:@"key4" ingredientPath:@"key_4"
                                    transformer:nil error:NULL];
     }];
     
     XCTAssertEqualObjects(modifiedRecipe.name, recipe.name, @"The name should remain the same");
     
     NSDictionary *expectedMapping = @{@"key1": @"key_1",
-                                      @"key3": @"key_3",
+                                      @"key3": @"key_3[0]",
                                       @"key4": @"key_4"};
     XCTAssertEqualObjects(modifiedRecipe.ingredientMapping, expectedMapping,
                           @"The ingredient mapping should be modified");
@@ -128,13 +136,15 @@
 
 - (void)testProcessIngredients {
     NSDictionary *ingredients = @{@"key_1": @"test1",
-                                  @"key_2": @"test2"};
-    NSDictionary *processedIngredients = [recipe processIngredients:ingredients];
+                                  @"key_3": @[@"test2", @"test3"]};
+    NSError *error;
+    NSDictionary *processedIngredients = [recipe processIngredients:ingredients error:&error];
     
     NSDictionary *expectedIngredients = @{@"key1": @"TEST1",
-                                          @"key2": @"TEST2"};
+                                          @"key3": @"test2"};
     XCTAssertEqualObjects(expectedIngredients, processedIngredients,
                           @"The ingredients should be processed by the recipe");
+    XCTAssertNil(error, @"There should be no error.");
 }
 
 @end
