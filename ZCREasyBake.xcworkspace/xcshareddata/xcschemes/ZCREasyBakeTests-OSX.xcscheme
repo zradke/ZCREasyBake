@@ -9,28 +9,14 @@
          <BuildActionEntry
             buildForTesting = "YES"
             buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "16ADF09818F5E2F700BF0852"
-               BuildableName = "libZCREasyBake.a"
-               BlueprintName = "ZCREasyBake"
-               ReferencedContainer = "container:ZCREasyBake.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "NO"
             buildForProfiling = "NO"
             buildForArchiving = "NO"
             buildForAnalyzing = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "16ADF0A818F5E2F900BF0852"
-               BuildableName = "ZCREasyBakeTests.xctest"
-               BlueprintName = "ZCREasyBakeTests"
+               BlueprintIdentifier = "166B6693191AA48C00CAAB0E"
+               BuildableName = "ZCREasyBakeTests-OSX.xctest"
+               BlueprintName = "ZCREasyBakeTests-OSX"
                ReferencedContainer = "container:ZCREasyBake.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -42,6 +28,16 @@
       shouldUseLaunchSchemeArgsEnv = "YES"
       buildConfiguration = "Debug">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "166B6693191AA48C00CAAB0E"
+               BuildableName = "ZCREasyBakeTests-OSX.xctest"
+               BlueprintName = "ZCREasyBakeTests-OSX"
+               ReferencedContainer = "container:ZCREasyBake.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

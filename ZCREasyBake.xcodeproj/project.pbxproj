@@ -25,23 +25,37 @@
 		16146A4818FC5997008C0EE9 /* ZCREasyBake.h in Headers */ = {isa = PBXBuildFile; fileRef = 16ADF0A118F5E2F900BF0852 /* ZCREasyBake.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		16146A4918FC5997008C0EE9 /* ZCREasyProperty.h in Headers */ = {isa = PBXBuildFile; fileRef = 16ADF0C918F5EB6500BF0852 /* ZCREasyProperty.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		16146A4A18FC5997008C0EE9 /* ZCREasyDough.h in Headers */ = {isa = PBXBuildFile; fileRef = 16ADF0C218F5E40D00BF0852 /* ZCREasyDough.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		16836DD118F8B32200FD86D5 /* ZCREasyPropertyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 16836DD018F8B32200FD86D5 /* ZCREasyPropertyTests.m */; };
-		16836DD318F8B33300FD86D5 /* ZCREasyDoughTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 16836DD218F8B33300FD86D5 /* ZCREasyDoughTests.m */; };
+		166B6673191AA41200CAAB0E /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16ADF0AA18F5E2F900BF0852 /* XCTest.framework */; };
+		166B6674191AA41200CAAB0E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16ADF09C18F5E2F900BF0852 /* Foundation.framework */; };
+		166B6675191AA41200CAAB0E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16ADF0AD18F5E2F900BF0852 /* UIKit.framework */; };
+		166B667B191AA41200CAAB0E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 166B6679191AA41200CAAB0E /* InfoPlist.strings */; };
+		166B6682191AA45600CAAB0E /* ZCREasyPropertyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 16836DD018F8B32200FD86D5 /* ZCREasyPropertyTests.m */; };
+		166B6683191AA45600CAAB0E /* ZCREasyRecipeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 74F6BD351909DADE0093F1F7 /* ZCREasyRecipeTests.m */; };
+		166B6684191AA45600CAAB0E /* ZCREasyRecipeBoxTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 74F6BD371909DAE80093F1F7 /* ZCREasyRecipeBoxTests.m */; };
+		166B6685191AA45600CAAB0E /* ZCREasyDoughTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 16836DD218F8B33300FD86D5 /* ZCREasyDoughTests.m */; };
+		166B6686191AA45600CAAB0E /* ZCREasyDoughErrorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 74F6BD391909DAF40093F1F7 /* ZCREasyDoughErrorTests.m */; };
+		166B6695191AA48C00CAAB0E /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16ADF0AA18F5E2F900BF0852 /* XCTest.framework */; };
+		166B669B191AA48C00CAAB0E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 166B6699191AA48C00CAAB0E /* InfoPlist.strings */; };
+		166B66A2191AA4BA00CAAB0E /* ZCREasyPropertyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 16836DD018F8B32200FD86D5 /* ZCREasyPropertyTests.m */; };
+		166B66A3191AA4BA00CAAB0E /* ZCREasyRecipeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 74F6BD351909DADE0093F1F7 /* ZCREasyRecipeTests.m */; };
+		166B66A4191AA4BA00CAAB0E /* ZCREasyRecipeBoxTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 74F6BD371909DAE80093F1F7 /* ZCREasyRecipeBoxTests.m */; };
+		166B66A5191AA4BA00CAAB0E /* ZCREasyDoughTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 16836DD218F8B33300FD86D5 /* ZCREasyDoughTests.m */; };
+		166B66A6191AA4BA00CAAB0E /* ZCREasyDoughErrorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 74F6BD391909DAF40093F1F7 /* ZCREasyDoughErrorTests.m */; };
+		166B66AF191AA64E00CAAB0E /* ZCREasyError.m in Sources */ = {isa = PBXBuildFile; fileRef = 74F6BD32190985C20093F1F7 /* ZCREasyError.m */; };
+		166B66B1191AA64E00CAAB0E /* ZCREasyProperty.m in Sources */ = {isa = PBXBuildFile; fileRef = 16ADF0CA18F5EB6500BF0852 /* ZCREasyProperty.m */; };
+		166B66B3191AA64E00CAAB0E /* ZCREasyRecipe.m in Sources */ = {isa = PBXBuildFile; fileRef = 74F6BD2E1909781B0093F1F7 /* ZCREasyRecipe.m */; };
+		166B66B5191AA64E00CAAB0E /* ZCREasyDough.m in Sources */ = {isa = PBXBuildFile; fileRef = 16ADF0C318F5E40D00BF0852 /* ZCREasyDough.m */; };
+		166B66B8191AA66B00CAAB0E /* ZCREasyError.m in Sources */ = {isa = PBXBuildFile; fileRef = 74F6BD32190985C20093F1F7 /* ZCREasyError.m */; };
+		166B66BA191AA66B00CAAB0E /* ZCREasyProperty.m in Sources */ = {isa = PBXBuildFile; fileRef = 16ADF0CA18F5EB6500BF0852 /* ZCREasyProperty.m */; };
+		166B66BC191AA66B00CAAB0E /* ZCREasyRecipe.m in Sources */ = {isa = PBXBuildFile; fileRef = 74F6BD2E1909781B0093F1F7 /* ZCREasyRecipe.m */; };
+		166B66BE191AA66B00CAAB0E /* ZCREasyDough.m in Sources */ = {isa = PBXBuildFile; fileRef = 16ADF0C318F5E40D00BF0852 /* ZCREasyDough.m */; };
 		16ADF09D18F5E2F900BF0852 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16ADF09C18F5E2F900BF0852 /* Foundation.framework */; };
-		16ADF0AB18F5E2F900BF0852 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16ADF0AA18F5E2F900BF0852 /* XCTest.framework */; };
-		16ADF0AC18F5E2F900BF0852 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16ADF09C18F5E2F900BF0852 /* Foundation.framework */; };
-		16ADF0AE18F5E2F900BF0852 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16ADF0AD18F5E2F900BF0852 /* UIKit.framework */; };
-		16ADF0B118F5E2F900BF0852 /* libZCREasyBake.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 16ADF09918F5E2F900BF0852 /* libZCREasyBake.a */; };
-		16ADF0B718F5E2F900BF0852 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 16ADF0B518F5E2F900BF0852 /* InfoPlist.strings */; };
 		16ADF0C418F5E40D00BF0852 /* ZCREasyDough.m in Sources */ = {isa = PBXBuildFile; fileRef = 16ADF0C318F5E40D00BF0852 /* ZCREasyDough.m */; };
 		16ADF0CB18F5EB6500BF0852 /* ZCREasyProperty.m in Sources */ = {isa = PBXBuildFile; fileRef = 16ADF0CA18F5EB6500BF0852 /* ZCREasyProperty.m */; };
 		74F6BD2F1909781B0093F1F7 /* ZCREasyRecipe.h in Headers */ = {isa = PBXBuildFile; fileRef = 74F6BD2D1909781B0093F1F7 /* ZCREasyRecipe.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		74F6BD301909781B0093F1F7 /* ZCREasyRecipe.m in Sources */ = {isa = PBXBuildFile; fileRef = 74F6BD2E1909781B0093F1F7 /* ZCREasyRecipe.m */; };
 		74F6BD33190985C20093F1F7 /* ZCREasyError.h in Headers */ = {isa = PBXBuildFile; fileRef = 74F6BD31190985C20093F1F7 /* ZCREasyError.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		74F6BD34190985C20093F1F7 /* ZCREasyError.m in Sources */ = {isa = PBXBuildFile; fileRef = 74F6BD32190985C20093F1F7 /* ZCREasyError.m */; };
-		74F6BD361909DADE0093F1F7 /* ZCREasyRecipeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 74F6BD351909DADE0093F1F7 /* ZCREasyRecipeTests.m */; };
-		74F6BD381909DAE80093F1F7 /* ZCREasyRecipeBoxTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 74F6BD371909DAE80093F1F7 /* ZCREasyRecipeBoxTests.m */; };
-		74F6BD3A1909DAF40093F1F7 /* ZCREasyDoughErrorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 74F6BD391909DAF40093F1F7 /* ZCREasyDoughErrorTests.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,26 +66,22 @@
 			remoteGlobalIDString = 16ADF09818F5E2F700BF0852;
 			remoteInfo = ZCREasyBake;
 		};
-		16ADF0AF18F5E2F900BF0852 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 16ADF09118F5E2F700BF0852 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 16ADF09818F5E2F700BF0852;
-			remoteInfo = ZCREasyBake;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		166B6672191AA41100CAAB0E /* ZCREasyBakeTests-iOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ZCREasyBakeTests-iOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		166B6678191AA41200CAAB0E /* ZCREasyBakeTests-iOS-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ZCREasyBakeTests-iOS-Info.plist"; sourceTree = "<group>"; };
+		166B667A191AA41200CAAB0E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		166B6694191AA48C00CAAB0E /* ZCREasyBakeTests-OSX.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ZCREasyBakeTests-OSX.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		166B6698191AA48C00CAAB0E /* ZCREasyBakeTests-OSX-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ZCREasyBakeTests-OSX-Info.plist"; sourceTree = "<group>"; };
+		166B669A191AA48C00CAAB0E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		16836DD018F8B32200FD86D5 /* ZCREasyPropertyTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZCREasyPropertyTests.m; sourceTree = "<group>"; };
 		16836DD218F8B33300FD86D5 /* ZCREasyDoughTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZCREasyDoughTests.m; sourceTree = "<group>"; };
 		16ADF09918F5E2F900BF0852 /* libZCREasyBake.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libZCREasyBake.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		16ADF09C18F5E2F900BF0852 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		16ADF0A118F5E2F900BF0852 /* ZCREasyBake.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZCREasyBake.h; sourceTree = "<group>"; };
-		16ADF0A918F5E2F900BF0852 /* ZCREasyBakeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ZCREasyBakeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		16ADF0AA18F5E2F900BF0852 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		16ADF0AD18F5E2F900BF0852 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
-		16ADF0B418F5E2F900BF0852 /* ZCREasyBakeTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ZCREasyBakeTests-Info.plist"; sourceTree = "<group>"; };
-		16ADF0B618F5E2F900BF0852 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		16ADF0C218F5E40D00BF0852 /* ZCREasyDough.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZCREasyDough.h; sourceTree = "<group>"; };
 		16ADF0C318F5E40D00BF0852 /* ZCREasyDough.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZCREasyDough.m; sourceTree = "<group>"; };
 		16ADF0C918F5EB6500BF0852 /* ZCREasyProperty.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZCREasyProperty.h; sourceTree = "<group>"; };
@@ -88,6 +98,24 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		166B666F191AA41100CAAB0E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				166B6673191AA41200CAAB0E /* XCTest.framework in Frameworks */,
+				166B6675191AA41200CAAB0E /* UIKit.framework in Frameworks */,
+				166B6674191AA41200CAAB0E /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		166B6691191AA48C00CAAB0E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				166B6695191AA48C00CAAB0E /* XCTest.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		16ADF09618F5E2F700BF0852 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -96,20 +124,27 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		16ADF0A618F5E2F900BF0852 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				16ADF0AB18F5E2F900BF0852 /* XCTest.framework in Frameworks */,
-				16ADF0AE18F5E2F900BF0852 /* UIKit.framework in Frameworks */,
-				16ADF0B118F5E2F900BF0852 /* libZCREasyBake.a in Frameworks */,
-				16ADF0AC18F5E2F900BF0852 /* Foundation.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		166B6676191AA41200CAAB0E /* ZCREasyBakeTests-iOS */ = {
+			isa = PBXGroup;
+			children = (
+				166B6678191AA41200CAAB0E /* ZCREasyBakeTests-iOS-Info.plist */,
+				166B6679191AA41200CAAB0E /* InfoPlist.strings */,
+			);
+			path = "ZCREasyBakeTests-iOS";
+			sourceTree = "<group>";
+		};
+		166B6696191AA48C00CAAB0E /* ZCREasyBakeTests-OSX */ = {
+			isa = PBXGroup;
+			children = (
+				166B6698191AA48C00CAAB0E /* ZCREasyBakeTests-OSX-Info.plist */,
+				166B6699191AA48C00CAAB0E /* InfoPlist.strings */,
+			);
+			path = "ZCREasyBakeTests-OSX";
+			sourceTree = "<group>";
+		};
 		16ADF09018F5E2F700BF0852 = {
 			isa = PBXGroup;
 			children = (
@@ -124,7 +159,8 @@
 			isa = PBXGroup;
 			children = (
 				16ADF09918F5E2F900BF0852 /* libZCREasyBake.a */,
-				16ADF0A918F5E2F900BF0852 /* ZCREasyBakeTests.xctest */,
+				166B6672191AA41100CAAB0E /* ZCREasyBakeTests-iOS.xctest */,
+				166B6694191AA48C00CAAB0E /* ZCREasyBakeTests-OSX.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -165,18 +201,10 @@
 				74F6BD371909DAE80093F1F7 /* ZCREasyRecipeBoxTests.m */,
 				16836DD218F8B33300FD86D5 /* ZCREasyDoughTests.m */,
 				74F6BD391909DAF40093F1F7 /* ZCREasyDoughErrorTests.m */,
-				16ADF0B318F5E2F900BF0852 /* Supporting Files */,
+				166B6676191AA41200CAAB0E /* ZCREasyBakeTests-iOS */,
+				166B6696191AA48C00CAAB0E /* ZCREasyBakeTests-OSX */,
 			);
 			path = Tests;
-			sourceTree = "<group>";
-		};
-		16ADF0B318F5E2F900BF0852 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				16ADF0B418F5E2F900BF0852 /* ZCREasyBakeTests-Info.plist */,
-				16ADF0B518F5E2F900BF0852 /* InfoPlist.strings */,
-			);
-			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -197,6 +225,40 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		166B6671191AA41100CAAB0E /* ZCREasyBakeTests-iOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 166B6681191AA41200CAAB0E /* Build configuration list for PBXNativeTarget "ZCREasyBakeTests-iOS" */;
+			buildPhases = (
+				166B666E191AA41100CAAB0E /* Sources */,
+				166B666F191AA41100CAAB0E /* Frameworks */,
+				166B6670191AA41100CAAB0E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "ZCREasyBakeTests-iOS";
+			productName = "ZCREasyBakeTests-iOS";
+			productReference = 166B6672191AA41100CAAB0E /* ZCREasyBakeTests-iOS.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		166B6693191AA48C00CAAB0E /* ZCREasyBakeTests-OSX */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 166B669F191AA48C00CAAB0E /* Build configuration list for PBXNativeTarget "ZCREasyBakeTests-OSX" */;
+			buildPhases = (
+				166B6690191AA48C00CAAB0E /* Sources */,
+				166B6691191AA48C00CAAB0E /* Frameworks */,
+				166B6692191AA48C00CAAB0E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "ZCREasyBakeTests-OSX";
+			productName = "ZCREasyBakeTests-OSX";
+			productReference = 166B6694191AA48C00CAAB0E /* ZCREasyBakeTests-OSX.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		16ADF09818F5E2F700BF0852 /* ZCREasyBake */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 16ADF0BC18F5E2F900BF0852 /* Build configuration list for PBXNativeTarget "ZCREasyBake" */;
@@ -214,24 +276,6 @@
 			productName = ZCREasyBake;
 			productReference = 16ADF09918F5E2F900BF0852 /* libZCREasyBake.a */;
 			productType = "com.apple.product-type.library.static";
-		};
-		16ADF0A818F5E2F900BF0852 /* ZCREasyBakeTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 16ADF0BF18F5E2F900BF0852 /* Build configuration list for PBXNativeTarget "ZCREasyBakeTests" */;
-			buildPhases = (
-				16ADF0A518F5E2F900BF0852 /* Sources */,
-				16ADF0A618F5E2F900BF0852 /* Frameworks */,
-				16ADF0A718F5E2F900BF0852 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				16ADF0B018F5E2F900BF0852 /* PBXTargetDependency */,
-			);
-			name = ZCREasyBakeTests;
-			productName = ZCREasyBakeTests;
-			productReference = 16ADF0A918F5E2F900BF0852 /* ZCREasyBakeTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -255,18 +299,27 @@
 			projectRoot = "";
 			targets = (
 				16ADF09818F5E2F700BF0852 /* ZCREasyBake */,
-				16ADF0A818F5E2F900BF0852 /* ZCREasyBakeTests */,
 				16146A4C18FC5A25008C0EE9 /* Framework */,
+				166B6671191AA41100CAAB0E /* ZCREasyBakeTests-iOS */,
+				166B6693191AA48C00CAAB0E /* ZCREasyBakeTests-OSX */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		16ADF0A718F5E2F900BF0852 /* Resources */ = {
+		166B6670191AA41100CAAB0E /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				16ADF0B718F5E2F900BF0852 /* InfoPlist.strings in Resources */,
+				166B667B191AA41200CAAB0E /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		166B6692191AA48C00CAAB0E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				166B669B191AA48C00CAAB0E /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -306,6 +359,38 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		166B666E191AA41100CAAB0E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				166B66B8191AA66B00CAAB0E /* ZCREasyError.m in Sources */,
+				166B66BA191AA66B00CAAB0E /* ZCREasyProperty.m in Sources */,
+				166B66BC191AA66B00CAAB0E /* ZCREasyRecipe.m in Sources */,
+				166B66BE191AA66B00CAAB0E /* ZCREasyDough.m in Sources */,
+				166B6682191AA45600CAAB0E /* ZCREasyPropertyTests.m in Sources */,
+				166B6683191AA45600CAAB0E /* ZCREasyRecipeTests.m in Sources */,
+				166B6684191AA45600CAAB0E /* ZCREasyRecipeBoxTests.m in Sources */,
+				166B6685191AA45600CAAB0E /* ZCREasyDoughTests.m in Sources */,
+				166B6686191AA45600CAAB0E /* ZCREasyDoughErrorTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		166B6690191AA48C00CAAB0E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				166B66AF191AA64E00CAAB0E /* ZCREasyError.m in Sources */,
+				166B66B1191AA64E00CAAB0E /* ZCREasyProperty.m in Sources */,
+				166B66B3191AA64E00CAAB0E /* ZCREasyRecipe.m in Sources */,
+				166B66B5191AA64E00CAAB0E /* ZCREasyDough.m in Sources */,
+				166B66A2191AA4BA00CAAB0E /* ZCREasyPropertyTests.m in Sources */,
+				166B66A3191AA4BA00CAAB0E /* ZCREasyRecipeTests.m in Sources */,
+				166B66A4191AA4BA00CAAB0E /* ZCREasyRecipeBoxTests.m in Sources */,
+				166B66A5191AA4BA00CAAB0E /* ZCREasyDoughTests.m in Sources */,
+				166B66A6191AA4BA00CAAB0E /* ZCREasyDoughErrorTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		16ADF09518F5E2F700BF0852 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -317,18 +402,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		16ADF0A518F5E2F900BF0852 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				74F6BD361909DADE0093F1F7 /* ZCREasyRecipeTests.m in Sources */,
-				16836DD318F8B33300FD86D5 /* ZCREasyDoughTests.m in Sources */,
-				16836DD118F8B32200FD86D5 /* ZCREasyPropertyTests.m in Sources */,
-				74F6BD381909DAE80093F1F7 /* ZCREasyRecipeBoxTests.m in Sources */,
-				74F6BD3A1909DAF40093F1F7 /* ZCREasyDoughErrorTests.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -337,18 +410,21 @@
 			target = 16ADF09818F5E2F700BF0852 /* ZCREasyBake */;
 			targetProxy = 16146A5018FC5A31008C0EE9 /* PBXContainerItemProxy */;
 		};
-		16ADF0B018F5E2F900BF0852 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 16ADF09818F5E2F700BF0852 /* ZCREasyBake */;
-			targetProxy = 16ADF0AF18F5E2F900BF0852 /* PBXContainerItemProxy */;
-		};
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		16ADF0B518F5E2F900BF0852 /* InfoPlist.strings */ = {
+		166B6679191AA41200CAAB0E /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				16ADF0B618F5E2F900BF0852 /* en */,
+				166B667A191AA41200CAAB0E /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		166B6699191AA48C00CAAB0E /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				166B669A191AA48C00CAAB0E /* en */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -367,6 +443,83 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		166B667F191AA41200CAAB0E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "Tests/ZCREasyBakeTests-iOS/ZCREasyBakeTests-iOS-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Debug;
+		};
+		166B6680191AA41200CAAB0E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				INFOPLIST_FILE = "Tests/ZCREasyBakeTests-iOS/ZCREasyBakeTests-iOS-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Release;
+		};
+		166B66A0191AA48C00CAAB0E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(inherited)",
+				);
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "Tests/ZCREasyBakeTests-OSX/ZCREasyBakeTests-OSX-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Debug;
+		};
+		166B66A1191AA48C00CAAB0E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(inherited)",
+				);
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				INFOPLIST_FILE = "Tests/ZCREasyBakeTests-OSX/ZCREasyBakeTests-OSX-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				WRAPPER_EXTENSION = xctest;
 			};
 			name = Release;
 		};
@@ -478,42 +631,6 @@
 			};
 			name = Release;
 		};
-		16ADF0C018F5E2F900BF0852 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = NO;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = "Tests/ZCREasyBakeTests-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TARGETED_DEVICE_FAMILY = "1,2";
-				WRAPPER_EXTENSION = xctest;
-			};
-			name = Debug;
-		};
-		16ADF0C118F5E2F900BF0852 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = NO;
-				INFOPLIST_FILE = "Tests/ZCREasyBakeTests-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TARGETED_DEVICE_FAMILY = "1,2";
-				WRAPPER_EXTENSION = xctest;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -525,6 +642,22 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		166B6681191AA41200CAAB0E /* Build configuration list for PBXNativeTarget "ZCREasyBakeTests-iOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				166B667F191AA41200CAAB0E /* Debug */,
+				166B6680191AA41200CAAB0E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		166B669F191AA48C00CAAB0E /* Build configuration list for PBXNativeTarget "ZCREasyBakeTests-OSX" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				166B66A0191AA48C00CAAB0E /* Debug */,
+				166B66A1191AA48C00CAAB0E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 		16ADF09418F5E2F700BF0852 /* Build configuration list for PBXProject "ZCREasyBake" */ = {
 			isa = XCConfigurationList;
@@ -540,15 +673,6 @@
 			buildConfigurations = (
 				16ADF0BD18F5E2F900BF0852 /* Debug */,
 				16ADF0BE18F5E2F900BF0852 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		16ADF0BF18F5E2F900BF0852 /* Build configuration list for PBXNativeTarget "ZCREasyBakeTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				16ADF0C018F5E2F900BF0852 /* Debug */,
-				16ADF0C118F5E2F900BF0852 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
