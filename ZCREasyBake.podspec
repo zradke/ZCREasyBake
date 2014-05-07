@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "ZCREasyBake"
-  s.version      = "0.1.0"
+  s.version      = "0.3.0"
   s.summary      = "Makes baking immutable models as easy as pie!"
   s.homepage     = "https://github.com/zradke/ZCREasyBake"
   s.license      = 'MIT'
