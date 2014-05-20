@@ -22,7 +22,6 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		16146A4818FC5997008C0EE9 /* ZCREasyBake.h in Headers */ = {isa = PBXBuildFile; fileRef = 16ADF0A118F5E2F900BF0852 /* ZCREasyBake.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		16146A4918FC5997008C0EE9 /* ZCREasyProperty.h in Headers */ = {isa = PBXBuildFile; fileRef = 16ADF0C918F5EB6500BF0852 /* ZCREasyProperty.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		16146A4A18FC5997008C0EE9 /* ZCREasyDough.h in Headers */ = {isa = PBXBuildFile; fileRef = 16ADF0C218F5E40D00BF0852 /* ZCREasyDough.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		166B6673191AA41200CAAB0E /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16ADF0AA18F5E2F900BF0852 /* XCTest.framework */; };
@@ -49,6 +48,13 @@
 		166B66BA191AA66B00CAAB0E /* ZCREasyProperty.m in Sources */ = {isa = PBXBuildFile; fileRef = 16ADF0CA18F5EB6500BF0852 /* ZCREasyProperty.m */; };
 		166B66BC191AA66B00CAAB0E /* ZCREasyRecipe.m in Sources */ = {isa = PBXBuildFile; fileRef = 74F6BD2E1909781B0093F1F7 /* ZCREasyRecipe.m */; };
 		166B66BE191AA66B00CAAB0E /* ZCREasyDough.m in Sources */ = {isa = PBXBuildFile; fileRef = 16ADF0C318F5E40D00BF0852 /* ZCREasyDough.m */; };
+		1687EE7519242D1B0018FBCF /* ZCREasyDoughTransformer.h in Headers */ = {isa = PBXBuildFile; fileRef = 1687EE7319242D1B0018FBCF /* ZCREasyDoughTransformer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1687EE7619242D1B0018FBCF /* ZCREasyDoughTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1687EE7419242D1B0018FBCF /* ZCREasyDoughTransformer.m */; };
+		1687EE791924319B0018FBCF /* ZCREasyBake.h in Headers */ = {isa = PBXBuildFile; fileRef = 1687EE771924319B0018FBCF /* ZCREasyBake.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1687EE7C192434770018FBCF /* ZCREasyDoughTransformerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1687EE7B192434770018FBCF /* ZCREasyDoughTransformerTests.m */; };
+		1687EE7E19243ACD0018FBCF /* ZCREasyDoughTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1687EE7419242D1B0018FBCF /* ZCREasyDoughTransformer.m */; };
+		1687EE8019243AD50018FBCF /* ZCREasyDoughTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1687EE7419242D1B0018FBCF /* ZCREasyDoughTransformer.m */; };
+		1687EE8119243ADE0018FBCF /* ZCREasyDoughTransformerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1687EE7B192434770018FBCF /* ZCREasyDoughTransformerTests.m */; };
 		16ADF09D18F5E2F900BF0852 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16ADF09C18F5E2F900BF0852 /* Foundation.framework */; };
 		16ADF0C418F5E40D00BF0852 /* ZCREasyDough.m in Sources */ = {isa = PBXBuildFile; fileRef = 16ADF0C318F5E40D00BF0852 /* ZCREasyDough.m */; };
 		16ADF0CB18F5EB6500BF0852 /* ZCREasyProperty.m in Sources */ = {isa = PBXBuildFile; fileRef = 16ADF0CA18F5EB6500BF0852 /* ZCREasyProperty.m */; };
@@ -77,9 +83,12 @@
 		166B669A191AA48C00CAAB0E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		16836DD018F8B32200FD86D5 /* ZCREasyPropertyTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZCREasyPropertyTests.m; sourceTree = "<group>"; };
 		16836DD218F8B33300FD86D5 /* ZCREasyDoughTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZCREasyDoughTests.m; sourceTree = "<group>"; };
+		1687EE7319242D1B0018FBCF /* ZCREasyDoughTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZCREasyDoughTransformer.h; sourceTree = "<group>"; };
+		1687EE7419242D1B0018FBCF /* ZCREasyDoughTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZCREasyDoughTransformer.m; sourceTree = "<group>"; };
+		1687EE771924319B0018FBCF /* ZCREasyBake.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZCREasyBake.h; sourceTree = "<group>"; };
+		1687EE7B192434770018FBCF /* ZCREasyDoughTransformerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZCREasyDoughTransformerTests.m; sourceTree = "<group>"; };
 		16ADF09918F5E2F900BF0852 /* libZCREasyBake.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libZCREasyBake.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		16ADF09C18F5E2F900BF0852 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		16ADF0A118F5E2F900BF0852 /* ZCREasyBake.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZCREasyBake.h; sourceTree = "<group>"; };
 		16ADF0AA18F5E2F900BF0852 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		16ADF0AD18F5E2F900BF0852 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
 		16ADF0C218F5E40D00BF0852 /* ZCREasyDough.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZCREasyDough.h; sourceTree = "<group>"; };
@@ -180,7 +189,7 @@
 		16ADF09E18F5E2F900BF0852 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				16ADF0A118F5E2F900BF0852 /* ZCREasyBake.h */,
+				1687EE771924319B0018FBCF /* ZCREasyBake.h */,
 				74F6BD31190985C20093F1F7 /* ZCREasyError.h */,
 				74F6BD32190985C20093F1F7 /* ZCREasyError.m */,
 				16ADF0C918F5EB6500BF0852 /* ZCREasyProperty.h */,
@@ -189,6 +198,8 @@
 				74F6BD2E1909781B0093F1F7 /* ZCREasyRecipe.m */,
 				16ADF0C218F5E40D00BF0852 /* ZCREasyDough.h */,
 				16ADF0C318F5E40D00BF0852 /* ZCREasyDough.m */,
+				1687EE7319242D1B0018FBCF /* ZCREasyDoughTransformer.h */,
+				1687EE7419242D1B0018FBCF /* ZCREasyDoughTransformer.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -201,6 +212,7 @@
 				74F6BD371909DAE80093F1F7 /* ZCREasyRecipeBoxTests.m */,
 				16836DD218F8B33300FD86D5 /* ZCREasyDoughTests.m */,
 				74F6BD391909DAF40093F1F7 /* ZCREasyDoughErrorTests.m */,
+				1687EE7B192434770018FBCF /* ZCREasyDoughTransformerTests.m */,
 				166B6676191AA41200CAAB0E /* ZCREasyBakeTests-iOS */,
 				166B6696191AA48C00CAAB0E /* ZCREasyBakeTests-OSX */,
 			);
@@ -214,8 +226,9 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				16146A4818FC5997008C0EE9 /* ZCREasyBake.h in Headers */,
+				1687EE791924319B0018FBCF /* ZCREasyBake.h in Headers */,
 				16146A4918FC5997008C0EE9 /* ZCREasyProperty.h in Headers */,
+				1687EE7519242D1B0018FBCF /* ZCREasyDoughTransformer.h in Headers */,
 				74F6BD33190985C20093F1F7 /* ZCREasyError.h in Headers */,
 				74F6BD2F1909781B0093F1F7 /* ZCREasyRecipe.h in Headers */,
 				16146A4A18FC5997008C0EE9 /* ZCREasyDough.h in Headers */,
@@ -363,9 +376,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1687EE7E19243ACD0018FBCF /* ZCREasyDoughTransformer.m in Sources */,
 				166B66B8191AA66B00CAAB0E /* ZCREasyError.m in Sources */,
 				166B66BA191AA66B00CAAB0E /* ZCREasyProperty.m in Sources */,
 				166B66BC191AA66B00CAAB0E /* ZCREasyRecipe.m in Sources */,
+				1687EE7C192434770018FBCF /* ZCREasyDoughTransformerTests.m in Sources */,
 				166B66BE191AA66B00CAAB0E /* ZCREasyDough.m in Sources */,
 				166B6682191AA45600CAAB0E /* ZCREasyPropertyTests.m in Sources */,
 				166B6683191AA45600CAAB0E /* ZCREasyRecipeTests.m in Sources */,
@@ -379,6 +394,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1687EE8019243AD50018FBCF /* ZCREasyDoughTransformer.m in Sources */,
 				166B66AF191AA64E00CAAB0E /* ZCREasyError.m in Sources */,
 				166B66B1191AA64E00CAAB0E /* ZCREasyProperty.m in Sources */,
 				166B66B3191AA64E00CAAB0E /* ZCREasyRecipe.m in Sources */,
@@ -388,6 +404,7 @@
 				166B66A4191AA4BA00CAAB0E /* ZCREasyRecipeBoxTests.m in Sources */,
 				166B66A5191AA4BA00CAAB0E /* ZCREasyDoughTests.m in Sources */,
 				166B66A6191AA4BA00CAAB0E /* ZCREasyDoughErrorTests.m in Sources */,
+				1687EE8119243ADE0018FBCF /* ZCREasyDoughTransformerTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -398,6 +415,7 @@
 				74F6BD34190985C20093F1F7 /* ZCREasyError.m in Sources */,
 				16ADF0C418F5E40D00BF0852 /* ZCREasyDough.m in Sources */,
 				74F6BD301909781B0093F1F7 /* ZCREasyRecipe.m in Sources */,
+				1687EE7619242D1B0018FBCF /* ZCREasyDoughTransformer.m in Sources */,
 				16ADF0CB18F5EB6500BF0852 /* ZCREasyProperty.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -554,7 +572,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 			};
@@ -585,7 +603,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -650,6 +668,7 @@
 				166B6680191AA41200CAAB0E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		166B669F191AA48C00CAAB0E /* Build configuration list for PBXNativeTarget "ZCREasyBakeTests-OSX" */ = {
 			isa = XCConfigurationList;
@@ -658,6 +677,7 @@
 				166B66A1191AA48C00CAAB0E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		16ADF09418F5E2F700BF0852 /* Build configuration list for PBXProject "ZCREasyBake" */ = {
 			isa = XCConfigurationList;

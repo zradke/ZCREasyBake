@@ -41,8 +41,7 @@
 
 - (void)testSharedBox {
     XCTAssertNotNil([ZCREasyRecipeBox defaultBox], @"The shared box should be initialized");
-    XCTAssertEqual([ZCREasyRecipeBox defaultBox], [ZCREasyRecipeBox defaultBox],
-                   @"The shared box should always be the same.");
+    XCTAssertEqual([ZCREasyRecipeBox defaultBox], [ZCREasyRecipeBox defaultBox], @"The shared box should always be the same.");
 }
 
 - (void)testAddRecipe {
@@ -53,8 +52,7 @@
 
 - (void)testRecipeNames {
     [box addRecipe:recipe error:NULL];
-    XCTAssertEqualObjects(box.recipeNames, [NSSet setWithObject:@"TestRecipe1"],
-                          @"The recipe's name should be exposed.");
+    XCTAssertEqualObjects(box.recipeNames, [NSSet setWithObject:@"TestRecipe1"], @"The recipe's name should be exposed.");
 }
 
 - (void)testGetRecipe {
@@ -66,8 +64,7 @@
 - (void)testRemoveRecipeWithName {
     [box addRecipe:recipe error:NULL];
     NSError *error;
-    XCTAssertTrue([box removeRecipeNamed:@"TestRecipe1" error:&error],
-                  @"The recipe should be removed.");
+    XCTAssertTrue([box removeRecipeNamed:@"TestRecipe1" error:&error], @"The recipe should be removed.");
     XCTAssertNil(error, @"There should be no error removing the recipe");
     XCTAssertTrue(box.recipeNames.count == 0, @"The recipe name should be removed");
 }
@@ -81,8 +78,7 @@
     XCTAssertNotNil(recipe, @"The recipe should be returned.");
     
     ZCREasyRecipe *fetchedRecipe = [box recipeWithName:@"TestRecipe2"];
-    XCTAssertEqual(fetchedRecipe, recipe,
-                   @"The fetched recipe should be the same as the returned recipe.");
+    XCTAssertEqual(fetchedRecipe, recipe, @"The fetched recipe should be the same as the returned recipe.");
 }
 
 - (void)testMakeAndAddWithoutSettingName {
@@ -136,14 +132,8 @@
 - (void)testErrorRemoveRecipeWithUnknownName {
     [box addRecipe:recipe error:NULL];
     NSError *error;
-    XCTAssertFalse([box removeRecipeNamed:@"UnknownRecipe" error:&error],
-                   @"The recipe should not be removed.");
+    XCTAssertFalse([box removeRecipeNamed:@"UnknownRecipe" error:&error], @"The recipe should not be removed.");
     XCTAssertNotNil(error, @"The error should be populated.");
-}
-
-- (void)testMakeAndAddWithoutBlock {
-    recipe = [box addRecipeWith:nil];
-    XCTAssertNil(recipe, @"There should be no recipe.");
 }
 
 @end

@@ -17,7 +17,7 @@ NSString *const ZCREasyBakeExceptionNameKey = @"ZCREasyBakeExceptionNameKey";
 NSString *const ZCREasyBakeExceptionUserInfoKey = @"ZCREasyBakeExceptionUserInfoKey";
 
 NSError *ZCREasyBakeParameterError(NSString *failureReason, ...) {
-    NSCAssert(failureReason != nil, @"An error failure reason is required.");
+    NSCParameterAssert(failureReason);
     
     va_list arguments;
     va_start(arguments, failureReason);
@@ -33,7 +33,7 @@ NSError *ZCREasyBakeParameterError(NSString *failureReason, ...) {
 }
 
 NSError *ZCREasyBakeExceptionError(NSException *exception) {
-    NSCAssert(exception != nil, @"An exception is required.");
+    NSCParameterAssert(exception);
     
     NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
     userInfo[NSLocalizedDescriptionKey] = @"Exception raised.";
