@@ -141,12 +141,6 @@ NSString *const ZCREasyDoughUpdatedDoughKey = @"ZCREasyDoughUpdatedDoughKey";
 
 - (id)decomposeWithRecipe:(ZCREasyRecipe *)recipe
                     error:(NSError *__autoreleasing *)error {
-    // We split this into a private method to prevent subclasses from breaking the behavior
-    return [self _decomposeWithRecipe:recipe error:error];
-}
-
-- (id)_decomposeWithRecipe:(ZCREasyRecipe *)recipe
-                     error:(NSError * __autoreleasing *)error {
     if (![[self class] _validateRecipe:recipe error:error]) {
         return nil;
     }
@@ -286,11 +280,6 @@ mutableIngredients:(id)mutableIngredients {
 }
 
 + (ZCREasyRecipe *)genericRecipe {
-    // We split this into a private method to prevent subclasses from breaking the behavior
-    return [self _genericRecipe];
-}
-
-+ (ZCREasyRecipe *)_genericRecipe {
     NSString *recipeName = [NSString stringWithFormat:@"%@-GenericRecipe", NSStringFromClass(self)];
     ZCREasyRecipe *recipe = [[self _sharedDoughBox] recipeWithName:recipeName];
     if (recipe) { return recipe; }
@@ -434,7 +423,7 @@ mutableIngredients:(id)mutableIngredients {
 }
 
 - (NSString *)description {
-    NSDictionary *ingredients = [self _decomposeWithRecipe:[[self class] _genericRecipe] error:NULL];
+    NSDictionary *ingredients = [self dictionaryWithValuesForKeys:[[[self class] allPropertyNames] allObjects]];
     NSMutableDictionary *mutableIngredients = [ingredients copy];
     
     [ingredients enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
