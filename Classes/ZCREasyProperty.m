@@ -8,18 +8,37 @@
 
 #import "ZCREasyProperty.h"
 
-NSString *const ZCREasyPropertyAttrType = @"T";
-NSString *const ZCREasyPropertyAttrIVarName = @"V";
-NSString *const ZCREasyPropertyAttrReadOnly = @"R";
-NSString *const ZCREasyPropertyAttrCopy = @"C";
-NSString *const ZCREasyPropertyAttrRetain = @"&";
-NSString *const ZCREasyPropertyAttrNonAtomic = @"N";
-NSString *const ZCREasyPropertyAttrCustomGetter = @"G";
-NSString *const ZCREasyPropertyAttrCustomSetter = @"S";
-NSString *const ZCREasyPropertyAttrDynamic = @"D";
-NSString *const ZCREasyPropertyAttrWeak = @"W";
-NSString *const ZCREasyPropertyAttrGarbageCollectable = @"P";
-NSString *const ZCREasyPropertyAttrOldTypeEncoding = @"t";
+static inline NSString *_ZCRStringForPropertyAttribute(ZCREasyPropertyAttribute attribute) {
+    switch (attribute) {
+        case ZCREasyPropertyAttrType:
+            return @"T";
+        case ZCREasyPropertyAttrIVarName:
+            return @"V";
+        case ZCREasyPropertyAttrReadOnly:
+            return @"R";
+        case ZCREasyPropertyAttrCopy:
+            return @"C";
+        case ZCREasyPropertyAttrRetain:
+            return @"&";
+        case ZCREasyPropertyAttrNonAtomic:
+            return @"N";
+        case ZCREasyPropertyAttrCustomGetter:
+            return @"G";
+        case ZCREasyPropertyAttrCustomSetter:
+            return @"S";
+        case ZCREasyPropertyAttrDynamic:
+            return @"D";
+        case ZCREasyPropertyAttrWeak:
+            return @"W";
+        case ZCREasyPropertyAttrGarbageCollectable:
+            return @"P";
+        case ZCREasyPropertyAttrOldTypeEncoding:
+            return @"t";
+        default:
+            return nil;
+    }
+}
+
 
 @implementation ZCREasyProperty {
     NSString *_attributeString;
@@ -66,15 +85,17 @@ NSString *const ZCREasyPropertyAttrOldTypeEncoding = @"t";
     return nil;
 }
 
-- (BOOL)hasAttribute:(NSString *)attribute {
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF BEGINSWITH %@", attribute];
+- (BOOL)hasAttribute:(ZCREasyPropertyAttribute)attribute {
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF BEGINSWITH %@",
+                              _ZCRStringForPropertyAttribute(attribute)];
     return ([[_attributes filteredSetUsingPredicate:predicate] count] > 0);
 }
 
-- (NSString *)_contextStringForAttribute:(NSString *)attribute {
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF BEGINSWITH %@", attribute];
+- (NSString *)_contextStringForAttribute:(ZCREasyPropertyAttribute)attribute {
+    NSString *attributeIdentifier = _ZCRStringForPropertyAttribute(attribute);
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF BEGINSWITH %@", attributeIdentifier];
     NSString *fullAttribute = [[_attributes filteredSetUsingPredicate:predicate] anyObject];
-    return [fullAttribute substringFromIndex:attribute.length];
+    return [fullAttribute substringFromIndex:attributeIdentifier.length];
 }
 
 - (Class)_parseTypeClassFromString:(NSString *)typeString {
@@ -83,7 +104,8 @@ NSString *const ZCREasyPropertyAttrOldTypeEncoding = @"t";
     NSString *typeClassName = nil;
     NSScanner *scanner = [NSScanner scannerWithString:typeString];
     
-    // Object type strings appear in the following format: @"ClassName<ProtocolName>"
+    // Objects with no protocol and a class appear as: @"ClassName"
+    // Objects with a protocol and class appear as: @"ClassName<ProtocolName>"
     // In a delegate property, the type string is often: @"<DelegateName>"
     if (![scanner scanString:@"@\"" intoString:NULL]) { return NULL; }
     [scanner scanUpToCharactersFromSet:[NSCharacterSet characterSetWithCharactersInString:@"<\""]
@@ -114,7 +136,7 @@ NSString *const ZCREasyPropertyAttrOldTypeEncoding = @"t";
 }
 
 + (NSSet *)propertiesForClass:(Class)aClass {
-    if (!aClass) { return nil; }
+    NSParameterAssert(aClass);
     
     unsigned int propertyCount = 0;
     objc_property_t *properties = class_copyPropertyList(aClass, &propertyCount);

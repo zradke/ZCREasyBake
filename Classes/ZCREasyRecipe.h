@@ -20,7 +20,11 @@
  *  Ingredients are represented as dictionaries or arrays or combinations of the two. When creating
  *  the ingredient mapping, the ingredient string can use dot notation to indicate dictionary key
  *  traversal or the form "[<index>]" to indicate an array index to traverse. These may also be
- *  combined, for example: "user.updates[0]".
+ *  combined, for example: "user.updates[0]". Upon creation, the ingredient paths are broken down
+ *  into components, and these are then validated to ensure there are no inconsistencies with the
+ *  inferred ingredient class. For example, a path to "user.updates[0]" is inconsistent with another
+ *  path to "user[1]", since the object for the "user" key is assumed to be a dictionary in the
+ *  first path, and an array in the second.
  *
  *  Recipes are immutable, so invoking copy on one will simply return self. Modifications can be
  *  made, but will produce new recipes. These recipes often only need to be created once and reused
@@ -31,7 +35,7 @@
  *
  *  It shouldn't be required to subclass ZCREasyRecipe, though it is entirely possible to do so.
  */
-@interface ZCREasyRecipe : NSObject <NSCopying>
+@interface ZCREasyRecipe : NSObject
 
 /**
  *  @name Creating recipes
@@ -70,7 +74,7 @@
  *
  *  @return A new immutable recipe, or nil if an error occured.
  */
-+ (instancetype)makeWith:(void (^)(id<ZCREasyRecipeMaker> recipeMaker))constructionBlock;
++ (instancetype)makeWith:(void (^)(id<ZCREasyRecipeMaker> recipeMaker))constructionBlock __attribute__((nonnull));
 
 /**
  *  Builds a new recipe from an existing recipe, with modifications.
@@ -81,7 +85,7 @@
  *
  *  @return A new immutable recipe based off the receiver, or nil if an error occured.
  */
-- (instancetype)modifyWith:(void (^)(id<ZCREasyRecipeMaker> recipeMaker))modificationBlock;
+- (instancetype)modifyWith:(void (^)(id<ZCREasyRecipeMaker> recipeMaker))modificationBlock __attribute__((nonnull));
 
 
 /**
@@ -127,7 +131,7 @@
  *               transformer if it exists. This block is executed for each property name in the
  *               ingredientMapping. This must not be nil.
  */
-- (void)enumerateInstructionsWith:(void (^)(NSString *propertyName, NSString *ingredientPath, NSValueTransformer *transformer, BOOL *shouldStop))block;
+- (void)enumerateInstructionsWith:(void (^)(NSString *propertyName, NSString *ingredientPath, NSValueTransformer *transformer, BOOL *shouldStop))block __attribute__((nonnull));
 
 /**
  *  @name Using a recipe
@@ -201,7 +205,7 @@
  *
  *  @return A new recipe that has been added to the box, or nil if an error occured.
  */
-- (ZCREasyRecipe *)addRecipeWith:(void (^)(id<ZCREasyRecipeMaker> recipeMaker))block;
+- (ZCREasyRecipe *)addRecipeWith:(void (^)(id<ZCREasyRecipeMaker> recipeMaker))block __attribute__((nonnull));
 
 /**
  *  Removes the recipe registered under the given name.

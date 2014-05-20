@@ -159,10 +159,8 @@
     XCTAssertNil(error, @"The error should be nil");
     XCTAssertNotNil(model, @"The model should be built");
     XCTAssertEqualObjects(model.name, JSON[@"user_name"], @"The name should be set");
-    XCTAssertEqualObjects(model.updatedAt, [dateTransformer transformedValue:JSON[@"updated_at"]],
-                          @"The updated date should be set");
-    XCTAssertTrue(model.badgeCount == [JSON[@"badge_count"] unsignedIntegerValue],
-                  @"The badge count should be set");
+    XCTAssertEqualObjects(model.updatedAt, [dateTransformer transformedValue:JSON[@"updated_at"]], @"The updated date should be set");
+    XCTAssertTrue(model.badgeCount == [JSON[@"badge_count"] unsignedIntegerValue], @"The badge count should be set");
 }
 
 - (void)testUpdate {
@@ -178,27 +176,26 @@
     XCTAssertEqualObjects(model, updatedModel, @"Technically the two models should be equal");
     XCTAssertFalse(model == updatedModel, @"The two pointers should be different");
     
-    XCTAssertEqualObjects(model.name, JSON[@"user_name"],
-                          @"The original model's name should still be set");
-    XCTAssertEqualObjects(updatedModel.name, updatedJSON[@"user_name"],
-                          @"The updated model's name should be updated");
-    XCTAssertEqualObjects(updatedModel.updatedAt, [dateTransformer transformedValue:JSON[@"updated_at"]],
-                          @"The updated model's date should be unchanged");
-    XCTAssertTrue(updatedModel.badgeCount == [JSON[@"badge_count"] unsignedIntegerValue],
-                  @"The updated model's badge count should be unchanged");
+    XCTAssertEqualObjects(model.name, JSON[@"user_name"], @"The original model's name should still be set");
+    XCTAssertEqualObjects(updatedModel.name, updatedJSON[@"user_name"], @"The updated model's name should be updated");
+    XCTAssertEqualObjects(updatedModel.updatedAt, [dateTransformer transformedValue:JSON[@"updated_at"]], @"The updated model's date should be unchanged");
+    XCTAssertTrue(updatedModel.badgeCount == [JSON[@"badge_count"] unsignedIntegerValue], @"The updated model's badge count should be unchanged");
 }
 
 - (void)testUpdatePostsNotification {
     __block BOOL didNotifyClass = NO;
     __block BOOL didNotifyGeneric = NO;
+    __block id notificationIdentifier;
     
-    __block id classNotifier = [[NSNotificationCenter defaultCenter] addObserverForName:[ZCREasyDoughTestsModel updateNotificationName] object:model queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *note) {
+    __block id classNotifier = [[NSNotificationCenter defaultCenter] addObserverForName:[ZCREasyDoughTestsModel updateNotificationName] object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *note) {
         didNotifyClass = YES;
+        notificationIdentifier = note.userInfo[ZCREasyDoughIdentifierKey];
         [[NSNotificationCenter defaultCenter] removeObserver:classNotifier];
     }];
     
-    __block id genericNotifier = [[NSNotificationCenter defaultCenter] addObserverForName:ZCREasyDoughUpdatedNotification object:model queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *note) {
+    __block id genericNotifier = [[NSNotificationCenter defaultCenter] addObserverForName:ZCREasyDoughUpdateNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *note) {
         didNotifyGeneric = YES;
+        notificationIdentifier = note.userInfo[ZCREasyDoughIdentifierKey];
         [[NSNotificationCenter defaultCenter] removeObserver:genericNotifier];
     }];
     
@@ -218,7 +215,7 @@
     XCTAssertTrue([timeoutDate timeIntervalSinceNow] > 0.0, @"The operation should not time out");
     XCTAssertTrue(didNotifyClass, @"The class should be notified");
     XCTAssertTrue(didNotifyGeneric, @"The generic notification should be posted");
-    
+    XCTAssertEqualObjects(notificationIdentifier, model.uniqueIdentifier, @"The identifiers should match");
     XCTAssertNotNil(updatedModel, @"The updated model should not be nil");
     XCTAssertNil(error, @"There should be no error");
 }
@@ -234,12 +231,9 @@
     XCTAssertNotNil(updatedModel, @"The updated model should not be nil");
     XCTAssertNil(error, @"There should be no error");
     XCTAssertTrue(model == updatedModel, @"The models should be identical");
-    XCTAssertEqualObjects(updatedModel.name, JSON[@"user_name"],
-                          @"The updated model's name should be unchanged");
-    XCTAssertEqualObjects(updatedModel.updatedAt, [dateTransformer transformedValue:JSON[@"updated_at"]],
-                          @"The updated model's date should be unchanged");
-    XCTAssertTrue(updatedModel.badgeCount == [JSON[@"badge_count"] unsignedIntegerValue],
-                  @"The updated model's badge count should be unchanged");
+    XCTAssertEqualObjects(updatedModel.name, JSON[@"user_name"], @"The updated model's name should be unchanged");
+    XCTAssertEqualObjects(updatedModel.updatedAt, [dateTransformer transformedValue:JSON[@"updated_at"]], @"The updated model's date should be unchanged");
+    XCTAssertTrue(updatedModel.badgeCount == [JSON[@"badge_count"] unsignedIntegerValue], @"The updated model's badge count should be unchanged");
 }
 
 - (void)testUpdateUnchangedNoNotification {
@@ -251,7 +245,7 @@
         [[NSNotificationCenter defaultCenter] removeObserver:classNotifier];
     }];
     
-    __block id genericNotifier = [[NSNotificationCenter defaultCenter] addObserverForName:ZCREasyDoughUpdatedNotification object:model queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *note) {
+    __block id genericNotifier = [[NSNotificationCenter defaultCenter] addObserverForName:ZCREasyDoughUpdateNotification object:model queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *note) {
         didNotifyGeneric = YES;
         [[NSNotificationCenter defaultCenter] removeObserver:genericNotifier];
     }];
@@ -292,10 +286,8 @@
     XCTAssertNil(error, @"There should be no error");
     
     XCTAssertEqualObjects(ingredients[@"name"], model.name, @"The names should match");
-    XCTAssertEqualObjects(ingredients[@"updatedAt"], model.updatedAt,
-                          @"The updated dates should match");
-    XCTAssertTrue(model.badgeCount == [ingredients[@"badgeCount"] unsignedIntegerValue],
-                  @"The badge counts should match");
+    XCTAssertEqualObjects(ingredients[@"updatedAt"], model.updatedAt, @"The updated dates should match");
+    XCTAssertTrue(model.badgeCount == [ingredients[@"badgeCount"] unsignedIntegerValue], @"The badge counts should match");
 }
 
 - (void)testDecomposeWithSimpleRecipe {
@@ -307,10 +299,8 @@
     XCTAssertNil(error, @"There should be no error");
     
     XCTAssertEqualObjects(ingredients[@"user_name"], model.name, @"The names should match");
-    XCTAssertEqualObjects(ingredients[@"updated_at"], [dateTransformer reverseTransformedValue:model.updatedAt],
-                          @"The updated dates should match");
-    XCTAssertTrue(model.badgeCount == [ingredients[@"badge_count"] unsignedIntegerValue],
-                  @"The badge counts should match");
+    XCTAssertEqualObjects(ingredients[@"updated_at"], [dateTransformer reverseTransformedValue:model.updatedAt], @"The updated dates should match");
+    XCTAssertTrue(model.badgeCount == [ingredients[@"badge_count"] unsignedIntegerValue], @"The badge counts should match");
 }
 
 - (void)testDecomposeWithComplexRecipe {
@@ -321,13 +311,9 @@
     XCTAssertNotNil(ingredients, @"There should be decomposed ingredients");
     XCTAssertNil(error, @"There should be no error");
     
-    XCTAssertEqualObjects([ingredients valueForKeyPath:@"user.name"], model.name,
-                          @"The names should match.");
-    XCTAssertEqualObjects(ingredients[@"updates"][0],
-                          [dateTransformer reverseTransformedValue:model.updatedAt],
-                          @"The updated dates should match.");
-    XCTAssertEqual([[ingredients valueForKeyPath:@"user.count"] unsignedIntegerValue],
-                   model.badgeCount, @"the badge counts should match.");
+    XCTAssertEqualObjects([ingredients valueForKeyPath:@"user.name"], model.name, @"The names should match.");
+    XCTAssertEqualObjects(ingredients[@"updates"][0], [dateTransformer reverseTransformedValue:model.updatedAt], @"The updated dates should match.");
+    XCTAssertEqual([[ingredients valueForKeyPath:@"user.count"] unsignedIntegerValue], model.badgeCount, @"the badge counts should match.");
 }
 
 - (void)testDecomposeWithArrayRecipe {
@@ -339,11 +325,8 @@
     XCTAssertNil(error, @"There should be no error");
     
     XCTAssertEqualObjects(ingredients[1][@"name"], model.name, @"The names should match.");
-    XCTAssertEqualObjects(ingredients[0][0],
-                          [dateTransformer reverseTransformedValue:model.updatedAt],
-                          @"The updated dates should match.");
-    XCTAssertEqual([ingredients[1][@"badge_count"] unsignedIntegerValue], model.badgeCount,
-                    @"The badge counts should match.");
+    XCTAssertEqualObjects(ingredients[0][0], [dateTransformer reverseTransformedValue:model.updatedAt], @"The updated dates should match.");
+    XCTAssertEqual([ingredients[1][@"badge_count"] unsignedIntegerValue], model.badgeCount, @"The badge counts should match.");
 }
 
 - (void)testIsEqualToIngredients {
@@ -376,16 +359,13 @@
                                                                 forKeys:propertyNames];
     
     ZCREasyRecipe *recipe = [ZCREasyDoughTestsModel genericRecipe];
-    XCTAssertEqualObjects(expectedMapping, recipe.ingredientMapping
-                          , @"The generic recipes ingredient maps should match");
-    XCTAssertTrue(recipe.ingredientTransformers.count == 0,
-                  @"There should be no transformers registered.");
+    XCTAssertEqualObjects(expectedMapping, recipe.ingredientMapping, @"The generic recipes ingredient maps should match");
+    XCTAssertTrue(recipe.ingredientTransformers.count == 0, @"There should be no transformers registered.");
 }
 
 - (void)testAllPropertyNames {
     NSSet *propertyNames = [NSSet setWithArray:@[@"name", @"updatedAt", @"badgeCount"]];
-    XCTAssertEqualObjects(propertyNames, [ZCREasyDoughTestsModel allPropertyNames],
-                          @"The property names should match");
+    XCTAssertEqualObjects(propertyNames, [ZCREasyDoughTestsModel allPropertyNames], @"The property names should match");
 }
 
 @end

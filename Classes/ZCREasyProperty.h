@@ -9,18 +9,61 @@
 #import <Foundation/Foundation.h>
 #import <objc/runtime.h>
 
-extern NSString *const ZCREasyPropertyAttrType;
-extern NSString *const ZCREasyPropertyAttrIVarName;
-extern NSString *const ZCREasyPropertyAttrReadOnly;
-extern NSString *const ZCREasyPropertyAttrCopy;
-extern NSString *const ZCREasyPropertyAttrRetain;
-extern NSString *const ZCREasyPropertyAttrNonAtomic;
-extern NSString *const ZCREasyPropertyAttrCustomGetter;
-extern NSString *const ZCREasyPropertyAttrCustomSetter;
-extern NSString *const ZCREasyPropertyAttrDynamic;
-extern NSString *const ZCREasyPropertyAttrWeak;
-extern NSString *const ZCREasyPropertyAttrGarbageCollectable;
-extern NSString *const ZCREasyPropertyAttrOldTypeEncoding;
+/**
+ *  Enumeration of possible attributes a property may have.
+ *
+ *  @see [ZCREasyProperty hasAttribute:]
+ */
+typedef NS_ENUM(NSInteger, ZCREasyPropertyAttribute) {
+    /**
+     *  The type encoding attribute. This is always present.
+     */
+    ZCREasyPropertyAttrType = 0,
+    /**
+     *  The backing iVar name attribute.
+     */
+    ZCREasyPropertyAttrIVarName,
+    /**
+     *  Attribute indicating if the property is read-only.
+     */
+    ZCREasyPropertyAttrReadOnly,
+    /**
+     *  Attribute indicating if the property copies.
+     */
+    ZCREasyPropertyAttrCopy,
+    /**
+     *  Attribute indicating if the property retains.
+     */
+    ZCREasyPropertyAttrRetain,
+    /**
+     *  Attribute indicating if the property is non-atomic.
+     */
+    ZCREasyPropertyAttrNonAtomic,
+    /**
+     *  Attribute present if the property has a custom getter selector.
+     */
+    ZCREasyPropertyAttrCustomGetter,
+    /**
+     *  Attribute present if the property has a custom setter selector.
+     */
+    ZCREasyPropertyAttrCustomSetter,
+    /**
+     *  Attribute indicating if the property is dynamic.
+     */
+    ZCREasyPropertyAttrDynamic,
+    /**
+     *  Attribute indicating if the property is weak.
+     */
+    ZCREasyPropertyAttrWeak,
+    /**
+     *  Attribute indicating if the property is garbage-collectable.
+     */
+    ZCREasyPropertyAttrGarbageCollectable,
+    /**
+     *  Deprecated attribute for the old type encoding.
+     */
+    ZCREasyPropertyAttrOldTypeEncoding
+};
 
 /**
  *  Object oriented interface for dealing with property introspection!
@@ -109,7 +152,7 @@ extern NSString *const ZCREasyPropertyAttrOldTypeEncoding;
  *
  *  @return YES if the attribute is present in the property, NO if it is not.
  */
-- (BOOL)hasAttribute:(NSString *)attribute;
+- (BOOL)hasAttribute:(ZCREasyPropertyAttribute)attribute;
 
 /**
  *  Composes a set of properties for a given class. Only properties explicitly defined in the class
@@ -119,6 +162,6 @@ extern NSString *const ZCREasyPropertyAttrOldTypeEncoding;
  *
  *  @return A set of properties defined in the given class.
  */
-+ (NSSet *)propertiesForClass:(Class)aClass;
++ (NSSet *)propertiesForClass:(Class)aClass __attribute__((nonnull));
 
 @end

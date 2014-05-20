@@ -10,7 +10,7 @@ A lightweight immutable model framework disguised by friendly food metaphors.
 
 ## Equipment
 
-To use ZCREasyBake, your project should have a minimum deployment target of iOS 5.1+ or OSX 10.7+ and be running with ARC. However, this project is only unit tested on iOS 7.0+ and OSX 10.9+.
+To use ZCREasyBake, your project should have a minimum deployment target of iOS 6.0+ or OSX 10.8+ and be running with ARC. However, this project is only unit tested on iOS 7.0+ and OSX 10.9+.
 
 ## Preparing your kitchen
 
@@ -174,7 +174,9 @@ The updated instance will share the same unique identifier as it's parent, and w
                                            object:nil];
 ```
 
-For a more generic notification, the `ZCREasyDoughUpdatedNotification` can be observed, which will be triggered for updates to all `ZCREasyDough` subclasses.
+For a more generic notification, the `ZCREasyDoughUpdatedNotification` can be observed, which will be triggered for updates to all `ZCREasyDough` subclasses. Notifications will be posted from the original instance. However, since equality isn't pointer specific (more on that in the next section), it's advisable to observe the notification without an object, and filter the notifications based on the user-info.
+
+The user-info of these notifications will contain the `ZCREasyDoughIdentifierKey`, which points to the unique identifier of the updated instance, and `ZCREasyDoughUpdatedDoughKey` which points to the updated instance.
 
 ### Comparing instances and ingredients
 
@@ -217,12 +219,16 @@ Running into difficulties with your models? Maybe these tips can help:
 
 #### Recipes
 * Ingredient mapping keys **must** be settable on the receiving model via `setValue:forKey:`.
-* Ingredient paths **must** all share the same root object in an ingredient map. For example:
+* Ingredient paths **must** be consistent in their inferred objects. For example:
 
 ```
-// Invalid mapping since key1 indicates a dictionary and key2 indicates an array
+// Invalid mapping since the root is suggested to be a dictionary and array
 NSDictionary *invalidMapping = @{@"key1": @"key_1",
                                  @"key2": @"[0]"};
+                                 
+// Invalid mapping since "key" points to both a dictionary and array
+NSDictionary *alsoInvalid = @{@"key1": @"key[0]",
+                              @"key2": @"key.two"};
 ```
 
 * Ingredient keys **do not** all need to be represented in a recipe.
@@ -236,5 +242,6 @@ NSDictionary *invalidMapping = @{@"key1": @"key_1",
 * `NSNull` ingredient values are converted to `nil`.
 * After initialization, `readonly` properties **cannot** be set via `setValue:forKey:`. Attempts to do so will raise a `ZCREasyDoughExceptionAlreadyBaked` exception.
 * When `updateWithIngredients:recipe:error` is called with ingredients that are already part of the model, no notifications will be posted, and the same object will be returned rather than a new instance.
+* Updating a model will post a notification from the original model, with the updated model in the user info. However, because equality is not determined by pointers, you should typically observe the notification without specifying an object, and rely on the user info to provide context.
 * Most of the methods have an optional error pointer parameter. If you aren't receiving the expected output, make sure you're passing something in there to help you debug what's happening!
 * The `ZCREasyDough` class introspects your model's properties at runtime and caches them, so avoid dynamically creating properties on your model class at runtime.

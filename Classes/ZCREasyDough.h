@@ -17,10 +17,21 @@ FOUNDATION_EXPORT NSString *const ZCREasyDoughExceptionAlreadyBaked;
 /**
  *  Notification when a model updates. This is posted for all subclasses of ZCREasyDough.
  */
-FOUNDATION_EXPORT NSString *const ZCREasyDoughUpdatedNotification;
+FOUNDATION_EXPORT NSString *const ZCREasyDoughUpdateNotification;
+
+/**
+ *  Key present in update notifications that is a copy of the unique identifier of the dough being
+ *  updated.
+ */
+FOUNDATION_EXPORT NSString *const ZCREasyDoughIdentifierKey;
+
+/**
+ *  Key present in update notifications that points to the updated model instance.
+ */
+FOUNDATION_EXPORT NSString *const ZCREasyDoughUpdatedDoughKey;
 
 @protocol ZCREasyBaker;
-@class ZCREasyProperty;
+@class ZCREasyProperty, ZCREasyDoughTransformer;
 
 /**
  *  Semi-abstract and doughy class designed for immutable model subclassing.
@@ -60,7 +71,7 @@ FOUNDATION_EXPORT NSString *const ZCREasyDoughUpdatedNotification;
 @interface ZCREasyDough : NSObject <NSCopying> {
     @protected
     // These iVars are exposed for subclasses, but changing their values is potentially dangerous.
-    BOOL _allowsSettingValues;
+    BOOL _allowsSettingReadonlyIVars;
     id<NSObject,NSCopying> _uniqueIdentifier;
 }
 
@@ -107,8 +118,12 @@ FOUNDATION_EXPORT NSString *const ZCREasyDoughUpdatedNotification;
  *
  *  @return A new populated instance using the baker or nil if an error occurs.
  */
-+ (instancetype)makeWith:(void (^)(id<ZCREasyBaker> baker))constructionBlock;
++ (instancetype)makeWith:(void (^)(id<ZCREasyBaker> baker))constructionBlock __attribute__((nonnull));
 
+/**
+ *  Returns a copy of the unique identifier used to initialize the instance.
+ */
+@property (copy, nonatomic, readonly) id uniqueIdentifier;
 
 /**
  *  @name Updating instances
@@ -151,7 +166,7 @@ FOUNDATION_EXPORT NSString *const ZCREasyDoughUpdatedNotification;
  *  @return A new instance with updated properties and a matching identifier, the same instance if
  *          no changes were found, or nil if an error occured.
  */
-- (instancetype)updateWith:(void (^)(id<ZCREasyBaker> baker))updateBlock;
+- (instancetype)updateWith:(void (^)(id<ZCREasyBaker> baker))updateBlock __attribute__((nonnull));
 
 /**
  *  Returns a notification name which can be observed through the NSNotificationCenter. To observe
@@ -242,7 +257,24 @@ FOUNDATION_EXPORT NSString *const ZCREasyDoughUpdatedNotification;
  *
  *  @param block The block to enumerate the properties with. This must not be nil.
  */
-+ (void)enumeratePropertiesUsingBlock:(void (^)(ZCREasyProperty *property, BOOL *shouldStop))block;
++ (void)enumeratePropertiesWith:(void (^)(ZCREasyProperty *property, BOOL *shouldStop))block __attribute__((nonnull));
+
+/**
+ *  Generates a new, reversible value transformer for this class. The value transformer should be
+ *  given raw ingredients and will generate baked models. In reverse, the transformer will take
+ *  models and decompose them into ingredients.
+ *
+ *  @param recipe          The recipe to use for populating and decomposing models. This must not
+ *                         be nil.
+ *  @param identifierBlock An optional ingredient block which should return a unique identifier for
+ *                         an instance. This block is passed the raw ingredients and is retained
+ *                         until the transformer is released. For this reason, be careful of
+ *                         creating retain cycles.
+ *
+ *  @return A new, reversible value transformer for this class.
+ */
++ (ZCREasyDoughTransformer *)transformerWithRecipe:(ZCREasyRecipe *)recipe
+                                   identifierBlock:(id<NSObject,NSCopying> (^)(id rawIngredients))identifierBlock;
 
 @end
 
@@ -262,7 +294,7 @@ FOUNDATION_EXPORT NSString *const ZCREasyDoughUpdatedNotification;
  *  The identifier to use for the new instance. If not set by the time the ZCREasyDough instance is
  *  built, one will be automatically constructed.
  */
-@property (copy, nonatomic) NSString *identifier;
+@property (copy, nonatomic) id<NSObject,NSCopying>identifier;
 
 /**
  *  The ingredients to hydrate the new instance with. This must be either a dictionary or array.

@@ -77,8 +77,7 @@
     
     NSDictionary *normalizedTransformers = @{@"key1": [NSValueTransformer valueTransformerForName:@"ZCRReversibleTransformer"],
                                              @"key2": transformers[@"key2"]};
-    XCTAssertEqualObjects(recipe.ingredientTransformers, normalizedTransformers,
-                          @"The ingredient transformers should be normalized.");
+    XCTAssertEqualObjects(recipe.ingredientTransformers, normalizedTransformers, @"The ingredient transformers should be normalized.");
 }
 
 - (void)testInitWithMaker {
@@ -96,22 +95,19 @@
     XCTAssertTrue(validates, @"The recipe should validate");
     XCTAssertNil(error, @"There should be no errors");
     
-    XCTAssertEqualObjects(recipe, madeRecipe,
-                          @"The made recipe should be the same as the designated initializer recipe.");
+    XCTAssertEqualObjects(recipe, madeRecipe, @"The made recipe should be the same as the designated initializer recipe.");
 }
 
 - (void)testIngredientMappingComponents
 {
     NSArray *components = recipe.ingredientMappingComponents[@"key3"];
     NSArray *expectedComponents = @[@"key_3", @0];
-    XCTAssertEqualObjects(components, expectedComponents,
-                          @"The components should be properly broken down.");
+    XCTAssertEqualObjects(components, expectedComponents, @"The components should be properly broken down.");
 }
 
 - (void)testPropertyNames {
     NSSet *expectedNames = [NSSet setWithArray:[mapping allKeys]];
-    XCTAssertEqualObjects(recipe.propertyNames, expectedNames,
-                          @"The property names should be made from the mapping.");
+    XCTAssertEqualObjects(recipe.propertyNames, expectedNames, @"The property names should be made from the mapping.");
 }
 
 - (void)testModifyWith {
@@ -126,12 +122,10 @@
     NSDictionary *expectedMapping = @{@"key1": @"key_1",
                                       @"key3": @"key_3[0]",
                                       @"key4": @"key_4"};
-    XCTAssertEqualObjects(modifiedRecipe.ingredientMapping, expectedMapping,
-                          @"The ingredient mapping should be modified");
+    XCTAssertEqualObjects(modifiedRecipe.ingredientMapping, expectedMapping, @"The ingredient mapping should be modified");
     
     NSDictionary *expectedTransformers = @{@"key1": [NSValueTransformer valueTransformerForName:@"ZCRReversibleTransformer"]};
-    XCTAssertEqualObjects(modifiedRecipe.ingredientTransformers, expectedTransformers,
-                          @"The ingredient transformers should be modified");
+    XCTAssertEqualObjects(modifiedRecipe.ingredientTransformers, expectedTransformers, @"The ingredient transformers should be modified");
 }
 
 - (void)testProcessIngredients {
@@ -142,9 +136,68 @@
     
     NSDictionary *expectedIngredients = @{@"key1": @"TEST1",
                                           @"key3": @"test2"};
-    XCTAssertEqualObjects(expectedIngredients, processedIngredients,
-                          @"The ingredients should be processed by the recipe");
+    XCTAssertEqualObjects(expectedIngredients, processedIngredients, @"The ingredients should be processed by the recipe");
     XCTAssertNil(error, @"There should be no error.");
+}
+
+
+#pragma mark - Error tests
+
+- (void)testMissingMapping {
+    NSError *error;
+    recipe = [[ZCREasyRecipe alloc] initWithName:nil ingredientMapping:nil ingredientTransformers:nil error:&error];
+    XCTAssertNil(recipe, @"The recipe should be nil.");
+    XCTAssertNotNil(error, @"The error should be returned.");
+}
+
+- (void)testInvalidMapping {
+    NSDictionary *invalidMapping = @{@"key1": @"key_1[]"};
+    NSError *error;
+    recipe = [[ZCREasyRecipe alloc] initWithName:nil ingredientMapping:invalidMapping ingredientTransformers:nil error:&error];
+    XCTAssertNil(recipe, @"The recipe should be nil.");
+    XCTAssertNotNil(error, @"The error should be returned.");
+}
+
+- (void)testInconsistentRootMapping {
+    NSDictionary *invalidMapping = @{@"key1": @"key_1",
+                                     @"key2": @"[2]"};
+    NSError *error;
+    recipe = [[ZCREasyRecipe alloc] initWithName:nil ingredientMapping:invalidMapping ingredientTransformers:nil error:&error];
+    XCTAssertNil(recipe, @"The recipe should be nil.");
+    XCTAssertNotNil(error, @"The error should be returned.");
+}
+
+- (void)testInconsistentMapping {
+    NSDictionary *invalidMapping = @{@"key1": @"key[1]",
+                                     @"key2": @"key.second"};
+    NSError *error;
+    recipe = [[ZCREasyRecipe alloc] initWithName:nil ingredientMapping:invalidMapping ingredientTransformers:nil error:&error];
+    XCTAssertNil(recipe, @"The recipe should be nil.");
+    XCTAssertNotNil(error, @"The error should be returned.");
+}
+
+- (void)testUnknownTransformerKey {
+    NSDictionary *invalidTransformer = @{@"unknownKey": [ZCROneWayTransformer new]};
+    NSError *error;
+    recipe = [[ZCREasyRecipe alloc] initWithName:nil ingredientMapping:mapping ingredientTransformers:invalidTransformer error:&error];
+    XCTAssertNil(recipe, @"The recipe should be nil.");
+    XCTAssertNotNil(error, @"The error should be returned.");
+}
+
+- (void)testUnregisteredTransformer {
+    NSDictionary *invalidTransformer = @{@"key1": @"UnknownTransformer"};
+    NSError *error;
+    recipe = [[ZCREasyRecipe alloc] initWithName:nil ingredientMapping:mapping ingredientTransformers:invalidTransformer error:&error];
+    XCTAssertNil(recipe, @"The recipe should be nil.");
+    XCTAssertNotNil(error, @"The error should be returned.");
+}
+
+- (void)testInvalidTransformer {
+    NSDictionary *invalidTransformer = @{@"key1": [NSNull null]};
+    NSError *error;
+    recipe = [[ZCREasyRecipe alloc] initWithName:nil ingredientMapping:mapping ingredientTransformers:invalidTransformer error:&error];
+    XCTAssertNil(recipe, @"The recipe should be nil.");
+    XCTAssertNotNil(error, @"The error should be returned.");
 }
 
 @end

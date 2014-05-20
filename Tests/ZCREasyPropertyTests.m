@@ -134,8 +134,7 @@
 
 - (void)testCustomGetter {
     ZCREasyProperty *property = propertiesByName[@"customGetter"];
-    XCTAssertEqual(property.customGetter, @selector(hasCustomGetter),
-                   @"The custom getter should be set");
+    XCTAssertEqual(property.customGetter, @selector(hasCustomGetter), @"The custom getter should be set");
 }
 
 - (void)testWithoutCustomGetter {
@@ -155,8 +154,7 @@
 
 - (void)testHasAttributeDynamic {
     ZCREasyProperty *property = propertiesByName[@"dynamicProperty"];
-    XCTAssertTrue([property hasAttribute:ZCREasyPropertyAttrDynamic],
-                  @"The property should have the dynamic attribute");
+    XCTAssertTrue([property hasAttribute:ZCREasyPropertyAttrDynamic], @"The property should have the dynamic attribute");
 }
 
 @end

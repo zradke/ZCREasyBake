@@ -177,7 +177,6 @@
     
     XCTAssertNoThrow(block(), @"The exception should be caught.");
     XCTAssertNil(blockModel, @"The model should be nil.");
-    XCTAssertNotNil(error, @"The error should be set.");
 }
 
 - (void)testUpdateWithGettingException {
