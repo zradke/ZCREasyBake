@@ -188,22 +188,6 @@
         }
     }
     
-    // We need to make sure that all mappings share the same root object, either a dictionary if
-    // all the first pieces are strings, or an array if they are all numbers.
-    NSArray *allComponents = [ingredientComponents allValues];
-    Class rootClass;
-    for (NSArray *components in allComponents) {
-        if (!rootClass) {
-            id testPiece = [components firstObject];
-            rootClass = [testPiece isKindOfClass:[NSString class]] ? [NSString class] : [NSNumber class];
-        } else if (![[components firstObject] isKindOfClass:rootClass]) {
-            if (error) {
-                *error = ZCREasyBakeParameterError(@"Invalid ingredient mapping. The mapping must share the same root object, represented as a dictionary or array.");
-            }
-            return nil;
-        }
-    }
-    
     if ([self _validateIngredientComponents:ingredientComponents error:error]) {
         return [ingredientComponents copy];
     } else {
@@ -250,46 +234,61 @@
     }
     
     NSArray *allComponents = [ingredientComponents allValues];
+    
+    NSUInteger shortestPathCount = [[allComponents valueForKeyPath:@"@min.@count"] unsignedIntegerValue];
     NSUInteger longestPathCount = [[allComponents valueForKeyPath:@"@max.@count"] unsignedIntegerValue];
+    if (shortestPathCount == 0 || longestPathCount == 0) {
+        if (error) {
+            *error = ZCREasyBakeParameterError(@"All ingredient paths must have at least one component.");
+        }
+        return NO;
+    }
     
-    // To prevent wasted work we have a registry keep track of which pieces have been covered at the given index.
-    NSMutableDictionary *registry = [NSMutableDictionary dictionary];
+    NSDictionary *ingredientTree = [self _createIngredientTreeFromComponents:allComponents];
+    if (![self _validateIngredientTree:ingredientTree error:error]) {
+        return NO;
+    }
     
-    for (NSUInteger i = 0; i < longestPathCount; i++) {
-        for (NSArray *components in allComponents) {
-            if ([components count] > i) {
-                id piece = components[i];
-                BOOL isPieceValid = [self _validateIndex:i withPiece:piece
-                                          fromComponents:allComponents
-                                                registry:registry error:error];
-                if (!isPieceValid) {
-                    return NO;
-                }
+    return YES;
+}
+
++ (NSDictionary *)_createIngredientTreeFromComponents:(NSArray *)allComponents{
+    NSMutableDictionary *mutableTree = [NSMutableDictionary dictionary];
+    
+    NSMutableDictionary *currentTreeLocation;
+    for (NSArray *components in allComponents) {
+        // Whenever we start with a new ingredient path, we reset the current tree location
+        currentTreeLocation = mutableTree;
+        
+        for (id piece in components) {
+            if (!currentTreeLocation[piece]) {
+                currentTreeLocation[piece] = [NSMutableDictionary dictionary];
             }
+            currentTreeLocation = currentTreeLocation[piece];
+        }
+    }
+    
+    return [mutableTree copy];
+}
+
++ (BOOL)_validateIngredientTree:(NSDictionary *)ingredientTree error:(NSError *__autoreleasing *)error {
+    if (![self _validateMatchingClassForPieces:[ingredientTree allKeys] error:error]) {
+        return NO;
+    }
+    
+    // We recursively walk the tree to look for invalid paths
+    for (NSDictionary *branch in [ingredientTree allValues]) {
+        if (![self _validateIngredientTree:branch error:error]) {
+            return NO;
         }
     }
     
     return YES;
 }
 
-+ (BOOL)_validateIndex:(NSUInteger)index withPiece:(id)currentPiece
-        fromComponents:(NSArray *)allComponents
-              registry:(NSMutableDictionary *)registry error:(NSError *__autoreleasing *)error {
-    NSMutableIndexSet *registeredIndexes = registry[currentPiece];
-    if ([registeredIndexes containsIndex:index]) {
-        return YES;
-    }
-    
-    NSInteger nextIndex = index+1;
-    NSMutableArray *nextPieces = [NSMutableArray array];
-    for (NSArray *components in allComponents) {
-        if (([components count] > nextIndex) && [currentPiece isEqual:components[index]]) {
-            [nextPieces addObject:components[nextIndex]];
-        }
-    }
-    
++ (BOOL)_validateMatchingClassForPieces:(NSArray *)pieces error:(NSError *__autoreleasing *)error {
     Class componentClass = NULL;
-    for (id piece in nextPieces) {
+    for (id piece in pieces) {
         if (!componentClass) {
             if ([piece isKindOfClass:[NSString class]]) {
                 componentClass = [NSString class];
@@ -310,12 +309,6 @@
             }
         }
     }
-    
-    if (!registeredIndexes) {
-        registeredIndexes = [NSMutableIndexSet indexSet];
-        registry[currentPiece] = registeredIndexes;
-    }
-    [registeredIndexes addIndex:index];
     
     return YES;
 }

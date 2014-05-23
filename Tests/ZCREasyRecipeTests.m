@@ -158,6 +158,24 @@
     XCTAssertNotNil(error, @"The error should be returned.");
 }
 
+- (void)testEmptyMapping {
+    NSDictionary *invalidMapping = @{@"key1": @"",
+                                     @"key2": @""};
+    NSError *error;
+    recipe = [[ZCREasyRecipe alloc] initWithName:nil ingredientMapping:invalidMapping ingredientTransformers:nil error:&error];
+    XCTAssertNil(recipe, @"The recipe should be nil.");
+    XCTAssertNotNil(error, @"The error should be returned.");
+}
+
+- (void)testPartiallyEmptyMapping {
+    NSDictionary *invalidMapping = @{@"key1": @"",
+                                     @"key2": @"key_2"};
+    NSError *error;
+    recipe = [[ZCREasyRecipe alloc] initWithName:nil ingredientMapping:invalidMapping ingredientTransformers:nil error:&error];
+    XCTAssertNil(recipe, @"The recipe should be nil.");
+    XCTAssertNotNil(error, @"The error should be returned.");
+}
+
 - (void)testInconsistentRootMapping {
     NSDictionary *invalidMapping = @{@"key1": @"key_1",
                                      @"key2": @"[2]"};
