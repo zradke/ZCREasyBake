@@ -35,7 +35,7 @@
  *
  *  It shouldn't be required to subclass ZCREasyRecipe, though it is entirely possible to do so.
  */
-@interface ZCREasyRecipe : NSObject
+@interface ZCREasyRecipe : NSObject <NSCopying>
 
 /**
  *  @name Creating recipes
@@ -146,6 +146,7 @@
  *  to NSNull in the response.
  *
  *  @param ingredients The raw ingredients to process.
+ *  @param error       An optional error pointer that will be populated if an error occurs.
  *
  *  @return An NSDictionary where the keys are cannonical property names mapped from the ingredient
  *          paths and the values are ingredient values run through the registered NSValueTransformer

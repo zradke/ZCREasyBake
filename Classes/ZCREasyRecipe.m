@@ -21,13 +21,12 @@
 
 #pragma mark Public API
 
-- (instancetype)initWithName:(NSString *)name
-           ingredientMapping:(NSDictionary *)ingredientMapping
+- (instancetype)initWithName:(NSString *)name ingredientMapping:(NSDictionary *)ingredientMapping
       ingredientTransformers:(NSDictionary *)ingredientTransformers
                        error:(NSError *__autoreleasing *)error {
     if (!ingredientMapping) {
         if (error) {
-            *error = ZCREasyBakeParameterError(@"Missing ingredient mapping!");
+            *error = ZCREasyBakeError(ZCREasyBakeInvalidMappingError, @"Missing ingredient mapping!");
         }
         return nil;
     }
@@ -75,8 +74,7 @@
     return [maker makeRecipe];
 }
 
-- (NSDictionary *)processIngredients:(id)ingredients
-                               error:(NSError *__autoreleasing *)error {
+- (NSDictionary *)processIngredients:(id)ingredients error:(NSError *__autoreleasing *)error {
     // We treat no ingredients as success
     if (!ingredients) { return [NSDictionary dictionary]; }
     
@@ -113,6 +111,14 @@
 }
 
 
+#pragma mark NSCopying
+
+- (id)copyWithZone:(NSZone *)zone {
+    // Since instances are immutable, we can just return self
+    return self;
+}
+
+
 #pragma mark NSObject
 
 + (BOOL)accessInstanceVariablesDirectly {
@@ -121,8 +127,7 @@
 }
 
 - (NSString *)description {
-    NSString *description = [NSString stringWithFormat:@"<%@:%p>",
-                             NSStringFromClass([self class]), self];
+    NSString *description = [NSString stringWithFormat:@"<%@:%p>",  NSStringFromClass([self class]), self];
     
     if (self.name) {
         description = [description stringByAppendingFormat:@" name:%@", self.name];
@@ -134,22 +139,18 @@
         if (!transformer) {
             instruction = [NSString stringWithFormat:@"%@ ==> %@", ingredientPath, propertyName];
         } else {
-            NSString *annotation = [NSString stringWithFormat:@"(%@:%p)",
-                                    NSStringFromClass([transformer class]), transformer];
+            NSString *annotation = [NSString stringWithFormat:@"(%@:%p)", NSStringFromClass([transformer class]), transformer];
             if ([[transformer class] allowsReverseTransformation]) {
-                instruction = [NSString stringWithFormat:@"%@ <=%@=> %@",
-                                      ingredientPath, annotation, propertyName];
+                instruction = [NSString stringWithFormat:@"%@ <=%@=> %@", ingredientPath, annotation, propertyName];
             } else {
-                instruction = [NSString stringWithFormat:@"%@ =%@=> %@",
-                               ingredientPath, annotation, propertyName];
+                instruction = [NSString stringWithFormat:@"%@ =%@=> %@", ingredientPath, annotation, propertyName];
             }
         }
         [instructions addObject:instruction];
     }];
     
     
-    return [description stringByAppendingFormat:@" instructions:%@",
-            [instructions sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)]];
+    return [description stringByAppendingFormat:@" instructions:%@", [instructions sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)]];
 }
 
 - (NSUInteger)hash {
@@ -216,10 +217,9 @@
                 [components addObject:[NSNumber numberWithInteger:arrayIndex]];
             } else {
                 if (error) {
-                    *error = ZCREasyBakeParameterError(@"Invalid ingredient path: %@. Arrays must be referenced in the format: [<index>]", ingredientPath);
+                    *error = ZCREasyBakeError(ZCREasyBakeInvalidIngredientPathError, @"Invalid ingredient path: %@. Arrays must be referenced in the format: [<index>]", ingredientPath);
                 }
-                components = nil;
-                break;
+                return nil;
             }
         }
     }
@@ -239,7 +239,7 @@
     NSUInteger longestPathCount = [[allComponents valueForKeyPath:@"@max.@count"] unsignedIntegerValue];
     if (shortestPathCount == 0 || longestPathCount == 0) {
         if (error) {
-            *error = ZCREasyBakeParameterError(@"All ingredient paths must have at least one component.");
+            *error = ZCREasyBakeError(ZCREasyBakeInvalidIngredientPathError, @"All ingredient paths must have at least one component.");
         }
         return NO;
     }
@@ -252,7 +252,7 @@
     return YES;
 }
 
-+ (NSDictionary *)_createIngredientTreeFromComponents:(NSArray *)allComponents{
++ (NSDictionary *)_createIngredientTreeFromComponents:(NSArray *)allComponents {
     NSMutableDictionary *mutableTree = [NSMutableDictionary dictionary];
     
     NSMutableDictionary *currentTreeLocation;
@@ -271,7 +271,8 @@
     return [mutableTree copy];
 }
 
-+ (BOOL)_validateIngredientTree:(NSDictionary *)ingredientTree error:(NSError *__autoreleasing *)error {
++ (BOOL)_validateIngredientTree:(NSDictionary *)ingredientTree
+                          error:(NSError *__autoreleasing *)error {
     if (![self _validateMatchingClassForPieces:[ingredientTree allKeys] error:error]) {
         return NO;
     }
@@ -296,14 +297,14 @@
                 componentClass = [NSNumber class];
             } else {
                 if (error) {
-                    *error = ZCREasyBakeParameterError(@"Invalid ingredient path component class at index (%ld).", (unsigned long)index);
+                    *error = ZCREasyBakeError(ZCREasyBakeInvalidIngredientPathError, @"Invalid ingredient path component class at index (%ld).", (unsigned long)index);
                 }
                 return NO;
             }
         } else {
             if (![piece isKindOfClass:componentClass]) {
                 if (error) {
-                    *error = ZCREasyBakeParameterError(@"Inconsistent ingredient path component types. Expected all components at index (%ld) to be of class (%@).", (unsigned long)index, componentClass);
+                    *error = ZCREasyBakeError(ZCREasyBakeInvalidIngredientPathError, @"Inconsistent ingredient path component types. Expected all components at index (%ld) to be of class (%@).", (unsigned long)index, componentClass);
                 }
                 return NO;
             }
@@ -328,7 +329,7 @@
         if (error) {
             NSMutableSet *unknownKeys = [transformedKeys mutableCopy];
             [unknownKeys minusSet:propertyKeys];
-            *error = ZCREasyBakeParameterError(@"The ingredient transformers have unmapped keys: %@", unknownKeys);
+            *error = ZCREasyBakeError(ZCREasyBakeInvalidTransformerError, @"The ingredient transformers have unmapped keys: %@", unknownKeys);
         }
         return nil;
     }
@@ -344,13 +345,13 @@
                 mutableTransformers[key] = transformer;
             } else {
                 if (error) {
-                    *error = ZCREasyBakeParameterError(@"No registered transformer was found for the name (%@) for key (%@)", ingredientTransformers[key], key);
+                    *error = ZCREasyBakeError(ZCREasyBakeInvalidTransformerError, @"No registered transformer was found for the name (%@) for key (%@)", ingredientTransformers[key], key);
                 }
                 return nil;
             }
         } else if (![transformer isKindOfClass:[NSValueTransformer class]]) {
             if (error) {
-                *error = ZCREasyBakeParameterError(@"Object (%@) for key (%@) is not a valid class.", transformer, key);
+                *error = ZCREasyBakeError(ZCREasyBakeInvalidTransformerError, @"Object (%@) for key (%@) is not a valid transformer class.", transformer, key);
             }
             return nil;
         }
@@ -429,14 +430,14 @@
 - (BOOL)addRecipe:(ZCREasyRecipe *)recipe error:(NSError *__autoreleasing *)error {
     if (!recipe) {
         if (error) {
-            *error = ZCREasyBakeParameterError(@"Missing a recipe to add!");
+            *error = ZCREasyBakeError(ZCREasyBakeInvalidRecipeError, @"Missing a recipe to add!");
         }
         return NO;
     }
     
     if (!recipe.name) {
         if (error) {
-            *error = ZCREasyBakeParameterError(@"Recipe is missing a name!");
+            *error = ZCREasyBakeError(ZCREasyBakeInvalidRecipeError, @"Recipe is missing a name!");
         }
         return NO;
     }
@@ -444,7 +445,7 @@
     @synchronized(self) {
         if ([self.recipeNames containsObject:recipe.name]) {
             if (error) {
-                *error = ZCREasyBakeParameterError(@"The recipe is already added to this box!");
+                *error = ZCREasyBakeError(ZCREasyBakeInvalidRecipeError, @"The recipe is already added to this box!");
             }
             return NO;
         }
@@ -472,31 +473,24 @@
 - (BOOL)removeRecipeNamed:(NSString *)recipeName error:(NSError *__autoreleasing *)error {
     if (!recipeName) {
         if (error) {
-            *error = ZCREasyBakeParameterError(@"Missing recipe name to remove!");
-        }
-        return NO;
-    }
-    
-    ZCREasyRecipe *recipe = [self recipeWithName:recipeName];
-    if (!recipe) {
-        if (error) {
-            *error = ZCREasyBakeParameterError(@"Missing a recipe to remove!");
+            *error = ZCREasyBakeError(ZCREasyBakeUnknownRecipeError, @"Missing a recipe name to remove!");
         }
         return NO;
     }
     
     @synchronized(self) {
-        if (![self.recipeNames containsObject:recipe.name]) {
+        if (![self.recipeNames containsObject:recipeName]) {
             if (error) {
-                *error = ZCREasyBakeParameterError(@"Recipe to remove was not added to this box!");
+                *error = ZCREasyBakeError(ZCREasyBakeUnknownRecipeError, @"Recipe to remove was not added to this box!");
             }
             return NO;
         }
         
         NSMutableDictionary *recipes = [self.recipes mutableCopy];
-        [recipes removeObjectForKey:recipe.name];
+        [recipes removeObjectForKey:recipeName];
         self.recipes = recipes;
     }
+    
     return YES;
 }
 
@@ -504,17 +498,32 @@
     return self.recipes[recipeName];
 }
 
-#pragma mark NSObject
-
-- (NSString *)description {
-    return [NSString stringWithFormat:@"<%@:%p> recipeNames:%@",
-            NSStringFromClass([self class]), self, self.recipeNames];
-}
 
 #pragma mark NSCopying
 
 - (id)copyWithZone:(NSZone *)zone {
-    return self;
+    ZCREasyRecipeBox *copy = [[[self class] allocWithZone:zone] init];
+    copy.recipes = self.recipes;
+    return copy;
+}
+
+
+#pragma mark NSObject
+
+- (NSString *)description {
+    return [NSString stringWithFormat:@"<%@:%p> recipeNames:%@", NSStringFromClass([self class]), self, self.recipeNames];
+}
+
+- (NSUInteger)hash {
+    return [self.recipes hash];
+}
+
+- (BOOL)isEqual:(id)object {
+    if (self == object) { return YES; }
+    if (![object isKindOfClass:[self class]]) { return NO; }
+    
+    ZCREasyRecipeBox *other = object;
+    return [self.recipes isEqualToDictionary:other.recipes];
 }
 
 @end
@@ -531,21 +540,21 @@
                       transformer:(id)transformer error:(NSError *__autoreleasing *)error {
     if (!propertyName) {
         if (error) {
-            *error = ZCREasyBakeParameterError(@"Missing a property to add to the recipe.");
+            *error = ZCREasyBakeError(ZCREasyBakeInvalidMappingError, @"Missing a property name to add to the recipe.");
         }
         return NO;
     }
     
     if ([[self.ingredientMapping allKeys] containsObject:propertyName]) {
         if (error) {
-            *error = ZCREasyBakeParameterError(@"Instruction for property (%@) already exists!", propertyName);
+            *error = ZCREasyBakeError(ZCREasyBakeInvalidMappingError, @"Instruction for property (%@) already exists!", propertyName);
         }
         return NO;
     }
     
     if (!ingredientPath) {
         if (error) {
-            *error = ZCREasyBakeParameterError(@"Missing an ingredient path to map the property.");
+            *error = ZCREasyBakeError(ZCREasyBakeInvalidIngredientPathError, @"Missing an ingredient path to map the property.");
         }
         return NO;
     }
@@ -555,14 +564,14 @@
             NSValueTransformer *valueTransformer = [NSValueTransformer valueTransformerForName:transformer];
             if (!valueTransformer) {
                 if (error) {
-                    *error = ZCREasyBakeParameterError(@"No registered transformer was found for the name (%@)", transformer);
+                    *error = ZCREasyBakeError(ZCREasyBakeInvalidTransformerError, @"No registered transformer was found for the name (%@)", transformer);
                 }
                 return NO;
             }
             transformer = valueTransformer;
         } else if (![transformer isKindOfClass:[NSValueTransformer class]]) {
             if (error) {
-                *error = ZCREasyBakeParameterError(@"Object (%@) is not an NSValueTransformer.", transformer);
+                *error = ZCREasyBakeError(ZCREasyBakeInvalidTransformerError, @"Object (%@) is not a valid transformer class.", transformer);
             }
             return NO;
         }
@@ -581,17 +590,18 @@
     return YES;
 }
 
-- (BOOL)removeInstructionForProperty:(NSString *)propertyName error:(NSError *__autoreleasing *)error {
+- (BOOL)removeInstructionForProperty:(NSString *)propertyName
+                               error:(NSError *__autoreleasing *)error {
     if (!propertyName) {
         if (error) {
-            *error = ZCREasyBakeParameterError(@"Missing a property name to remove!");
+            *error = ZCREasyBakeError(ZCREasyBakeInvalidMappingError, @"Missing a property name to remove!");
         }
         return NO;
     }
     
     if (![[self.ingredientMapping allKeys] containsObject:propertyName]) {
         if (error) {
-            *error = ZCREasyBakeParameterError(@"No instruction for (%@) has been added!", propertyName);
+            *error = ZCREasyBakeError(ZCREasyBakeInvalidMappingError, @"No instruction for (%@) has been added!", propertyName);
         }
         return NO;
     }

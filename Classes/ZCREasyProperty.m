@@ -44,6 +44,8 @@ static inline NSString *_ZCRStringForPropertyAttribute(ZCREasyPropertyAttribute 
     NSString *_attributeString;
 }
 
+#pragma mark - Public API
+
 - (instancetype)initWithProperty:(objc_property_t)property {
     NSParameterAssert(property);
     
@@ -79,39 +81,29 @@ static inline NSString *_ZCRStringForPropertyAttribute(ZCREasyPropertyAttribute 
 }
 
 - (instancetype)init {
-    NSAssert(NO, @"This class cannot be initialized with this method. "
-                 @"Please use the designated initializer (%@) instead.",
-                 NSStringFromSelector(@selector(initWithProperty:)));
+    NSAssert(NO, @"This class cannot be initialized with this method. Please use the designated initializer (%@) instead.", NSStringFromSelector(@selector(initWithProperty:)));
     return nil;
 }
 
 - (BOOL)hasAttribute:(ZCREasyPropertyAttribute)attribute {
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF BEGINSWITH %@",
-                              _ZCRStringForPropertyAttribute(attribute)];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF BEGINSWITH %@", _ZCRStringForPropertyAttribute(attribute)];
     return ([[_attributes filteredSetUsingPredicate:predicate] count] > 0);
 }
 
-- (NSString *)_contextStringForAttribute:(ZCREasyPropertyAttribute)attribute {
-    NSString *attributeIdentifier = _ZCRStringForPropertyAttribute(attribute);
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF BEGINSWITH %@", attributeIdentifier];
-    NSString *fullAttribute = [[_attributes filteredSetUsingPredicate:predicate] anyObject];
-    return [fullAttribute substringFromIndex:attributeIdentifier.length];
+
+#pragma mark - NSCopying
+
+- (id)copyWithZone:(NSZone *)zone {
+    // Since instances are immutable, we can just return self
+    return self;
 }
 
-- (Class)_parseTypeClassFromString:(NSString *)typeString {
-    if (typeString.length == 0) { return NULL; }
-    
-    NSString *typeClassName = nil;
-    NSScanner *scanner = [NSScanner scannerWithString:typeString];
-    
-    // Objects with no protocol and a class appear as: @"ClassName"
-    // Objects with a protocol and class appear as: @"ClassName<ProtocolName>"
-    // In a delegate property, the type string is often: @"<DelegateName>"
-    if (![scanner scanString:@"@\"" intoString:NULL]) { return NULL; }
-    [scanner scanUpToCharactersFromSet:[NSCharacterSet characterSetWithCharactersInString:@"<\""]
-                            intoString:&typeClassName];
-    
-    return (typeClassName.length > 0) ? NSClassFromString(typeClassName) : NULL;
+
+#pragma mark - NSObject
+
++ (BOOL)accessInstanceVariablesDirectly {
+    // Make this class truly immutable
+    return NO;
 }
 
 - (BOOL)isEqual:(id)object {
@@ -131,8 +123,7 @@ static inline NSString *_ZCRStringForPropertyAttribute(ZCREasyPropertyAttribute 
 }
 
 - (NSString *)description {
-    return [NSString stringWithFormat:@"<%@:%p> name:%@ attributes:%@",
-            NSStringFromClass([self class]), self, _name, _attributeString];
+    return [NSString stringWithFormat:@"<%@:%p> name:%@ attributes:%@", NSStringFromClass([self class]), self, _name, _attributeString];
 }
 
 + (NSSet *)propertiesForClass:(Class)aClass {
@@ -155,6 +146,32 @@ static inline NSString *_ZCRStringForPropertyAttribute(ZCREasyPropertyAttribute 
     }
     
     return [mutableProperties copy];
+}
+
+
+#pragma mark - Private
+
+- (NSString *)_contextStringForAttribute:(ZCREasyPropertyAttribute)attribute {
+    NSString *attributeIdentifier = _ZCRStringForPropertyAttribute(attribute);
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF BEGINSWITH %@", attributeIdentifier];
+    NSString *fullAttribute = [[_attributes filteredSetUsingPredicate:predicate] anyObject];
+    return [fullAttribute substringFromIndex:attributeIdentifier.length];
+}
+
+- (Class)_parseTypeClassFromString:(NSString *)typeString {
+    if (typeString.length == 0) { return NULL; }
+    
+    NSString *typeClassName = nil;
+    NSScanner *scanner = [NSScanner scannerWithString:typeString];
+    
+    // Objects with no protocol and a class appear as: @"ClassName"
+    // Objects with a protocol and class appear as: @"ClassName<ProtocolName>"
+    // In a delegate property, the type string is often: @"<DelegateName>"
+    if (![scanner scanString:@"@\"" intoString:NULL]) { return NULL; }
+    [scanner scanUpToCharactersFromSet:[NSCharacterSet characterSetWithCharactersInString:@"<\""]
+                            intoString:&typeClassName];
+    
+    return (typeClassName.length > 0) ? NSClassFromString(typeClassName) : NULL;
 }
 
 @end

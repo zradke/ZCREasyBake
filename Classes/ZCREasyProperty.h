@@ -75,7 +75,7 @@ typedef NS_ENUM(NSInteger, ZCREasyPropertyAttribute) {
  *  For querying other properties, the hasAttribute: method can be used passing one of the attribute
  *  constants. For a list of the attribute constants, see the header of this class.
  */
-@interface ZCREasyProperty : NSObject
+@interface ZCREasyProperty : NSObject <NSCopying>
 
 /**
  *  Creates a new instance representing the passed property. This is the designated initializer

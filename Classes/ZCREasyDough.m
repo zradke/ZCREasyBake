@@ -29,13 +29,11 @@ NSString *const ZCREasyDoughUpdatedDoughKey = @"ZCREasyDoughUpdatedDoughKey";
 
 @implementation ZCREasyDough
 
-- (instancetype)initWithIdentifier:(id<NSObject,NSCopying>)identifier
-                       ingredients:(id)ingredients
-                            recipe:(ZCREasyRecipe *)recipe
-                             error:(NSError *__autoreleasing *)error {
+- (instancetype)initWithIdentifier:(id<NSObject,NSCopying>)identifier ingredients:(id)ingredients
+                            recipe:(ZCREasyRecipe *)recipe error:(NSError *__autoreleasing *)error {
     if (!identifier) {
         if (error) {
-            *error = ZCREasyBakeParameterError(@"Missing a unique identifier!");
+            *error = ZCREasyBakeError(ZCREasyBakeInvalidIdentifierError, @"Missing a unique identifier!");
         }
         return nil;
     }
@@ -139,8 +137,7 @@ NSString *const ZCREasyDoughUpdatedDoughKey = @"ZCREasyDoughUpdatedDoughKey";
     }
 }
 
-- (id)decomposeWithRecipe:(ZCREasyRecipe *)recipe
-                    error:(NSError *__autoreleasing *)error {
+- (id)decomposeWithRecipe:(ZCREasyRecipe *)recipe error:(NSError *__autoreleasing *)error {
     if (![[self class] _validateRecipe:recipe error:error]) {
         return nil;
     }
@@ -243,9 +240,16 @@ mutableIngredients:(id)mutableIngredients {
                        error:(NSError *__autoreleasing *)error {
     // A recipe is required in this method, otherwise it cannot be determined which keys to check
     // for equality. Similarly, ingredients should also be present.
-    if (!recipe || !ingredients) {
+    if (!recipe) {
         if (error) {
-            *error = ZCREasyBakeParameterError(@"Missing recipe and/or ingredients!");
+            *error = ZCREasyBakeError(ZCREasyBakeInvalidRecipeError, @"Missing a recipe to compare with!");
+        }
+        return NO;
+    }
+    
+    if (!ingredients) {
+        if (error) {
+            *error = ZCREasyBakeError(ZCREasyBakeInvalidIngredientsError, @"Missing raw ingredients to compare!");
         }
         return NO;
     }
@@ -316,7 +320,7 @@ mutableIngredients:(id)mutableIngredients {
 + (BOOL)_validateRecipe:(ZCREasyRecipe *)recipe error:(NSError *__autoreleasing *)error {
     if (!recipe) {
         if (error) {
-            *error = ZCREasyBakeParameterError(@"Missing a recipe!");
+            *error = ZCREasyBakeError(ZCREasyBakeInvalidRecipeError, @"Missing a recipe!");
         }
         return NO;
     }
@@ -325,7 +329,7 @@ mutableIngredients:(id)mutableIngredients {
         if (error) {
             NSMutableSet *unknownNames = [recipe.propertyNames mutableCopy];
             [unknownNames minusSet:[self allPropertyNames]];
-            *error = ZCREasyBakeParameterError(@"The recipe contains unknown property names: %@", unknownNames);
+            *error = ZCREasyBakeError(ZCREasyBakeInvalidRecipeError, @"The recipe contains unknown property names: %@", unknownNames);
         }
         return NO;
     }
@@ -552,26 +556,11 @@ mutableIngredients:(id)mutableIngredients {
 }
 
 - (BOOL)validateKitchen:(NSError *__autoreleasing *)error {
-    if (self.ingredients && !self.recipe) {
-        if (error) {
-            *error = ZCREasyBakeParameterError(@"Missing a recipe for the ingredients!");
-        }
-        return NO;
-    }
-    
-    NSSet *recipePropertyNames = self.recipe.propertyNames;
-    NSSet *doughPropertyNames = [_doughClass allPropertyNames];
-    if (![recipePropertyNames isSubsetOfSet:doughPropertyNames]) {
-        if (error) {
-            NSMutableSet *unknownNames = [recipePropertyNames mutableCopy];
-            [unknownNames minusSet:doughPropertyNames];
-            *error = ZCREasyBakeParameterError(@"The recipe contains unknown property names: %@",
-                                               unknownNames);
-        }
-        return NO;
-    }
-    
-    return YES;
+    id tmpDough = [[_doughClass alloc] initWithIdentifier:self.identifier
+                                              ingredients:self.ingredients
+                                                   recipe:self.recipe
+                                                    error:error];
+    return (tmpDough != nil);
 }
 
 @end
