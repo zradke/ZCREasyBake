@@ -52,7 +52,12 @@ enum {
     /**
      *  Error when a requested recipe cannot be found.
      */
-    ZCREasyBakeUnknownRecipeError = 1976
+    ZCREasyBakeUnknownRecipeError = 1976,
+    
+    /**
+     *  Error when an invalid model is provided.
+     */
+    ZCREasyBakeInvalidModelError = 1977
 };
 
 /**

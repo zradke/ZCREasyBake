@@ -80,17 +80,6 @@
     XCTAssertNotNil(error, @"There should be an error.");
 }
 
-- (void)testInitWithInvalidRecipe {
-    recipe = [ZCREasyRecipe makeWith:^(id<ZCREasyRecipeMaker> recipeMaker) {
-        [recipeMaker setIngredientMapping:@{@"unknownKey": @"unknownKey"}];
-    }];
-    NSError *error;
-    model = [[ZCREasyDoughErrorModel alloc] initWithIdentifier:identifier ingredients:ingredients
-                                                        recipe:recipe error:&error];
-    XCTAssertNil(model, @"The model cannot be created without a recipe when ingredients exist.");
-    XCTAssertNotNil(error, @"There should be an error.");
-}
-
 - (void)testInitWithSettingException {
     ingredients = @{@"brokenSetter": @"test"};
     
@@ -104,22 +93,6 @@
     
     XCTAssertNoThrow(block(), @"The exception should be caught.");
     XCTAssertNil(blockModel, @"The model should be nil.");
-    XCTAssertNotNil(error, @"The error should be set.");
-}
-
-- (void)testMakeWithInvalidRecipe {
-    recipe = [ZCREasyRecipe makeWith:^(id<ZCREasyRecipeMaker> recipeMaker) {
-        [recipeMaker setIngredientMapping:@{@"unknownKey": @"unknownKey"}];
-    }];
-    
-    __block NSError *error;
-    model = [ZCREasyDoughErrorModel makeWith:^(id<ZCREasyBaker> chef) {
-        [chef setIngredients:ingredients];
-        [chef setRecipe:recipe];
-        [chef validateKitchen:&error];
-    }];
-    
-    XCTAssertNil(model, @"The model should be nil.");
     XCTAssertNotNil(error, @"The error should be set.");
 }
 
@@ -138,29 +111,9 @@
     XCTAssertNil(blockModel, @"The model should be nil.");
 }
 
-- (void)testUpdateWithoutIngredients {
-    NSError *error;
-    model = [model updateWithIngredients:nil recipe:recipe error:&error];
-    
-    XCTAssertNil(model, @"The model should be nil.");
-    XCTAssertNotNil(error, @"The error should be set.");
-}
-
 - (void)testUpdateWithoutRecipe {
     NSError *error;
     model = [model updateWithIngredients:ingredients recipe:nil error:&error];
-    
-    XCTAssertNil(model, @"The model should be nil.");
-    XCTAssertNotNil(error, @"The error should be set.");
-}
-
-- (void)testUpdateWithInvalidRecipe {
-    recipe = [ZCREasyRecipe makeWith:^(id<ZCREasyRecipeMaker> recipeMaker) {
-        [recipeMaker setIngredientMapping:@{@"unknownKey": @"unknownKey"}];
-    }];
-    
-    NSError *error;
-    model = [model updateWithIngredients:ingredients recipe:recipe error:&error];
     
     XCTAssertNil(model, @"The model should be nil.");
     XCTAssertNotNil(error, @"The error should be set.");
@@ -235,29 +188,9 @@
     XCTAssertNotNil(error, @"There should be an error;");
 }
 
-- (void)testIsEqualWithoutIngredients {
-    NSError *error;
-    BOOL isEqual = [model isEqualToIngredients:nil withRecipe:recipe error:&error];
-    
-    XCTAssertFalse(isEqual, @"If an error occus it should return NO.");
-    XCTAssertNotNil(error, @"The error should be set.");
-}
-
 - (void)testIsEqualWithoutRecipe {
     NSError *error;
     BOOL isEqual = [model isEqualToIngredients:ingredients withRecipe:nil error:&error];
-    
-    XCTAssertFalse(isEqual, @"If an error occus it should return NO.");
-    XCTAssertNotNil(error, @"The error should be set.");
-}
-
-- (void)testIsEqualWithInvalidRecipe {
-    recipe = [recipe modifyWith:^(id<ZCREasyRecipeMaker> recipeMaker) {
-        [recipeMaker setIngredientMapping:@{@"unknownKey": @"unknownKey"}];
-    }];
-    
-    NSError *error;
-    BOOL isEqual = [model isEqualToIngredients:ingredients withRecipe:recipe error:&error];
     
     XCTAssertFalse(isEqual, @"If an error occus it should return NO.");
     XCTAssertNotNil(error, @"The error should be set.");

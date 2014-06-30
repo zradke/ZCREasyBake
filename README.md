@@ -4,15 +4,25 @@
 
 [![Build Status for Develop](https://travis-ci.org/zradke/ZCREasyBake.svg?branch=develop)](https://travis-ci.org/zradke/ZCREasyBake) on [develop](https://github.com/zradke/ZCREasyBake/tree/develop)
 
-A lightweight immutable model framework disguised by friendly food metaphors.
+A lightweight modeling framework.
 
 ===
 
-## Equipment
+## What's the point?
 
-To use ZCREasyBake, your project should have a minimum deployment target of iOS 6.0+ or OSX 10.8+ and be running with ARC. However, this project is only unit tested on iOS 7.0+ and OSX 10.9+.
+Making models is a pain. Updating models is a pain. **ZCREasyBake** aims to ease some of that pain.
 
-## Preparing your kitchen
+Looking to quickly serialize data from an external source (like a web API) into existing model classes? Take a look at **ZCREasyOven**.
+
+Looking to build immutable models to help with thread safety while also allowing updates? Take a look at **ZCREasyDough**.
+
+Annoyed at having multiple models that represent the same basic data, just because they come from different external sources? Merge them into one model and create specific **ZCREasyRecipes** to serialize them.
+
+## Can I use it?
+
+To use **ZCREasyBake**, your project should have a minimum deployment target of iOS 6.0+ or OSX 10.8+ and be running with ARC. However, this project is only unit tested on iOS 7.0+ and OSX 10.9+.
+
+## How do I install it?
 
 ZCREasyBake can be installed a variety of ways depending on your preference:
 
@@ -32,105 +42,44 @@ Throughout the ZCREasyBake project, you'll encounter some jargon:
 * **Model**: A container for application data that is reusable and serializable. Think of this as a baked good.
 * **Property**: An Objective-C property which controls access to a model's underlying data. ZCREasyBake prefers `readonly` properties when they expose a model's underlying application data.
 * **Identifier**: An arbitrary object which conforms to the `NSObject` and `NSCopying` protocols that can uniquely identify a model across instances.
-* **Ingredients**: The raw data that makes up a model, represented as an `NSDictionary` or `NSArray`. This data is typically produced by an external service, such as a web API, and can be processed into models after some work.
+* **Ingredients**: The raw data that makes up a model, represented as a tree of `NSDictionary` or `NSArray` instances. This data is typically produced by an external service, such as a web API, and can be processed into models after some work.
 * **Ingredient path**: The steps to traverse an ingredient tree of dictionaries and/or arrays to access an ingredient value.
 * **Recipe**: Instructions for preparing ingredients for baking into a model, represented as a `ZCREasyRecipe`. Recipes let us decouple ingredient sources from their final model representations. Recipes are usually model and ingredient-source dependent, but otherwise reusable.
 
 ===
 
-## Working in the kitchen
+## How do I create a model?
 
-### Defining a new model
+### If you already have a model class
 
-Start by defining your model as a subclass of `ZCREasyDough`:
+Assuming you have an existing key-value-coding compliant object...
 
 ```
-@interface User : ZCREasyDough
-@property (strong, readonly) NSString *name;
-@property (assign, readonly) NSUInteger unreadMessages;
-@property (strong, readonly) NSDate *updatedAt;
+// Valid model
+@interface OldProduct : NSObject
+@property (strong, nonatomic) NSString *baseSKU;
+@property (strong, nonatomic) NSString *name;
+@end
+
+// Also valid model
+NSMutableDictionary *product = [NSMutableDictionary dictionary];
+```
+
+... you are ready to start working with **ZCREasyOven** and **ZCREasyRecipe**. Just initialize it however you normally do.
+
+
+### If you don't have a model
+
+Consider **ZCREasyDough**:
+
+```
+// Immutable model class
+@interface Product : ZCREasyDough
+@property (strong, nonatomic, readonly) NSString *name;
 @end
 ```
 
-Note that the properties are defined as `readonly` so the instance is effectively immutable after creation!
-
-### Identify ingredient sources
-
-Your models will need to be populated with ingredients from an ingredient source. For example, our `User` model defined above can be backed by a web service that returns JSON like so:
-
-```
-{
-    "server_id": "1209-3r47-4482-9rj4-93iu-324s",
-    "name": "Zach Radke",
-    "unread_messages": 10,
-    "updated_at": "2014-04-19T19:32:05Z"
-}
-```
-
-Whatever the ingredient source, the ingredients must be either an `NSDictionary` or `NSArray` before they can be processed.
-
-### Defining a recipe
-
-To process raw ingredients into a model, a `ZCREasyRecipe` is used. These recipes are usually model and ingredient-source dependent. For example, we would create a single recipe for the `User` model and JSON ingredient source defined above.
-
-All recipes begin with an `NSDictionary` mapping, which is required. The keys are property keys of the model to populate, and the values are the corresponding ingredient paths from the ingredient-source.
-
-```
-NSDictionary *mapping = @{@"name": @"name",
-                          @"unreadMessages": @"unread_messages",
-                          @"updatedAt": @"updated_at"};
-```
-
-The ingredient path is represented as a string, but may use dot notation to indicate a dictionary-key traversal, or the form `[<index>]` to indicate an array-index traversal. For example:
-
-```
-// The mapping…
-NSDictionary *mapping = @{@"key": @"values[0].key"};
-
-// Which corresponds to this structure…
-NSDictionary *ingredientSource = @{@"values": @[@{@"key": @"fooBar"}]};
-
-// Would produce these processed ingredients…
-NSDictionary *processedIngredients = @{@"key": @"fooBar"};
-```
-
-Recipes may also optionally provide a dictionary of transformers to use for processing the raw ingredients into different objects. As with the ingredient mapping, the keys are property keys on the model which should be transformed. The values are `NSValueTransformer` instances or `NSStrings`. If strings are used, they must be registered to value transformers.
-
-```
-// NSValueTransformer+DefaultTransformers.h
-// Assume we have created the DateTransformer class elsewhere...
-DateTransformer *dateTransformer = [[DateTransformer alloc] initWithDateFormat:@"yyyy-MM-dd'T'HH-mm-ss'Z'"];
-[NSValueTransformer setValueTransformer:dateTransformer forName:@"DateTransformer"];
-
-// ...
-NSDictionary *transformers = @{@"updatedAt": @"DateTransformer"};
-```
-
-Finally, a recipe may have a name. This is useful for debugging purposes, but also for storing and reusing recipes in `ZCREasyRecipeBox` instances.
-
-```
-ZCREasyRecipe *userJSONRecipe = [ZCREasyRecipe makeWith:^(id<ZCREasyRecipeMaker maker) {
-    [maker setIngredientMapping:mapping];
-    [maker setIngredientTransformers:transformers];
-    [maker setName:@"UserJSONRecipe"];
-}];
-[[ZCREasyRecipeBox defaultBox] addRecipe:userJSONRecipe error:NULL];
-```
-
-Since recipes are typically model dependent, you can also provide class methods on the model for even easier recipe access.
-
-```
-// User.m
-+ (ZCREasyRecipe *)JSONRecipe {
-    return [[ZCREasyRecipeBox defaultBox] recipeWithName:@"UserJSONRecipe"];
-}
-```
-
-`ZCREasyRecipe` and `ZCREasyRecipeBox` have many utilities that make generating and validating recipes much easier. Check their headers for more information.
-
-### Baking a new instance
-
-Your model will inherit the designated initializers from `ZCREasyDough`:
+You'll want to use the designated initializers:
 
 ```
 - (instancetype)initWithIdentifier:(id<NSObject,NSCopying>)identifier
@@ -140,84 +89,111 @@ Your model will inherit the designated initializers from `ZCREasyDough`:
 + (instancetype)makeWith:(void (^)(id<ZCREasyBaker> baker))constructionBlock;
 ```
 
-To create an instance you'll need an identifier, some ingredients, and a recipe:
-	
+## How do I create a recipe?
+
+Recipes are used throughout the framework.
+
+
+### Identify ingredient sources
+
+Start by identifying the ingredient sources for the models. For example, the `Product` model defined above can be backed by a web service returning JSON:
+
 ```
-NSDictionary *ingredients = @{@"server_id": @"1209-3r47-4482-9rj4-93iu-324s"
-                              @"name": @"Zach Radke"
-                              @"unread_messages": @10,
-                              @"updated_at": @"2014-04-19T19:32:05Z"};
-User *user = [User prepareWith:^(id<ZCREasyChef> chef) {
-    [chef setIdentifier:ingredients[@"server_id"]];
-    [chef setIngredients:ingredients];
-    [chef setRecipe:[User JSONRecipe]];
+{
+	"base_sku": "1209-3r47-4482-9rj4-93iu-324s",
+	"attributes":
+	{
+		"name": "Test Product"
+	}
+}
+```
+
+Whatever the ingredient source, the raw ingredient tree must be either an `NSDictionary` or `NSArray` before they can be processed.
+
+### Define the recipe
+
+To process raw ingredients into a model, a **ZCREasyRecipe** is used. These recipes are usually model and ingredient-source dependent. For example, we would create a single recipe for the `Product` model and JSON ingredient source defined above.
+
+All recipes begin with an `NSDictionary` mapping, which is required. The keys are property keys of the model to populate, and the values are the corresponding ingredient paths from the ingredient-source.
+
+```
+NSDictionary *mapping = @{@"name": @"attributes.name"};
+```
+
+The recipe can then be created with one of the designated initializers.
+
+```
+ZCREasyRecipe *productJSONRecipe = [ZCREasyRecipe makeWith:^(id<ZCREasyRecipeMaker> recipeMaker) {
+	[recipeMaker setIngredientMapping:mapping];
 }];
 ```
 
-### Updating an instance
+Recipes can also have transformers, and other attributes. For more details, see the documentation for **ZCREasyRecipe**.
 
-When you want to update an instance, simply use the update method on it, passing the new ingredients and the recipe to generate a new instance:
+Since recipes are typically reused throughout a class, they can be stored in **ZCREasyRecipeBox** instances, as long as they have a name set.
 
 ```
-NSDictionary *ingredients = @{@"name": @"Zachary Radke"};
-User *updatedUser = [user updateWithIngredients:ingredients
-                                         recipe:[User JSONRecipe]
-                                          error:NULL];
+// Product.m
++ (ZCREasyRecipe *)JSONRecipe {
+    return [[ZCREasyRecipeBox defaultBox] recipeWithName:@"ProductJSONRecipe"];
+}
+```
+
+## How do I populate an instance?
+
+### With an existing model class
+
+If you are using a custom model, just create one and then populate it using **ZCREasyOven**.
+
+```
+ZCREasyRecipe *productRecipe = ...;
+NSDictionary *ingredients = ...;
+OldProduct *product = [OldProduct new];
+[ZCREasyOven populateModel:product ingredients:ingredients recipe:productRecipe error:NULL];
+```
+
+
+### With a subclass of ZCREasyDough
+
+If your model is a subclass of **ZCREasyDough**, you'll use the designated initializers
+
+Your model will inherit the designated initializers from **ZCREasyDough**:
+	
+```
+Product *product = [Product makeWith:^(id<ZCREasyBaker> baker) {
+    [baker setIdentifier:ingredients[@"base_sku"]];
+    [baker setIngredients:ingredients];
+    [baker setRecipe:productRecipe];
+}];
+```
+
+To update an instance you'll use the update methods inherited from **ZCREasyDough**. 
+
+```
+NSDictionary *ingredients = @{@"attributes": @{@"name": @"Updated name"}};
+Product *updatedProduct = [user updateWithIngredients:ingredients
+                                               recipe:productRecipe
+                                                error:NULL];
 ```
 
 The updated instance will share the same unique identifier as it's parent, and will generate notifications that can be observed:
 
 ```
 [[NSNotificationCenter defaultCenter] addObserver:self
-                                         selector:@selector(userUpdated:)
-                                             name:[User updateNotificationName]
+                                         selector:@selector(productUpdated:)
+                                             name:[Product updateNotificationName]
                                            object:nil];
 ```
 
-For a more generic notification, the `ZCREasyDoughUpdatedNotification` can be observed, which will be triggered for updates to all `ZCREasyDough` subclasses. Notifications will be posted from the original instance. However, since equality isn't pointer specific (more on that in the next section), it's advisable to observe the notification without an object, and filter the notifications based on the user-info.
+For a more generic notification, the `ZCREasyDoughUpdatedNotification` can be observed, which will be triggered for updates to all **ZCREasyDough** subclasses. Notifications will be posted from the original instance. However, since equality isn't pointer specific (more on that in the next section), it's advisable to observe the notification without an object, and filter the notifications based on the user-info.
 
 The user-info of these notifications will contain the `ZCREasyDoughIdentifierKey`, which points to the unique identifier of the updated instance, and `ZCREasyDoughUpdatedDoughKey` which points to the updated instance.
 
-### Comparing instances and ingredients
-
-Equality between `ZCREasyDough` subclasses is determined by the identifier used when initializing an instance. This means that calls to `isEqual:` will return `YES` between a model and an updated model:
-
-```
-[user isEqual:updatedUser]; // YES
-(user == updatedUser); // NO
-```
-
-A subclass can also report whether it already contains given ingredients with a given recipe:
-
-```
-NSDictionary *ingredients = @{@"name": @"Zachary Radke"};
-[user isEqualToIngredients:ingredients withRecipe:[User JSONRecipe] error:NULL]; // NO
-[updatedUser isEqualToIngredients:ingredients withRecipe:[User JSONRecipe] error:NULL]; // YES
-```
-
-### Decomposing an instance
-
-From ingredients it was made and to ingredients it shall return! A model can be decomposed using a given recipe:
-
-```
-NSDictionary *ingredients = [updatedUser decomposeWithRecipe:[User JSONRecipe] error:NULL];
-```
-
-The resulting type will either be an `NSDictionary` or an `NSArray` depending on what the recipe's mapping suggests the root object is.
-
-If the recipe supplies value transformers, they will be applied to the model's value **if the transformer supports reverse transformations**.
-
-```
-[DateTransformer allowsReverseTransformation]; // YES
-ingredients[@"updated_at"]; // @"2014-04-19T19:32:05Z"
-
-```
-
-### Tips
+## Tips
 
 Running into difficulties with your models? Maybe these tips can help:
 
-#### Recipes
+### ZCREasyRecipe
 * Ingredient mapping keys **must** be settable on the receiving model via `setValue:forKey:`.
 * Ingredient paths **must** be consistent in their inferred objects. For example:
 
@@ -238,10 +214,10 @@ NSDictionary *alsoInvalid = @{@"key1": @"key[0]",
 * If a transformer returns `nil` it will be converted to `NSNull` in the processed ingredients.
 * A recipe box can only hold one recipe per name. Adding another recipe with the same name will fail.
 
-#### Models
+### ZCREasyDough
 * `NSNull` ingredient values are converted to `nil`.
 * After initialization, `readonly` properties **cannot** be set via `setValue:forKey:`. Attempts to do so will raise a `ZCREasyDoughExceptionAlreadyBaked` exception.
 * When `updateWithIngredients:recipe:error` is called with ingredients that are already part of the model, no notifications will be posted, and the same object will be returned rather than a new instance.
 * Updating a model will post a notification from the original model, with the updated model in the user info. However, because equality is not determined by pointers, you should typically observe the notification without specifying an object, and rely on the user info to provide context.
 * Most of the methods have an optional error pointer parameter. If you aren't receiving the expected output, make sure you're passing something in there to help you debug what's happening!
-* The `ZCREasyDough` class introspects your model's properties at runtime and caches them, so avoid dynamically creating properties on your model class at runtime.
+* The **ZCREasyDough** class introspects your model's properties at runtime and caches them, so avoid dynamically creating properties on your model class at runtime.

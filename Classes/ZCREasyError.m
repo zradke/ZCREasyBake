@@ -32,6 +32,8 @@ NSString *ZCREasyBakeErrorDescriptionForCode(NSInteger errorCode) {
             return @"Invalid ingredient transformer.";
         case ZCREasyBakeUnknownRecipeError:
             return @"Unknown recipe.";
+        case ZCREasyBakeInvalidModelError:
+            return @"Invalid model.";
         default:
             return nil;
     }

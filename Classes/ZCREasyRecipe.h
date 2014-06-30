@@ -87,6 +87,7 @@
  */
 - (instancetype)modifyWith:(void (^)(id<ZCREasyRecipeMaker> recipeMaker))modificationBlock __attribute__((nonnull));
 
+- (instancetype)init __unavailable;
 
 /**
  *  @name Accessing recipe instructions

@@ -88,6 +88,8 @@ typedef NS_ENUM(NSInteger, ZCREasyPropertyAttribute) {
  */
 - (instancetype)initWithProperty:(objc_property_t)property __attribute__((nonnull));
 
+- (instancetype)init __unavailable;
+
 /**
  *  The name of the property. If a valid property was passed during creation, this is guaranteed
  *  to be present.

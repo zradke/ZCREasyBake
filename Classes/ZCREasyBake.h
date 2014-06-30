@@ -12,9 +12,10 @@
     #import <Foundation/Foundation.h>
 
     #import "ZCREasyError.h"
+    #import "ZCREasyBlockTransformer.h"
     #import "ZCREasyProperty.h"
     #import "ZCREasyRecipe.h"
     #import "ZCREasyDough.h"
-    #import "ZCREasyDoughTransformer.h"
+    #import "ZCREasyOven.h"
 
 #endif

@@ -48,16 +48,22 @@
 		166B66BA191AA66B00CAAB0E /* ZCREasyProperty.m in Sources */ = {isa = PBXBuildFile; fileRef = 16ADF0CA18F5EB6500BF0852 /* ZCREasyProperty.m */; };
 		166B66BC191AA66B00CAAB0E /* ZCREasyRecipe.m in Sources */ = {isa = PBXBuildFile; fileRef = 74F6BD2E1909781B0093F1F7 /* ZCREasyRecipe.m */; };
 		166B66BE191AA66B00CAAB0E /* ZCREasyDough.m in Sources */ = {isa = PBXBuildFile; fileRef = 16ADF0C318F5E40D00BF0852 /* ZCREasyDough.m */; };
-		1687EE7519242D1B0018FBCF /* ZCREasyDoughTransformer.h in Headers */ = {isa = PBXBuildFile; fileRef = 1687EE7319242D1B0018FBCF /* ZCREasyDoughTransformer.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		1687EE7619242D1B0018FBCF /* ZCREasyDoughTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1687EE7419242D1B0018FBCF /* ZCREasyDoughTransformer.m */; };
 		1687EE791924319B0018FBCF /* ZCREasyBake.h in Headers */ = {isa = PBXBuildFile; fileRef = 1687EE771924319B0018FBCF /* ZCREasyBake.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		1687EE7C192434770018FBCF /* ZCREasyDoughTransformerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1687EE7B192434770018FBCF /* ZCREasyDoughTransformerTests.m */; };
-		1687EE7E19243ACD0018FBCF /* ZCREasyDoughTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1687EE7419242D1B0018FBCF /* ZCREasyDoughTransformer.m */; };
-		1687EE8019243AD50018FBCF /* ZCREasyDoughTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1687EE7419242D1B0018FBCF /* ZCREasyDoughTransformer.m */; };
-		1687EE8119243ADE0018FBCF /* ZCREasyDoughTransformerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1687EE7B192434770018FBCF /* ZCREasyDoughTransformerTests.m */; };
 		16ADF09D18F5E2F900BF0852 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16ADF09C18F5E2F900BF0852 /* Foundation.framework */; };
 		16ADF0C418F5E40D00BF0852 /* ZCREasyDough.m in Sources */ = {isa = PBXBuildFile; fileRef = 16ADF0C318F5E40D00BF0852 /* ZCREasyDough.m */; };
 		16ADF0CB18F5EB6500BF0852 /* ZCREasyProperty.m in Sources */ = {isa = PBXBuildFile; fileRef = 16ADF0CA18F5EB6500BF0852 /* ZCREasyProperty.m */; };
+		7437C705195C9BB200F33EDE /* ZCREasyOvenTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7437C704195C9BB200F33EDE /* ZCREasyOvenTests.m */; };
+		7437C708195C9C0F00F33EDE /* ZCREasyBlockTransformer.h in Headers */ = {isa = PBXBuildFile; fileRef = 7437C706195C9C0F00F33EDE /* ZCREasyBlockTransformer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7437C709195C9C0F00F33EDE /* ZCREasyBlockTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7437C707195C9C0F00F33EDE /* ZCREasyBlockTransformer.m */; };
+		7437C70A195CA72700F33EDE /* ZCREasyOven.m in Sources */ = {isa = PBXBuildFile; fileRef = 74662EF6195A2D5800B86DD0 /* ZCREasyOven.m */; };
+		7437C70B195CA72700F33EDE /* ZCREasyOven.m in Sources */ = {isa = PBXBuildFile; fileRef = 74662EF6195A2D5800B86DD0 /* ZCREasyOven.m */; };
+		7437C70C195CA73C00F33EDE /* ZCREasyBlockTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7437C707195C9C0F00F33EDE /* ZCREasyBlockTransformer.m */; };
+		7437C70D195CA73D00F33EDE /* ZCREasyBlockTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7437C707195C9C0F00F33EDE /* ZCREasyBlockTransformer.m */; };
+		74662EF7195A2D5800B86DD0 /* ZCREasyOven.h in Headers */ = {isa = PBXBuildFile; fileRef = 74662EF5195A2D5800B86DD0 /* ZCREasyOven.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		74662EF8195A2D5800B86DD0 /* ZCREasyOven.m in Sources */ = {isa = PBXBuildFile; fileRef = 74662EF6195A2D5800B86DD0 /* ZCREasyOven.m */; };
+		74727C3119620EE1007B0C7D /* ZCREasyBlockTransformerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 74727C3019620EE1007B0C7D /* ZCREasyBlockTransformerTests.m */; };
+		74727C3219620EE1007B0C7D /* ZCREasyBlockTransformerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 74727C3019620EE1007B0C7D /* ZCREasyBlockTransformerTests.m */; };
+		74727C3319620EEA007B0C7D /* ZCREasyOvenTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7437C704195C9BB200F33EDE /* ZCREasyOvenTests.m */; };
 		74F6BD2F1909781B0093F1F7 /* ZCREasyRecipe.h in Headers */ = {isa = PBXBuildFile; fileRef = 74F6BD2D1909781B0093F1F7 /* ZCREasyRecipe.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		74F6BD301909781B0093F1F7 /* ZCREasyRecipe.m in Sources */ = {isa = PBXBuildFile; fileRef = 74F6BD2E1909781B0093F1F7 /* ZCREasyRecipe.m */; };
 		74F6BD33190985C20093F1F7 /* ZCREasyError.h in Headers */ = {isa = PBXBuildFile; fileRef = 74F6BD31190985C20093F1F7 /* ZCREasyError.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -83,10 +89,7 @@
 		166B669A191AA48C00CAAB0E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		16836DD018F8B32200FD86D5 /* ZCREasyPropertyTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZCREasyPropertyTests.m; sourceTree = "<group>"; };
 		16836DD218F8B33300FD86D5 /* ZCREasyDoughTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZCREasyDoughTests.m; sourceTree = "<group>"; };
-		1687EE7319242D1B0018FBCF /* ZCREasyDoughTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZCREasyDoughTransformer.h; sourceTree = "<group>"; };
-		1687EE7419242D1B0018FBCF /* ZCREasyDoughTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZCREasyDoughTransformer.m; sourceTree = "<group>"; };
 		1687EE771924319B0018FBCF /* ZCREasyBake.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZCREasyBake.h; sourceTree = "<group>"; };
-		1687EE7B192434770018FBCF /* ZCREasyDoughTransformerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZCREasyDoughTransformerTests.m; sourceTree = "<group>"; };
 		16ADF09918F5E2F900BF0852 /* libZCREasyBake.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libZCREasyBake.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		16ADF09C18F5E2F900BF0852 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		16ADF0AA18F5E2F900BF0852 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
@@ -95,6 +98,12 @@
 		16ADF0C318F5E40D00BF0852 /* ZCREasyDough.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZCREasyDough.m; sourceTree = "<group>"; };
 		16ADF0C918F5EB6500BF0852 /* ZCREasyProperty.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZCREasyProperty.h; sourceTree = "<group>"; };
 		16ADF0CA18F5EB6500BF0852 /* ZCREasyProperty.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZCREasyProperty.m; sourceTree = "<group>"; };
+		7437C704195C9BB200F33EDE /* ZCREasyOvenTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZCREasyOvenTests.m; sourceTree = "<group>"; };
+		7437C706195C9C0F00F33EDE /* ZCREasyBlockTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZCREasyBlockTransformer.h; sourceTree = "<group>"; };
+		7437C707195C9C0F00F33EDE /* ZCREasyBlockTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZCREasyBlockTransformer.m; sourceTree = "<group>"; };
+		74662EF5195A2D5800B86DD0 /* ZCREasyOven.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZCREasyOven.h; sourceTree = "<group>"; };
+		74662EF6195A2D5800B86DD0 /* ZCREasyOven.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZCREasyOven.m; sourceTree = "<group>"; };
+		74727C3019620EE1007B0C7D /* ZCREasyBlockTransformerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZCREasyBlockTransformerTests.m; sourceTree = "<group>"; };
 		74B6FE5F18FDEE8A005D4A34 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		74B6FE7918FDF487005D4A34 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		74F6BD2D1909781B0093F1F7 /* ZCREasyRecipe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZCREasyRecipe.h; sourceTree = "<group>"; };
@@ -192,14 +201,16 @@
 				1687EE771924319B0018FBCF /* ZCREasyBake.h */,
 				74F6BD31190985C20093F1F7 /* ZCREasyError.h */,
 				74F6BD32190985C20093F1F7 /* ZCREasyError.m */,
+				7437C706195C9C0F00F33EDE /* ZCREasyBlockTransformer.h */,
+				7437C707195C9C0F00F33EDE /* ZCREasyBlockTransformer.m */,
 				16ADF0C918F5EB6500BF0852 /* ZCREasyProperty.h */,
 				16ADF0CA18F5EB6500BF0852 /* ZCREasyProperty.m */,
 				74F6BD2D1909781B0093F1F7 /* ZCREasyRecipe.h */,
 				74F6BD2E1909781B0093F1F7 /* ZCREasyRecipe.m */,
 				16ADF0C218F5E40D00BF0852 /* ZCREasyDough.h */,
 				16ADF0C318F5E40D00BF0852 /* ZCREasyDough.m */,
-				1687EE7319242D1B0018FBCF /* ZCREasyDoughTransformer.h */,
-				1687EE7419242D1B0018FBCF /* ZCREasyDoughTransformer.m */,
+				74662EF5195A2D5800B86DD0 /* ZCREasyOven.h */,
+				74662EF6195A2D5800B86DD0 /* ZCREasyOven.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -207,12 +218,13 @@
 		16ADF0B218F5E2F900BF0852 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				7437C704195C9BB200F33EDE /* ZCREasyOvenTests.m */,
 				16836DD018F8B32200FD86D5 /* ZCREasyPropertyTests.m */,
 				74F6BD351909DADE0093F1F7 /* ZCREasyRecipeTests.m */,
 				74F6BD371909DAE80093F1F7 /* ZCREasyRecipeBoxTests.m */,
 				16836DD218F8B33300FD86D5 /* ZCREasyDoughTests.m */,
 				74F6BD391909DAF40093F1F7 /* ZCREasyDoughErrorTests.m */,
-				1687EE7B192434770018FBCF /* ZCREasyDoughTransformerTests.m */,
+				74727C3019620EE1007B0C7D /* ZCREasyBlockTransformerTests.m */,
 				166B6676191AA41200CAAB0E /* ZCREasyBakeTests-iOS */,
 				166B6696191AA48C00CAAB0E /* ZCREasyBakeTests-OSX */,
 			);
@@ -227,10 +239,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				1687EE791924319B0018FBCF /* ZCREasyBake.h in Headers */,
+				74662EF7195A2D5800B86DD0 /* ZCREasyOven.h in Headers */,
 				16146A4918FC5997008C0EE9 /* ZCREasyProperty.h in Headers */,
-				1687EE7519242D1B0018FBCF /* ZCREasyDoughTransformer.h in Headers */,
 				74F6BD33190985C20093F1F7 /* ZCREasyError.h in Headers */,
 				74F6BD2F1909781B0093F1F7 /* ZCREasyRecipe.h in Headers */,
+				7437C708195C9C0F00F33EDE /* ZCREasyBlockTransformer.h in Headers */,
 				16146A4A18FC5997008C0EE9 /* ZCREasyDough.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -376,17 +389,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1687EE7E19243ACD0018FBCF /* ZCREasyDoughTransformer.m in Sources */,
 				166B66B8191AA66B00CAAB0E /* ZCREasyError.m in Sources */,
 				166B66BA191AA66B00CAAB0E /* ZCREasyProperty.m in Sources */,
 				166B66BC191AA66B00CAAB0E /* ZCREasyRecipe.m in Sources */,
-				1687EE7C192434770018FBCF /* ZCREasyDoughTransformerTests.m in Sources */,
+				7437C70C195CA73C00F33EDE /* ZCREasyBlockTransformer.m in Sources */,
 				166B66BE191AA66B00CAAB0E /* ZCREasyDough.m in Sources */,
 				166B6682191AA45600CAAB0E /* ZCREasyPropertyTests.m in Sources */,
+				7437C70A195CA72700F33EDE /* ZCREasyOven.m in Sources */,
 				166B6683191AA45600CAAB0E /* ZCREasyRecipeTests.m in Sources */,
 				166B6684191AA45600CAAB0E /* ZCREasyRecipeBoxTests.m in Sources */,
+				7437C705195C9BB200F33EDE /* ZCREasyOvenTests.m in Sources */,
 				166B6685191AA45600CAAB0E /* ZCREasyDoughTests.m in Sources */,
 				166B6686191AA45600CAAB0E /* ZCREasyDoughErrorTests.m in Sources */,
+				74727C3119620EE1007B0C7D /* ZCREasyBlockTransformerTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -394,17 +409,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1687EE8019243AD50018FBCF /* ZCREasyDoughTransformer.m in Sources */,
 				166B66AF191AA64E00CAAB0E /* ZCREasyError.m in Sources */,
 				166B66B1191AA64E00CAAB0E /* ZCREasyProperty.m in Sources */,
+				74727C3319620EEA007B0C7D /* ZCREasyOvenTests.m in Sources */,
 				166B66B3191AA64E00CAAB0E /* ZCREasyRecipe.m in Sources */,
+				74727C3219620EE1007B0C7D /* ZCREasyBlockTransformerTests.m in Sources */,
 				166B66B5191AA64E00CAAB0E /* ZCREasyDough.m in Sources */,
 				166B66A2191AA4BA00CAAB0E /* ZCREasyPropertyTests.m in Sources */,
 				166B66A3191AA4BA00CAAB0E /* ZCREasyRecipeTests.m in Sources */,
+				7437C70D195CA73D00F33EDE /* ZCREasyBlockTransformer.m in Sources */,
 				166B66A4191AA4BA00CAAB0E /* ZCREasyRecipeBoxTests.m in Sources */,
+				7437C70B195CA72700F33EDE /* ZCREasyOven.m in Sources */,
 				166B66A5191AA4BA00CAAB0E /* ZCREasyDoughTests.m in Sources */,
 				166B66A6191AA4BA00CAAB0E /* ZCREasyDoughErrorTests.m in Sources */,
-				1687EE8119243ADE0018FBCF /* ZCREasyDoughTransformerTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -412,10 +429,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				74662EF8195A2D5800B86DD0 /* ZCREasyOven.m in Sources */,
+				7437C709195C9C0F00F33EDE /* ZCREasyBlockTransformer.m in Sources */,
 				74F6BD34190985C20093F1F7 /* ZCREasyError.m in Sources */,
 				16ADF0C418F5E40D00BF0852 /* ZCREasyDough.m in Sources */,
 				74F6BD301909781B0093F1F7 /* ZCREasyRecipe.m in Sources */,
-				1687EE7619242D1B0018FBCF /* ZCREasyDoughTransformer.m in Sources */,
 				16ADF0CB18F5EB6500BF0852 /* ZCREasyProperty.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

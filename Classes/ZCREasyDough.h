@@ -259,23 +259,6 @@ FOUNDATION_EXPORT NSString *const ZCREasyDoughUpdatedDoughKey;
  */
 + (void)enumeratePropertiesWith:(void (^)(ZCREasyProperty *property, BOOL *shouldStop))block __attribute__((nonnull));
 
-/**
- *  Generates a new, reversible value transformer for this class. The value transformer should be
- *  given raw ingredients and will generate baked models. In reverse, the transformer will take
- *  models and decompose them into ingredients.
- *
- *  @param recipe          The recipe to use for populating and decomposing models. This must not
- *                         be nil.
- *  @param identifierBlock An optional ingredient block which should return a unique identifier for
- *                         an instance. This block is passed the raw ingredients and is retained
- *                         until the transformer is released. For this reason, be careful of
- *                         creating retain cycles.
- *
- *  @return A new, reversible value transformer for this class.
- */
-+ (ZCREasyDoughTransformer *)transformerWithRecipe:(ZCREasyRecipe *)recipe
-                                   identifierBlock:(id<NSObject,NSCopying> (^)(id rawIngredients))identifierBlock;
-
 @end
 
 
