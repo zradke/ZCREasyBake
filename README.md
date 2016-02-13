@@ -17,7 +17,7 @@ To use ZCREasyBake, your project should have a minimum deployment target of iOS 
 ZCREasyBake can be installed a variety of ways depending on your preference:
 
 * Drag-n-drop files from the `Classes` folder into your project.
-* Add `pod "ZCREasyBake"` to your Podfile for Cocoapods.
+* Add `pod "ZCREasyBake"` to your Podfile for CocoaPods.
 
 However you get the framework into your project, you can import the main header where needed:
 
